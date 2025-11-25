@@ -1,0 +1,20 @@
+[
+  {
+    "id": "user-50c40d8c-dc4f-4ac6-9542-c54deb912881",
+    "name": "ななか",
+    "email": "nanaka79377@gmail.com",
+    "passwordHash": "$2b$10$ogtAGMJBhe/XSmLbMcD3euCkXk0idwGQlVxK5NEXUdBVzfxhq8Kr.",
+    "createdAt": "2025-11-19T07:38:27.025Z",
+    "followers": [],
+    "following": [],
+    "headline": "エジブトでピラミッドが見たい！",
+    "bio": "子どもや自然に関わるボランティアが好きです。\n国際協力にも興味があります。🌏🌱",
+    "avatar": "",
+    "location": "名古屋",
+    "interests": [
+      "教育",
+      "国際協力"
+    ],
+    "website": ""
+  }
+]

@@ -1,0 +1,59 @@
+[
+  {
+    "id": "event-1",
+    "title": "海岸清掃キャラバン in 鎌倉",
+    "description": "家族連れでも参加できる海岸清掃イベント。午前中はビーチクリーン、午後は交流会を予定しています。",
+    "category": "環境保護",
+    "location": "神奈川県鎌倉市 由比ヶ浜海岸",
+    "date": "2025-12-05T09:00:00+09:00",
+    "organizer": "NPO Clean Blue",
+    "contact": "hello@cleanblue.jp",
+    "slots": 40,
+    "tags": [
+      "ビーチクリーン",
+      "家族歓迎",
+      "初心者OK"
+    ],
+    "likes": 28,
+    "comments": 9,
+    "coverImage": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "event-2",
+    "title": "こども食堂サポートデー",
+    "description": "地域のこども食堂で調理補助や学習サポートを行います。午後の部ではキャリア相談会も実施します。",
+    "category": "福祉",
+    "location": "大阪府大阪市 西区民センター",
+    "date": "2025-12-12T15:00:00+09:00",
+    "organizer": "つながり食堂ネットワーク",
+    "contact": "support@tsunagari.jp",
+    "slots": 25,
+    "tags": [
+      "子ども支援",
+      "調理",
+      "学習支援"
+    ],
+    "likes": 41,
+    "comments": 14,
+    "coverImage": "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "event-3",
+    "title": "多言語まちあるきガイド養成講座",
+    "description": "訪日観光客向けのガイドを目指す方向けの短期集中講座。実地研修とオンライン講座を組み合わせています。",
+    "category": "国際協力",
+    "location": "東京都台東区 谷中エリア",
+    "date": "2026-01-18T10:00:00+09:00",
+    "organizer": "Tokyo Local Stories",
+    "contact": "join@tls-volunteer.com",
+    "slots": 30,
+    "tags": [
+      "語学",
+      "まちづくり",
+      "研修あり"
+    ],
+    "likes": 19,
+    "comments": 6,
+    "coverImage": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1000&q=80"
+  }
+]
