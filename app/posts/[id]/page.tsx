@@ -15,7 +15,7 @@ export default async function PostPage({ params }: PageProps) {
   if (!post) {
     notFound()
   }
-  const author = getUser(post.authorId)
+  const author = await getUser(post.authorId)
 
   return (
     <div className="container mx-auto px-4 py-8">

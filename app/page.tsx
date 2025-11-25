@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { getPosts, getEvents, getUsers } from '@/lib/data'
+import { getPosts, getUsers, getRecruitmentPosts } from '@/lib/data'
 import EventCard from '@/components/EventCard'
 import PostGalleryCard from '@/components/PostGalleryCard'
 import { getCurrentUser } from '@/lib/auth'
@@ -33,9 +33,9 @@ const HERO_STORIES = [
 ]
 
 export default async function Home() {
-  const [posts, events, users, currentUser] = await Promise.all([
+  const [posts, recruitmentPosts, users, currentUser] = await Promise.all([
     getPosts(),
-    getEvents(),
+    getRecruitmentPosts(),
     getUsers(),
     getCurrentUser(),
   ])
@@ -50,7 +50,7 @@ export default async function Home() {
   const hero =
     HERO_STORIES[new Date().getDate() % HERO_STORIES.length] || HERO_STORIES[0]
   const featuredPosts = posts.slice(0, 3)
-  const upcomingEvents = events.slice(0, 2)
+  const upcomingEvents = recruitmentPosts.slice(0, 2)
 
   return (
     <div className="container mx-auto px-4 py-10">
@@ -196,7 +196,7 @@ export default async function Home() {
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {upcomingEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
+              <EventCard key={event.id} post={event} />
             ))}
           </div>
         )}
