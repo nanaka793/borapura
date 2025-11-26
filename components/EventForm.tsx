@@ -27,13 +27,14 @@ export default function EventForm() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    category: '',
+    categories: [] as string[],
     location: '',
     date: '',
     organizer: '',
     contact: '',
     slots: '',
-    tags: '',
+    cost: '',
+    period: '',
   })
   const [images, setImages] = useState<File[]>([])
   const [previews, setPreviews] = useState<string[]>([])
@@ -44,11 +45,21 @@ export default function EventForm() {
     }
   }, [previews])
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const toggleCategory = (option: string) => {
+    setFormData((prev) => {
+      const exists = prev.categories.includes(option)
+      return {
+        ...prev,
+        categories: exists
+          ? prev.categories.filter((item) => item !== option)
+          : [...prev.categories, option],
+      }
+    })
   }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,14 +111,29 @@ export default function EventForm() {
     if (formData.slots) {
       info.push(`【募集人数】${formData.slots}名`)
     }
+    if (formData.cost) {
+      info.push(`【参加費】${formData.cost}`)
+    }
+    if (formData.period) {
+      info.push(
+        `【申込締切】${new Date(formData.period).toLocaleDateString('ja-JP', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })}`
+      )
+    }
+    if (formData.period) {
+      info.push(
+        `【申込締切】${new Date(formData.period).toLocaleDateString('ja-JP', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })}`
+      )
+    }
 
-    const tagLine = formData.tags
-      .split(',')
-      .map((tag) => tag.trim())
-      .filter(Boolean)
-    const tagText = tagLine.length > 0 ? `【タグ】${tagLine.join(', ')}` : ''
-
-    return [formData.description, '', ...info, tagText].filter(Boolean).join('\n')
+    return [formData.description, '', ...info].filter(Boolean).join('\n')
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -119,11 +145,21 @@ export default function EventForm() {
       const formPayload = new FormData()
       formPayload.set('title', formData.title)
       formPayload.set('content', composeContent())
-      formPayload.set('category', formData.category)
+      if (formData.date) {
+        formPayload.set('eventDate', formData.date)
+      }
+      if (formData.categories.length > 0) {
+        formPayload.set('category', formData.categories[0])
+        formPayload.set('tags', JSON.stringify(formData.categories))
+      }
       formPayload.set('location', formData.location)
       formPayload.set('organization', formData.organizer)
       formPayload.set('type', '募集投稿')
       formPayload.set('contact', formData.contact)
+      formPayload.set('cost', formData.cost)
+      if (formData.period) {
+        formPayload.set('period', formData.period)
+      }
       images.forEach((file) => {
         formPayload.append('images', file)
       })
@@ -182,24 +218,33 @@ export default function EventForm() {
         />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label className="mb-2 block text-sm font-semibold text-gray-700">カテゴリー</label>
-          <select
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            className="w-full rounded-2xl border border-gray-300 px-4 py-3 focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
-          >
-            <option value="">選択してください</option>
-            {CATEGORY_OPTIONS.map((option) => (
-              <option key={option} value={option}>
+      <div>
+        <label className="mb-2 block text-sm font-semibold text-gray-700">
+          カテゴリー（複数選択可）
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {CATEGORY_OPTIONS.map((option) => {
+            const selected = formData.categories.includes(option)
+            return (
+              <button
+                type="button"
+                key={option}
+                onClick={() => toggleCategory(option)}
+                className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                  selected
+                    ? 'border-primary-500 bg-primary-50 text-primary-700'
+                    : 'border-gray-200 text-gray-600 hover:border-primary-200'
+                }`}
+              >
                 {option}
-              </option>
-            ))}
-          </select>
+              </button>
+            )
+          })}
         </div>
-        <div>
+        <p className="mt-2 text-xs text-gray-500">
+          ボタンをタップすると選択、再度タップすると解除できます。
+        </p>
+        <div className="mt-4">
           <label className="mb-2 block text-sm font-semibold text-gray-700">開催場所 *</label>
           <input
             type="text"
@@ -214,28 +259,53 @@ export default function EventForm() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label className="mb-2 block text-sm font-semibold text-gray-700">開催日時 *</label>
-          <input
-            type="datetime-local"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-            required
-            className="w-full rounded-2xl border border-gray-300 px-4 py-3 focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
-          />
+        <div className="space-y-4">
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-gray-700">開催日時 *</label>
+            <input
+              type="datetime-local"
+              name="date"
+              value={formData.date}
+              onChange={handleChange}
+              required
+              className="w-full rounded-2xl border border-gray-300 px-4 py-3 focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+            />
+          </div>
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-gray-700">申込締切</label>
+            <input
+              type="date"
+              name="period"
+              value={formData.period}
+              onChange={handleChange}
+              className="w-full rounded-2xl border border-gray-300 px-4 py-3 focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+            />
+          </div>
         </div>
-        <div>
-          <label className="mb-2 block text-sm font-semibold text-gray-700">募集人数</label>
-          <input
-            type="number"
-            name="slots"
-            value={formData.slots}
-            onChange={handleChange}
-            min={0}
-            className="w-full rounded-2xl border border-gray-300 px-4 py-3 focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
-            placeholder="例: 20"
-          />
+        <div className="space-y-4">
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-gray-700">募集人数</label>
+            <input
+              type="number"
+              name="slots"
+              value={formData.slots}
+              onChange={handleChange}
+              min={0}
+              className="w-full rounded-2xl border border-gray-300 px-4 py-3 focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+              placeholder="例: 20"
+            />
+          </div>
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-gray-700">参加費</label>
+            <input
+              type="text"
+              name="cost"
+              value={formData.cost}
+              onChange={handleChange}
+              className="w-full rounded-2xl border border-gray-300 px-4 py-3 focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+              placeholder="例: 無料 / 500円 / 実費のみ"
+            />
+          </div>
         </div>
       </div>
 
@@ -263,18 +333,6 @@ export default function EventForm() {
             placeholder="メールアドレスやURLなど"
           />
         </div>
-      </div>
-
-      <div>
-        <label className="mb-2 block text-sm font-semibold text-gray-700">タグ（カンマ区切り）</label>
-        <input
-          type="text"
-          name="tags"
-          value={formData.tags}
-          onChange={handleChange}
-          className="w-full rounded-2xl border border-gray-300 px-4 py-3 focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
-          placeholder="例: ビーチクリーン, 家族歓迎"
-        />
       </div>
 
       <div>

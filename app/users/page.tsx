@@ -1,6 +1,6 @@
 import { getUsers, getPosts } from '@/lib/data'
 import Link from 'next/link'
-import UserCard from '@/components/UserCard'
+import UserDirectory from '@/components/UserDirectory'
 
 export default async function UsersPage() {
   const [users, posts] = await Promise.all([getUsers(), getPosts()])
@@ -36,22 +36,7 @@ export default async function UsersPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2">
-            {userList.map((user) => (
-              <UserCard
-                key={user.id}
-                id={user.id}
-                name={user.name}
-                avatar={user.avatar}
-                headline={user.headline}
-                location={user.location}
-                interests={user.interests}
-                website={user.website}
-                postCount={user.postCount}
-                badge={user.badge}
-              />
-            ))}
-          </div>
+          <UserDirectory users={userList} />
         )}
       </div>
     </div>

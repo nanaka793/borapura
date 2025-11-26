@@ -26,6 +26,11 @@ export async function POST(request: NextRequest) {
     let location = ''
     let postType = '記録投稿'
     let organization = ''
+    let contact = ''
+    let cost = ''
+    let period = ''
+    let eventDateValue = ''
+    let tags: string[] = []
     let imageFiles: File[] = []
 
     if (contentType.includes('multipart/form-data')) {
@@ -36,6 +41,21 @@ export async function POST(request: NextRequest) {
       location = (formData.get('location') ?? '').toString().trim()
       organization = (formData.get('organization') ?? '').toString().trim()
       postType = (formData.get('type') ?? '記録投稿').toString().trim() || '記録投稿'
+      contact = (formData.get('contact') ?? '').toString().trim()
+      cost = (formData.get('cost') ?? '').toString().trim()
+      const tagsValue = formData.get('tags')
+      if (typeof tagsValue === 'string' && tagsValue.trim()) {
+        try {
+          const parsed = JSON.parse(tagsValue)
+          if (Array.isArray(parsed)) {
+            tags = parsed
+          }
+        } catch {
+          tags = []
+        }
+      }
+      period = (formData.get('period') ?? '').toString().trim()
+      eventDateValue = (formData.get('eventDate') ?? formData.get('date') ?? '').toString().trim()
 
       const images = formData.getAll('images') || []
       imageFiles = images.filter(
@@ -49,6 +69,13 @@ export async function POST(request: NextRequest) {
       location = (body.location ?? '').toString().trim()
       organization = (body.organization ?? '').toString().trim()
       postType = (body.type ?? '記録投稿').toString().trim() || '記録投稿'
+      contact = (body.contact ?? '').toString().trim()
+      cost = (body.cost ?? '').toString().trim()
+      if (Array.isArray(body.tags)) {
+        tags = body.tags.map((tag: string) => tag.toString().trim()).filter(Boolean)
+      }
+      period = (body.period ?? '').toString().trim()
+      eventDateValue = (body.eventDate ?? body.date ?? '').toString().trim()
     }
 
     if (!title || !content) {
@@ -72,10 +99,14 @@ export async function POST(request: NextRequest) {
       content,
       author: currentUser.name,
       authorId: currentUser.id,
-      category: category || undefined,
-      tags: category ? [category] : undefined,
+      category: category || tags[0] || undefined,
+      tags: tags.length > 0 ? tags : category ? [category] : undefined,
       location: location || undefined,
       organization: organization || undefined,
+      contact: contact || undefined,
+      cost: cost || undefined,
+      period: period || undefined,
+      eventDate: eventDateValue || undefined,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       likes: 0,

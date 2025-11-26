@@ -32,6 +32,10 @@ interface PostFields {
   Image?: Array<{ url: string }>
   Location?: string
   Organization?: string
+  Contact?: string
+  Cost?: string
+  Period?: string
+  Date?: string
   Tag?: string[]
   CreatedAt?: string
   Likes?: number
@@ -132,6 +136,12 @@ function normalizeComments(comments: Comment[]): Comment[] {
 
 function mapPost(record: { id: string; fields: PostFields; createdTime: string }, userMap: Map<string, User>): Post {
   const { fields, id, createdTime } = record
+  // デバッグ用: Airtableから取得したfieldsを確認
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Airtable fields keys:', Object.keys(fields))
+    console.log('Contact field value:', fields.Contact)
+    console.log('All fields:', JSON.stringify(fields, null, 2))
+  }
   const authorName = fields.Author || '匿名'
   const author = userMap.get(authorName.toLowerCase())
   return {
@@ -144,6 +154,10 @@ function mapPost(record: { id: string; fields: PostFields; createdTime: string }
     category: fields.Tag?.[0],
     tags: fields.Tag,
     location: fields.Location,
+    contact: fields.Contact,
+    cost: fields.Cost,
+    period: fields.Period,
+    eventDate: fields.Date,
     createdAt: fields.CreatedAt || createdTime,
     updatedAt: fields.CreatedAt || createdTime,
     likes: fields.Likes ?? 0,
@@ -241,6 +255,10 @@ export async function savePost(post: Post): Promise<{ post: Post; recordId: stri
     Content: post.content,
     Location: post.location,
     Organization: post.organization,
+    Contact: post.contact,
+    Cost: post.cost,
+    Period: post.period,
+    Date: post.eventDate,
     Tag: post.tags || (post.category ? [post.category] : undefined),
     // CreatedAtはAirTableが自動的に設定
   }

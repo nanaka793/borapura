@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import { getPosts, getUsers } from '@/lib/data'
-import PostGalleryCard from '@/components/PostGalleryCard'
+import ActivityPostsSection from '@/components/ActivityPostsSection'
 
 export default async function PostsPage() {
   const posts = await getPosts()
+  const activityPosts = posts.filter((post) => post.type !== '募集投稿')
   const users = await getUsers()
   const userMap = users.reduce<Record<string, (typeof users)[number]>>((acc, user) => {
     acc[user.id] = user
@@ -13,6 +14,12 @@ export default async function PostsPage() {
     acc[user.name.toLowerCase()] = user
     return acc
   }, {})
+
+  const activityPostsWithAvatar = activityPosts.map((post) => ({
+    ...post,
+    authorAvatar:
+      userMap[post.authorId]?.avatar ?? userNameMap[post.author.toLowerCase()]?.avatar ?? '',
+  }))
 
   return (
     <div className="container mx-auto px-4 py-10">
@@ -33,25 +40,14 @@ export default async function PostsPage() {
           </Link>
         </div>
 
-        {posts.length === 0 ? (
+        {activityPosts.length === 0 ? (
           <div className="rounded-3xl bg-white p-10 text-center shadow-lg">
             <p className="text-gray-500">
               まだ活動記録がありません。最初の記録を投稿してみましょう！
             </p>
           </div>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-            {posts.map((post) => (
-              <PostGalleryCard
-                key={post.id}
-                post={post}
-                authorAvatar={
-                  userMap[post.authorId]?.avatar ??
-                  userNameMap[post.author.toLowerCase()]?.avatar
-                }
-              />
-            ))}
-          </div>
+          <ActivityPostsSection posts={activityPostsWithAvatar} />
         )}
       </div>
     </div>

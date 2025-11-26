@@ -10,6 +10,10 @@ export interface Post {
   images?: string[]
   location?: string
   organization?: string
+  contact?: string
+  cost?: string
+  period?: string
+  eventDate?: string
   createdAt: string
   updatedAt: string
   likes: number

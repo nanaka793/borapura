@@ -49,7 +49,8 @@ export default async function Home() {
   }, {})
   const hero =
     HERO_STORIES[new Date().getDate() % HERO_STORIES.length] || HERO_STORIES[0]
-  const featuredPosts = posts.slice(0, 3)
+  const activityPosts = posts.filter((post) => post.type !== '募集投稿')
+  const featuredPosts = activityPosts.slice(0, 3)
   const upcomingEvents = recruitmentPosts.slice(0, 2)
 
   return (
@@ -146,7 +147,7 @@ export default async function Home() {
               すべて見る →
             </Link>
           </div>
-          {posts.length === 0 ? (
+          {featuredPosts.length === 0 ? (
             <div className="mt-6 rounded-2xl bg-gray-50 p-6 text-center text-gray-500">
               まだ活動記録がありません。最初の投稿をしてみましょう！
             </div>
@@ -160,6 +161,7 @@ export default async function Home() {
                     userMap[post.authorId]?.avatar ??
                     userNameMap[post.author.toLowerCase()]?.avatar
                   }
+                  showTypeBadge={false}
                 />
               ))}
             </div>

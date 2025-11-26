@@ -36,7 +36,7 @@ export default function EventCard({ post }: EventCardProps) {
     : { backgroundImage: gradient }
 
   const handleClick = () => {
-    router.push(`/posts/${post.id}`)
+    router.push(`/events/${post.id}`)
   }
 
   return (
@@ -51,7 +51,12 @@ export default function EventCard({ post }: EventCardProps) {
             {post.category || '募集投稿'}
           </span>
           <span className="text-sm font-semibold">
-            {eventDate.toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' })}
+            {post.eventDate
+              ? new Date(post.eventDate).toLocaleDateString('ja-JP', {
+                  month: 'short',
+                  day: 'numeric',
+                })
+              : eventDate.toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' })}
           </span>
         </div>
         <div>
@@ -61,6 +66,19 @@ export default function EventCard({ post }: EventCardProps) {
             {post.location && <span>📍 {post.location}</span>}
             {post.organization && <span>👥 {post.organization}</span>}
           </div>
+          {post.contact && (
+            <div className="mt-2 text-sm">
+              <a
+                href={post.contact.startsWith('http') ? post.contact : `https://${post.contact}`}
+                onClick={(e) => e.stopPropagation()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 font-semibold text-white hover:underline"
+              >
+                🔗 連絡先
+              </a>
+            </div>
+          )}
           <div className="mt-3 flex items-center justify-between text-sm font-semibold">
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1">

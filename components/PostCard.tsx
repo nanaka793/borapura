@@ -9,6 +9,11 @@ interface PostCardProps {
   post: Post
 }
 
+const TYPE_BADGES: Record<string, { label: string; className: string }> = {
+  記録投稿: { label: '活動記録', className: 'bg-primary-100 text-primary-700' },
+  募集投稿: { label: 'ボランティア募集', className: 'bg-yellow-100 text-yellow-800' },
+}
+
 export default function PostCard({ post }: PostCardProps) {
   const router = useRouter()
 
@@ -26,9 +31,18 @@ export default function PostCard({ post }: PostCardProps) {
       onClick={handleCardClick}
       className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow p-6 cursor-pointer"
     >
-      {post.images && post.images.length > 0 && (
-        <div className="mb-4 overflow-hidden rounded-xl border border-gray-100">
-          <div className="relative h-48 w-full">
+      <div className="mb-4 rounded-xl border border-gray-100 overflow-hidden relative">
+        <div className="absolute right-3 top-3 z-10">
+          <span
+            className={`inline-flex items-center rounded-full px-4 py-1.5 text-sm font-semibold ${
+              TYPE_BADGES[post.type || '記録投稿']?.className || 'bg-gray-100 text-gray-600'
+            }`}
+          >
+            {TYPE_BADGES[post.type || '記録投稿']?.label || post.type || '記録投稿'}
+          </span>
+        </div>
+        <div className="relative h-48 w-full bg-gray-50">
+          {post.images && post.images.length > 0 ? (
             <Image
               src={post.images[0]}
               alt={`${post.title} の写真`}
@@ -36,12 +50,14 @@ export default function PostCard({ post }: PostCardProps) {
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               className="object-cover"
             />
-          </div>
+          ) : (
+            <div className="h-full w-full bg-gradient-to-br from-gray-100 to-gray-200" />
+          )}
         </div>
-      )}
+      </div>
       <div className="flex items-start justify-between mb-4">
-        <div>
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">{post.title}</h3>
+        <div className="space-y-2">
+          <h3 className="text-2xl font-bold text-gray-800">{post.title}</h3>
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <button
               type="button"
@@ -53,12 +69,14 @@ export default function PostCard({ post }: PostCardProps) {
             <span>•</span>
             <span>{new Date(post.createdAt).toLocaleDateString('ja-JP')}</span>
           </div>
+          {post.category && (
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
+                {post.category}
+              </span>
+            </div>
+          )}
         </div>
-        {post.category && (
-          <span className="px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold">
-            {post.category}
-          </span>
-        )}
       </div>
       <p className="text-gray-600 mb-4 line-clamp-3">{post.content}</p>
       {post.location && (

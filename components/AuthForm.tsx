@@ -23,8 +23,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const submitForm = async () => {
     setLoading(true)
     setError(null)
 
@@ -56,8 +55,14 @@ export default function AuthForm({ mode }: AuthFormProps) {
     }
   }
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    await submitForm()
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} method="post" className="space-y-6" autoComplete="off">
       {mode === 'register' && (
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">お名前</label>

@@ -25,12 +25,34 @@ function getGradient(key: string) {
 interface PostGalleryCardProps {
   post: Post
   authorAvatar?: string
+  showTypeBadge?: boolean
 }
 
-export default function PostGalleryCard({ post, authorAvatar }: PostGalleryCardProps) {
+const TYPE_BADGES: Record<
+  string,
+  { label: string; className: string; bgOverlay: string }
+> = {
+  募集投稿: {
+    label: 'ボランティア募集',
+    className: 'bg-yellow-200/80 text-yellow-900',
+    bgOverlay: 'from-black/80 via-black/40 to-transparent',
+  },
+  記録投稿: {
+    label: '活動記録',
+    className: 'bg-primary-200/80 text-primary-900',
+    bgOverlay: 'from-black/70 via-black/30 to-transparent',
+  },
+}
+
+export default function PostGalleryCard({
+  post,
+  authorAvatar,
+  showTypeBadge = true,
+}: PostGalleryCardProps) {
   const router = useRouter()
   const gradient = getGradient(post.category || post.id)
   const previewImage = post.images && post.images.length > 0 ? post.images[0] : null
+  const typeInfo = TYPE_BADGES[post.type || '記録投稿'] || TYPE_BADGES['記録投稿']
 
   const handleCardClick = () => {
     router.push(`/posts/${post.id}`)
@@ -46,6 +68,15 @@ export default function PostGalleryCard({ post, authorAvatar }: PostGalleryCardP
       onClick={handleCardClick}
       className="group relative block aspect-[4/5] overflow-hidden rounded-[32px] shadow-lg transition hover:-translate-y-1 hover:shadow-2xl cursor-pointer"
     >
+      {showTypeBadge && (
+        <div className="absolute right-4 top-4 z-10">
+          <span
+            className={`inline-flex items-center rounded-full px-4 py-1.5 text-sm font-semibold backdrop-blur ${typeInfo.className}`}
+          >
+            {typeInfo.label}
+          </span>
+        </div>
+      )}
       {previewImage ? (
         <>
           <Image
@@ -56,7 +87,7 @@ export default function PostGalleryCard({ post, authorAvatar }: PostGalleryCardP
             className="object-cover"
             priority={false}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+          <div className={`absolute inset-0 bg-gradient-to-t ${typeInfo.bgOverlay}`} />
         </>
       ) : (
         <div
@@ -75,9 +106,9 @@ export default function PostGalleryCard({ post, authorAvatar }: PostGalleryCardP
             >
               {post.author}
             </button>
-            {(post.type || post.category) && (
+            {post.category && (
               <span className="text-xs uppercase tracking-widest text-white/80">
-                {post.type || post.category}
+                {post.category}
               </span>
             )}
           </div>

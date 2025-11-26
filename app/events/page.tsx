@@ -1,6 +1,6 @@
-import EventCard from '@/components/EventCard'
 import Link from 'next/link'
 import { getRecruitmentPosts } from '@/lib/data'
+import EventGridSection from '@/components/EventGridSection'
 
 export const dynamic = 'force-dynamic'
 
@@ -43,11 +43,7 @@ export default async function EventsPage() {
             </p>
           </div>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-            {events.map((event) => (
-              <EventCard key={event.id} post={event} />
-            ))}
-          </div>
+          <EventGridSection posts={events} />
         )}
       </div>
     </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Post } from '@/lib/types'
@@ -13,10 +13,67 @@ interface PostDetailProps {
   authorAvatar?: string
 }
 
+function removeUrlsFromText(text: string): string {
+  // URLパターンと「【連絡先】」ラベルを削除しつつ改行は保持
+  let cleaned = text
+    .replace(/https?:\/\/[^\s\n]+/g, '') // http:// または https:// で始まるURL（改行は除く）
+    .replace(/www\.[^\s\n]+/g, '') // www. で始まるURL（改行は除く）
+    .replace(/【連絡先】[^\n]*/g, '') // 「【連絡先】」とその行の内容を削除
+    .replace(/\n\s*\n+/g, '\n') // 連続する空行（改行のみ、または空白のみの行）を1つに
+    .replace(/[ \t]+/g, ' ') // 連続するスペースやタブを1つに（改行は保持）
+    .replace(/^\n+|\n+$/g, '') // 先頭と末尾の空行を削除
+    .trim()
+  return cleaned
+}
+
 export default function PostDetail({ post, authorAvatar }: PostDetailProps) {
   const router = useRouter()
   const [likes, setLikes] = useState(post.likes)
   const [isLiked, setIsLiked] = useState(false)
+  const cleanedContent = removeUrlsFromText(post.content)
+  const displayTags =
+    (post.tags && post.tags.length > 0 ? post.tags : post.category ? [post.category] : []).filter(
+      Boolean
+    )
+  
+  // デバッグ用: contactフィールドの値を確認
+  if (typeof window !== 'undefined') {
+    console.log('Post contact:', post.contact)
+  }
+
+  const filteredContent = useMemo(() => {
+    let seenPeriod = false
+    return cleanedContent
+      .split('\n')
+      .filter((line) => {
+        const trimmed = line.trim()
+        if (!trimmed) {
+          return true
+        }
+        if (
+          trimmed.startsWith('【開催日時】') ||
+          trimmed.startsWith('【開催場所】')
+        ) {
+          return false
+        }
+        if (trimmed.startsWith('【申込締切】')) {
+          if (seenPeriod) return false
+          seenPeriod = true
+          return true
+        }
+        return true
+      })
+      .join('\n')
+  }, [cleanedContent])
+
+  const eventDateObj = post.eventDate ? new Date(post.eventDate) : null
+  const formattedEventDate = eventDateObj
+    ? `${eventDateObj.toLocaleDateString('ja-JP')} ${eventDateObj.toLocaleTimeString('ja-JP', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      })}`
+    : null
 
   const handleLike = async () => {
     try {
@@ -55,16 +112,27 @@ export default function PostDetail({ post, authorAvatar }: PostDetailProps) {
               </div>
             </div>
           </div>
-          {post.category && (
-            <span className="px-4 py-2 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold">
-              {post.category}
-            </span>
-          )}
-        </div>
-        {post.location && (
-          <p className="text-gray-600 mb-4">📍 {post.location}</p>
+        {displayTags.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {displayTags.map((tag) => (
+              <span
+                key={tag}
+                className="px-4 py-2 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
         )}
+        </div>
       </div>
+
+      {(formattedEventDate || post.location) && (
+        <div className="mb-4 space-y-1 text-gray-600">
+          {formattedEventDate && <p>📅 {formattedEventDate}</p>}
+          {post.location && <p>📍 {post.location}</p>}
+        </div>
+      )}
 
       {post.images && post.images.length > 0 && (
         <div className="mb-8 grid gap-4 sm:grid-cols-2">
@@ -84,9 +152,23 @@ export default function PostDetail({ post, authorAvatar }: PostDetailProps) {
 
       <div className="prose max-w-none mb-8">
         <p className="text-gray-700 whitespace-pre-wrap leading-relaxed text-lg">
-          {post.content}
+          {filteredContent}
         </p>
       </div>
+
+      {post.contact && post.contact.trim() && (
+        <div className="mb-8 rounded-2xl border border-primary-200 bg-primary-50 p-6 text-center">
+          <p className="text-sm font-semibold text-primary-700">参加希望・お問い合わせ</p>
+          <a
+            href={post.contact.startsWith('http') ? post.contact : `https://${post.contact}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-flex items-center justify-center rounded-full bg-primary-600 px-6 py-3 text-white text-lg font-semibold shadow hover:bg-primary-700 transition"
+          >
+            参加希望・お問い合わせはこちら
+          </a>
+        </div>
+      )}
 
       <div className="flex items-center gap-6 mb-8 pb-8 border-b">
         <button
