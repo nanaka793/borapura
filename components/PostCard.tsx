@@ -7,14 +7,15 @@ import { Post } from '@/lib/types'
 
 interface PostCardProps {
   post: Post
+  chapterNumber?: number
 }
 
 const TYPE_BADGES: Record<string, { label: string; className: string }> = {
-  記録投稿: { label: '活動記録', className: 'bg-primary-100 text-primary-700' },
+  記録投稿: { label: '冒険日誌', className: 'bg-primary-100 text-primary-700' },
   募集投稿: { label: 'ボランティア募集', className: 'bg-yellow-100 text-yellow-800' },
 }
 
-export default function PostCard({ post }: PostCardProps) {
+export default function PostCard({ post, chapterNumber }: PostCardProps) {
   const router = useRouter()
 
   const handleCardClick = () => {
@@ -57,6 +58,9 @@ export default function PostCard({ post }: PostCardProps) {
       </div>
       <div className="flex items-start justify-between mb-4">
         <div className="space-y-2">
+          {chapterNumber !== undefined && (
+            <p className="text-lg font-semibold text-primary-600">第{chapterNumber}章</p>
+          )}
           <h3 className="text-2xl font-bold text-gray-800">{post.title}</h3>
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <button

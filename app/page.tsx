@@ -70,7 +70,7 @@ export default async function Home() {
               href="/posts"
               className="rounded-full bg-primary-600 px-6 py-3 font-semibold text-white shadow-lg hover:bg-primary-700"
             >
-              活動記録を読む
+              冒険日誌を読む
             </Link>
             <Link
               href="/events"
@@ -111,7 +111,7 @@ export default async function Home() {
       {/* Activity Records CTA + Latest posts */}
       <section className="mt-12 grid gap-8 lg:grid-cols-2">
         <div className="rounded-3xl bg-gradient-to-r from-primary-600 to-primary-500 p-8 text-white shadow-lg">
-          <h2 className="text-3xl font-bold">活動記録ページへ</h2>
+          <h2 className="text-3xl font-bold">冒険日誌ページへ</h2>
           <p className="mt-4 text-white/90">
             活動の準備、現場での気づき、達成感。あなたのストーリーが、これからの参加者の力になります。
           </p>
@@ -137,7 +137,7 @@ export default async function Home() {
                 Latest Entries
               </p>
               <h2 className="text-3xl font-bold text-gray-900">
-                新着の活動記録
+                新着の冒険日誌
               </h2>
             </div>
             <Link
@@ -149,7 +149,7 @@ export default async function Home() {
           </div>
           {featuredPosts.length === 0 ? (
             <div className="mt-6 rounded-2xl bg-gray-50 p-6 text-center text-gray-500">
-              まだ活動記録がありません。最初の投稿をしてみましょう！
+              まだ冒険日誌がありません。最初の投稿をしてみましょう！
             </div>
           ) : (
             <div className="mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">

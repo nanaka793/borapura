@@ -14,7 +14,7 @@ export default function PostForm({ currentUser }: PostFormProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const MAX_IMAGES = 5
+  const MAX_IMAGES = 10
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -150,7 +150,7 @@ export default function PostForm({ currentUser }: PostFormProps) {
 
       <div className="mb-6">
         <label className="block text-sm font-semibold text-gray-700 mb-2">
-          活動写真（最大5枚）
+          活動写真（最大10枚）
         </label>
         <input
           type="file"
@@ -162,7 +162,7 @@ export default function PostForm({ currentUser }: PostFormProps) {
 
             const availableSlots = Math.max(0, MAX_IMAGES - images.length)
             if (availableSlots === 0) {
-              setError('画像は最大5枚までアップロードできます。')
+              setError('画像は最大10枚までアップロードできます。')
               e.target.value = ''
               return
             }
@@ -174,7 +174,7 @@ export default function PostForm({ currentUser }: PostFormProps) {
             setImagePreviews((prev) => [...prev, ...newPreviews])
 
             if (selectedFiles.length > usableFiles.length) {
-              setError('画像は最大5枚までアップロードできます。')
+              setError('画像は最大10枚までアップロードできます。')
             } else {
               setError(null)
             }

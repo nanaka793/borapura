@@ -10,7 +10,7 @@ export default function RegisterPage() {
         </p>
         <h1 className="text-3xl font-bold text-gray-900">新規登録</h1>
         <p className="mt-2 text-gray-600">
-          マイページでプロフィールを設定し、自分の活動記録をまとめて管理できます。
+          マイページでプロフィールを設定し、自分の冒険日誌をまとめて管理できます。
         </p>
 
         <div className="mt-8">

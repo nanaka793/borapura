@@ -11,7 +11,7 @@ export default async function NewPostPage() {
         <div className="mx-auto max-w-2xl rounded-3xl bg-white p-10 text-center shadow-lg">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">ログインしてください</h1>
           <p className="text-gray-600 mb-6">
-            活動記録を投稿するには、マイページ用のアカウントが必要です。
+            冒険日誌を投稿するには、マイページ用のアカウントが必要です。
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
@@ -35,7 +35,7 @@ export default async function NewPostPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-800 mb-8">活動記録を投稿</h1>
+        <h1 className="text-4xl font-bold text-gray-800 mb-8">冒険日誌を投稿</h1>
         <PostForm currentUser={{ id: currentUser.id, name: currentUser.name }} />
       </div>
     </div>

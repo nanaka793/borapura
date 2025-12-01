@@ -28,9 +28,9 @@ export default async function PostsPage() {
           <p className="text-sm font-semibold uppercase tracking-widest text-primary-600">
             Activity Stories
           </p>
-          <h1 className="text-4xl font-bold text-gray-900">活動記録ページ</h1>
+          <h1 className="text-4xl font-bold text-gray-900">冒険日誌ページ</h1>
           <p className="mt-4 text-lg text-gray-600">
-            一人ひとりの想いと行動が、次のボランティアを生み出します。活動記録を通して新しい発見や仲間に出会いましょう。
+            一人ひとりの想いと行動が、次のボランティアを生み出します。冒険日誌を通して新しい発見や仲間に出会いましょう。
           </p>
           <Link
             href="/posts/new"
@@ -43,7 +43,7 @@ export default async function PostsPage() {
         {activityPosts.length === 0 ? (
           <div className="rounded-3xl bg-white p-10 text-center shadow-lg">
             <p className="text-gray-500">
-              まだ活動記録がありません。最初の記録を投稿してみましょう！
+              まだ冒険日誌がありません。最初の記録を投稿してみましょう！
             </p>
           </div>
         ) : (

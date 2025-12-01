@@ -12,9 +12,9 @@ export default async function MyPage() {
   }
 
   const posts = await getPosts()
-  const userPosts = posts.filter(
-    (post) => post.authorId === currentUser.id || post.author === currentUser.name
-  )
+  const userPosts = posts
+    .filter((post) => post.authorId === currentUser.id || post.author === currentUser.name)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
   const { passwordHash: _passwordHash, ...safeUser } = currentUser
 
   return (
@@ -54,19 +54,26 @@ export default async function MyPage() {
 
         <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="rounded-3xl bg-white p-8 shadow-md">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">投稿した活動記録</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              投稿した冒険日誌
+              {userPosts.length > 0 && (
+                <span className="ml-3 text-lg font-normal text-gray-600">
+                  {userPosts.length}ページ
+                </span>
+              )}
+            </h2>
             {userPosts.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-gray-200 p-6 text-center text-gray-500">
                 まだ投稿がありません。<br />
                 <a href="/posts/new" className="text-primary-600 underline">
-                  活動記録を投稿
+                  冒険日誌を投稿
                 </a>
                 してみましょう。
               </div>
             ) : (
               <div className="space-y-6">
-                {userPosts.map((post) => (
-                  <PostCard key={post.id} post={post} />
+                {userPosts.map((post, index) => (
+                  <PostCard key={post.id} post={post} chapterNumber={userPosts.length - index} />
                 ))}
               </div>
             )}

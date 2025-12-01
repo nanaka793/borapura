@@ -18,7 +18,7 @@ const CATEGORY_OPTIONS = [
   'その他',
 ]
 
-const MAX_IMAGES = 5
+const MAX_IMAGES = 10
 
 export default function EventForm() {
   const router = useRouter()
@@ -68,7 +68,7 @@ export default function EventForm() {
 
     const availableSlots = Math.max(0, MAX_IMAGES - images.length)
     if (availableSlots === 0) {
-      setError('画像は最大5枚までアップロードできます。')
+      setError('画像は最大10枚までアップロードできます。')
       e.target.value = ''
       return
     }
@@ -80,7 +80,7 @@ export default function EventForm() {
     setPreviews((prev) => [...prev, ...newPreviews])
 
     if (files.length > usableFiles.length) {
-      setError('画像は最大5枚までアップロードできます。')
+      setError('画像は最大10枚までアップロードできます。')
     } else {
       setError(null)
     }
@@ -322,7 +322,7 @@ export default function EventForm() {
           />
         </div>
         <div>
-          <label className="mb-2 block text-sm font-semibold text-gray-700">連絡先 *</label>
+          <label className="mb-2 block text-sm font-semibold text-gray-700">申込・問い合わせ先 *</label>
           <input
             type="text"
             name="contact"
@@ -330,14 +330,14 @@ export default function EventForm() {
             onChange={handleChange}
             required
             className="w-full rounded-2xl border border-gray-300 px-4 py-3 focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
-            placeholder="メールアドレスやURLなど"
+            placeholder="SNSやホームページ、応募フォームのURL"
           />
         </div>
       </div>
 
       <div>
         <label className="mb-2 block text-sm font-semibold text-gray-700">
-          写真（JPG/PNG, 最大5枚）
+          写真（JPG/PNG, 最大10枚）
         </label>
         <input
           type="file"

@@ -38,7 +38,7 @@ const TYPE_BADGES: Record<
     bgOverlay: 'from-black/80 via-black/40 to-transparent',
   },
   記録投稿: {
-    label: '活動記録',
+    label: '冒険日誌',
     className: 'bg-primary-200/80 text-primary-900',
     bgOverlay: 'from-black/70 via-black/30 to-transparent',
   },

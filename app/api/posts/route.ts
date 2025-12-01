@@ -85,9 +85,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (imageFiles.length > 5) {
+    if (imageFiles.length > 10) {
       return NextResponse.json(
-        { error: '画像は最大5枚までアップロードできます。' },
+        { error: '画像は最大10枚までアップロードできます。' },
         { status: 400 }
       )
     }

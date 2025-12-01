@@ -25,7 +25,7 @@ export default async function EventsPage() {
               href="/posts"
               className="rounded-full border border-primary-200 px-6 py-3 font-semibold text-primary-700 hover:bg-white"
             >
-              活動記録を読む
+              冒険日誌を読む
             </Link>
             <Link
               href="/events/new"

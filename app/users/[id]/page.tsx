@@ -17,7 +17,9 @@ export default async function UserProfilePage({ params }: PageProps) {
   }
 
   const posts = await getPosts()
-  const userPosts = posts.filter((p) => p.authorId === id || p.author === user.name)
+  const userPosts = posts
+    .filter((p) => p.authorId === id || p.author === user.name)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -75,15 +77,22 @@ export default async function UserProfilePage({ params }: PageProps) {
           </div>
         </div>
 
-        <h2 className="text-3xl font-bold text-gray-800 mb-6">投稿一覧</h2>
+        <h2 className="text-3xl font-bold text-gray-800 mb-6">
+          冒険日誌
+          {userPosts.length > 0 && (
+            <span className="ml-3 text-xl font-normal text-gray-600">
+              {userPosts.length}ページ
+            </span>
+          )}
+        </h2>
         {userPosts.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-gray-200 p-6 text-center text-gray-500">
             まだ投稿がありません。
           </div>
         ) : (
           <div className="space-y-6">
-            {userPosts.map((post) => (
-              <PostCard key={post.id} post={post} />
+            {userPosts.map((post, index) => (
+              <PostCard key={post.id} post={post} chapterNumber={userPosts.length - index} />
             ))}
           </div>
         )}

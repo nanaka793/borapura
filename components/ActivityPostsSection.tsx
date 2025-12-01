@@ -34,7 +34,7 @@ export default function ActivityPostsSection({ posts }: ActivityPostsSectionProp
       <TagFilterBar tags={availableTags} selectedTag={selectedTag} onSelect={handleTagSelect} />
       {filteredPosts.length === 0 ? (
         <div className="rounded-3xl bg-white/70 p-10 text-center shadow-inner">
-          <p className="text-gray-500">このタグの活動記録はまだありません。</p>
+          <p className="text-gray-500">このタグの冒険日誌はまだありません。</p>
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">

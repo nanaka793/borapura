@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'ボランティアプラットフォーム',
-  description: 'ボランティア同士がつながり、活動記録を共有するプラットフォーム',
+  description: 'ボランティア同士がつながり、冒険日誌を共有するプラットフォーム',
 }
 
 export default function RootLayout({
