@@ -2,6 +2,8 @@ import { getPosts, getUser } from '@/lib/data'
 import { notFound } from 'next/navigation'
 import PostCard from '@/components/PostCard'
 import Avatar from '@/components/Avatar'
+import { getCurrentUser } from '@/lib/auth'
+import FriendButton from '@/components/FriendButton'
 
 interface PageProps {
   params: Promise<{
@@ -16,6 +18,8 @@ export default async function UserProfilePage({ params }: PageProps) {
     notFound()
   }
 
+  const currentUser = await getCurrentUser()
+
   const posts = await getPosts()
   const userPosts = posts
     .filter((p) => p.authorId === id || p.author === user.name)
@@ -25,12 +29,21 @@ export default async function UserProfilePage({ params }: PageProps) {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col md:flex-row md:items-start gap-6">
             <Avatar src={user.avatar} name={user.name} size="lg" />
             <div className="flex-1">
-              <h1 className="text-4xl font-bold text-primary-600 mb-4">
-                {user.name}
-              </h1>
+              <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <h1 className="text-4xl font-bold text-primary-600">
+                  {user.name}
+                </h1>
+                {currentUser && (
+                  <FriendButton
+                    currentUserId={currentUser.id}
+                    targetUserId={user.id}
+                    initialIsFriend={currentUser.friends?.includes(user.id) ?? false}
+                  />
+                )}
+              </div>
               {user.badge && (
                 <span className="inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-sm font-semibold text-primary-600 mb-3">
                   {user.badge}
@@ -71,7 +84,6 @@ export default async function UserProfilePage({ params }: PageProps) {
                   </a>
                 </div>
               )}
-
               <p className="text-gray-600 text-lg mt-4">投稿数: {userPosts.length}件</p>
             </div>
           </div>

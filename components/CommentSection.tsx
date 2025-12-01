@@ -200,7 +200,7 @@ export default function CommentSection({ postId, comments: initialComments }: Co
 
   return (
     <div>
-      <h3 className="text-2xl font-bold text-gray-800 mb-6">コメント</h3>
+      <h3 className="text-2xl font-bold text-gray-800 mb-6">冒険者の声</h3>
 
       <form onSubmit={handleSubmit} className="mb-8">
         <div className="mb-4">

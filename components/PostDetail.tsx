@@ -4,6 +4,7 @@ import { useMemo, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Post } from '@/lib/types'
+import BookmarkButton from './BookmarkButton'
 import CommentSection from './CommentSection'
 import Link from 'next/link'
 import Avatar from './Avatar'
@@ -11,6 +12,8 @@ import Avatar from './Avatar'
 interface PostDetailProps {
   post: Post
   authorAvatar?: string
+  canBookmark?: boolean
+  initialBookmarked?: boolean
 }
 
 function removeUrlsFromText(text: string): string {
@@ -26,13 +29,22 @@ function removeUrlsFromText(text: string): string {
   return cleaned
 }
 
-export default function PostDetail({ post, authorAvatar }: PostDetailProps) {
+export default function PostDetail({
+  post,
+  authorAvatar,
+  canBookmark = false,
+  initialBookmarked = false,
+}: PostDetailProps) {
   const router = useRouter()
+  const REACTIONS = ['⚔️', '🛡️', '🚀', '🌟', '🌈', '🤝', '🔥', '💛', '🎉'] as const
   const [likes, setLikes] = useState(post.likes)
-  const [isLiked, setIsLiked] = useState(false)
+  const [reactions, setReactions] = useState<Record<string, number>>(
+    () => post.reactions || {}
+  )
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [imageAspectRatio, setImageAspectRatio] = useState<number | null>(null)
   const cleanedContent = removeUrlsFromText(post.content)
+  const isRecruitment = post.type === '募集投稿'
   const displayTags =
     (post.tags && post.tags.length > 0 ? post.tags : post.category ? [post.category] : []).filter(
       Boolean
@@ -83,6 +95,36 @@ export default function PostDetail({ post, authorAvatar }: PostDetailProps) {
       .join('\n')
   }, [cleanedContent])
 
+  const { descriptionHtml, metaHtml } = useMemo(() => {
+    const metaLabels = ['【主催】', '【募集人数】', '【参加費】', '【申込締切】']
+    const lines = filteredContent.split('\n')
+
+    const firstMetaIndex = lines.findIndex((line) => {
+      const trimmed = line.trim()
+      if (!trimmed) return false
+      return metaLabels.some((label) => trimmed.startsWith(label))
+    })
+
+    const descriptionLines =
+      firstMetaIndex === -1 ? lines : lines.slice(0, firstMetaIndex)
+    const metaLines = firstMetaIndex === -1 ? [] : lines.slice(firstMetaIndex)
+
+    const emphasizeAndConvert = (text: string) => {
+      if (!text.trim()) return ''
+      let html = text
+      metaLabels.forEach((label) => {
+        const re = new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')
+        html = html.replace(re, `<strong>${label}</strong>`)
+      })
+      return html.replace(/\n/g, '<br />')
+    }
+
+    return {
+      descriptionHtml: emphasizeAndConvert(descriptionLines.join('\n')),
+      metaHtml: emphasizeAndConvert(metaLines.join('\n')),
+    }
+  }, [filteredContent])
+
   const eventDateObj = post.eventDate ? new Date(post.eventDate) : null
   const formattedEventDate = eventDateObj
     ? `${eventDateObj.toLocaleDateString('ja-JP')} ${eventDateObj.toLocaleTimeString('ja-JP', {
@@ -92,62 +134,97 @@ export default function PostDetail({ post, authorAvatar }: PostDetailProps) {
       })}`
     : null
 
-  const handleLike = async () => {
+  const handleReaction = async (reaction: string) => {
     try {
       const response = await fetch(`/api/posts/${post.id}/like`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ reaction }),
       })
 
-      if (response.ok) {
-        setIsLiked(!isLiked)
-        setLikes(isLiked ? likes - 1 : likes + 1)
+      if (!response.ok) return
+      const data = await response.json()
+      if (typeof data.likes === 'number') {
+        setLikes(data.likes)
+      }
+      if (data.reactions && typeof data.reactions === 'object') {
+        setReactions(data.reactions as Record<string, number>)
       }
     } catch (error) {
-      console.error('Error liking post:', error)
+      console.error('Error sending reaction:', error)
     }
   }
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 md:p-8">
       <div className="mb-4 sm:mb-6">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
-          <div className="flex items-start gap-3 sm:gap-4">
-            <Avatar src={authorAvatar} name={post.author} size="md" />
-            <div className="flex-1 min-w-0">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-2 sm:mb-4 break-words">
-                {post.title}
-              </h1>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 mb-2 sm:mb-4">
-                <Link
-                  href={`/users/${post.authorId}`}
-                  className="font-semibold text-primary-600 text-base sm:text-lg hover:underline"
-                >
-                  {post.author}
-                </Link>
-                <span className="hidden sm:inline">•</span>
-                <span>{new Date(post.createdAt).toLocaleString('ja-JP')}</span>
+        <div className="flex flex-col gap-3 sm:gap-4 mb-4">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div className="flex items-start gap-3 sm:gap-4">
+              <Avatar src={authorAvatar} name={post.author} size="md" />
+              <div className="flex-1 min-w-0">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-2 sm:mb-4 break-words">
+                  {post.title}
+                </h1>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
+                  <Link
+                    href={`/users/${post.authorId}`}
+                    className="font-semibold text-primary-600 text-base sm:text-lg hover:underline"
+                  >
+                    {post.author}
+                  </Link>
+                  <span className="hidden sm:inline">•</span>
+                  <span>{new Date(post.createdAt).toLocaleString('ja-JP')}</span>
+                </div>
               </div>
             </div>
+            {isRecruitment && canBookmark && (
+              <div className="self-start">
+                <BookmarkButton
+                  postId={post.id}
+                  initialBookmarked={initialBookmarked}
+                />
+              </div>
+            )}
           </div>
-        {displayTags.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {displayTags.map((tag) => (
-              <span
-                key={tag}
-                className="px-3 py-1 sm:px-4 sm:py-2 bg-primary-100 text-primary-700 rounded-full text-xs sm:text-sm font-semibold"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
+          {displayTags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {displayTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-3 py-1 sm:px-4 sm:py-2 bg-primary-100 text-primary-700 rounded-full text-xs sm:text-sm font-semibold"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      {(formattedEventDate || post.location) && (
-        <div className="mb-4 sm:mb-6 space-y-1 text-sm sm:text-base text-gray-600">
-          {formattedEventDate && <p>📅 {formattedEventDate}</p>}
-          {post.location && <p>📍 {post.location}</p>}
+      {(formattedEventDate || post.location || (isRecruitment && post.subtitle)) && (
+        <div className="mb-4 sm:mb-6 space-y-2 text-base sm:text-lg text-gray-700">
+          {isRecruitment && post.subtitle && (
+            <p className="font-semibold text-primary-700">
+              【ミッション】{post.subtitle}
+            </p>
+          )}
+          {formattedEventDate && (
+            <p>
+              <span className="mr-1">📅</span>
+              <span className="mr-2 font-semibold">開催日時</span>
+              <span>{formattedEventDate}</span>
+            </p>
+          )}
+          {post.location && (
+            <p>
+              <span className="mr-1">📍</span>
+              <span className="mr-2 font-semibold">開催場所</span>
+              <span>{post.location}</span>
+            </p>
+          )}
         </div>
       )}
 
@@ -199,40 +276,76 @@ export default function PostDetail({ post, authorAvatar }: PostDetailProps) {
         </div>
       )}
 
-      <div className="prose max-w-none mb-6 sm:mb-8">
-        <p className="text-gray-700 whitespace-pre-wrap leading-relaxed text-base sm:text-lg">
-          {filteredContent}
-        </p>
-      </div>
+      {(descriptionHtml || metaHtml) && (
+        <div className="max-w-none mb-6 sm:mb-8">
+          <h2 className="mb-3 text-base sm:text-lg font-semibold text-gray-800">クエスト内容</h2>
+          {descriptionHtml && (
+            <p
+              className="text-gray-700 leading-relaxed text-base sm:text-lg"
+              dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+            />
+          )}
+          {metaHtml && (
+            <p
+              className="mt-4 text-gray-700 leading-relaxed text-base sm:text-lg"
+              dangerouslySetInnerHTML={{ __html: metaHtml }}
+            />
+          )}
+        </div>
+      )}
+
+      {isRecruitment && post.styles && post.styles.length > 0 && (
+        <div className="mb-6 sm:mb-8">
+          <h2 className="mb-2 text-base sm:text-lg font-semibold text-gray-800">募集要件</h2>
+          <div className="flex flex-wrap gap-2">
+            {post.styles.map((style) => (
+              <span
+                key={style}
+                className="inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-xs sm:text-sm font-semibold text-primary-700"
+              >
+                {style}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {post.contact && post.contact.trim() && (
         <div className="mb-6 sm:mb-8 rounded-xl sm:rounded-2xl border border-primary-200 bg-primary-50 p-4 sm:p-6 text-center">
           <p className="text-xs sm:text-sm font-semibold text-primary-700">冒険の始まりはあなたの一歩から！</p>
-          <a
-            href={post.contact.startsWith('http') ? post.contact : `https://${post.contact}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-3 inline-flex items-center justify-center rounded-full bg-primary-600 px-4 py-2 sm:px-6 sm:py-3 text-white text-sm sm:text-base md:text-lg font-semibold shadow hover:bg-primary-700 active:bg-primary-800 transition"
-          >
-            この冒険に参加する（各団体サイトへ移動）
-          </a>
+          <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center sm:gap-4">
+            <a
+              href={post.contact.startsWith('http') ? post.contact : `https://${post.contact}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-full bg-primary-600 px-4 py-2 sm:px-6 sm:py-3 text-white text-sm sm:text-base md:text-lg font-semibold shadow hover:bg-primary-700 active:bg-primary-800 transition"
+            >
+              この冒険に参加する（各団体サイトへ移動）
+            </a>
+          </div>
         </div>
       )}
 
-      <div className="flex items-center gap-4 sm:gap-6 mb-6 sm:mb-8 pb-6 sm:pb-8 border-b">
-        <button
-          onClick={handleLike}
-          className={`flex items-center gap-2 px-3 py-2 sm:px-4 rounded-lg transition-colors active:scale-95 ${
-            isLiked
-              ? 'bg-red-100 text-red-600'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200 active:bg-gray-300'
-          }`}
-        >
-          <span className="text-lg sm:text-xl">{isLiked ? '❤️' : '🤍'}</span>
-          <span className="text-sm sm:text-base font-semibold">{likes}</span>
-        </button>
-        <div className="text-sm sm:text-base text-gray-600">
-          💬 {post.comments?.length || 0} コメント
+      <div className="mb-6 sm:mb-8 pb-6 sm:pb-8 border-b space-y-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          {REACTIONS.map((emoji) => {
+            const count = reactions[emoji] || 0
+            return (
+              <button
+                key={emoji}
+                type="button"
+                onClick={() => handleReaction(emoji)}
+                className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-sm sm:text-base text-gray-700 hover:bg-primary-50 hover:text-primary-700 active:scale-95 transition"
+              >
+                <span className="text-base sm:text-lg">{emoji}</span>
+                <span className="text-xs sm:text-sm font-semibold">{count}</span>
+              </button>
+            )
+          })}
+        </div>
+        <div className="flex items-center justify-between text-sm sm:text-base text-gray-600">
+          <span>合計エール数: {likes}</span>
+          <span>💬 {post.comments?.length || 0} </span>
         </div>
       </div>
 

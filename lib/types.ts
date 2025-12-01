@@ -3,6 +3,8 @@ export interface Post {
   title: string
   type?: string
   content: string
+  subtitle?: string
+  styles?: string[]
   author: string
   authorId: string
   category?: string
@@ -17,6 +19,7 @@ export interface Post {
   createdAt: string
   updatedAt: string
   likes: number
+  reactions?: Record<string, number>
   comments: Comment[]
 }
 
@@ -47,6 +50,8 @@ export interface User {
   following: string[]
   followers: string[]
   badge?: string
+  friends?: string[]
+  nextSteps?: string[]
 }
 
 export interface Event {

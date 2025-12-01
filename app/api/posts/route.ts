@@ -30,6 +30,8 @@ export async function POST(request: NextRequest) {
     let cost = ''
     let period = ''
     let eventDateValue = ''
+    let subtitle = ''
+    let styles: string[] = []
     let tags: string[] = []
     let imageFiles: File[] = []
 
@@ -43,6 +45,18 @@ export async function POST(request: NextRequest) {
       postType = (formData.get('type') ?? '記録投稿').toString().trim() || '記録投稿'
       contact = (formData.get('contact') ?? '').toString().trim()
       cost = (formData.get('cost') ?? '').toString().trim()
+      subtitle = (formData.get('subtitle') ?? '').toString().trim()
+      const stylesValue = formData.get('styles')
+      if (typeof stylesValue === 'string' && stylesValue.trim()) {
+        try {
+          const parsed = JSON.parse(stylesValue)
+          if (Array.isArray(parsed)) {
+            styles = parsed.map((s: string) => s.toString().trim()).filter(Boolean)
+          }
+        } catch {
+          styles = []
+        }
+      }
       const tagsValue = formData.get('tags')
       if (typeof tagsValue === 'string' && tagsValue.trim()) {
         try {
@@ -71,6 +85,10 @@ export async function POST(request: NextRequest) {
       postType = (body.type ?? '記録投稿').toString().trim() || '記録投稿'
       contact = (body.contact ?? '').toString().trim()
       cost = (body.cost ?? '').toString().trim()
+      subtitle = (body.subtitle ?? '').toString().trim()
+      if (Array.isArray(body.styles)) {
+        styles = body.styles.map((s: string) => s.toString().trim()).filter(Boolean)
+      }
       if (Array.isArray(body.tags)) {
         tags = body.tags.map((tag: string) => tag.toString().trim()).filter(Boolean)
       }
@@ -103,6 +121,8 @@ export async function POST(request: NextRequest) {
       tags: tags.length > 0 ? tags : category ? [category] : undefined,
       location: location || undefined,
       organization: organization || undefined,
+      subtitle: subtitle || undefined,
+      styles: styles.length > 0 ? styles : undefined,
       contact: contact || undefined,
       cost: cost || undefined,
       period: period || undefined,

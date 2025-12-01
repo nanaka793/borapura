@@ -200,6 +200,19 @@ export default function Navbar() {
                 </Link>
               ))}
               {sessionUser && (
+                <Link
+                  href="/mypage#friends"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors ${
+                    isActive('/mypage')
+                      ? 'bg-emerald-100 text-emerald-700'
+                      : 'text-gray-600 hover:text-primary-600 hover:bg-gray-50'
+                  }`}
+                >
+                  旅の仲間リスト
+                </Link>
+              )}
+              {sessionUser && (
                 <button
                   onClick={() => {
                     handleLogout()

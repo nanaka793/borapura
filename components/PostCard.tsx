@@ -19,7 +19,11 @@ export default function PostCard({ post, chapterNumber }: PostCardProps) {
   const router = useRouter()
 
   const handleCardClick = () => {
-    router.push(`/posts/${post.id}`)
+    if (post.type === '募集投稿') {
+      router.push(`/events/${post.id}`)
+    } else {
+      router.push(`/posts/${post.id}`)
+    }
   }
 
   const handleAuthorClick = (e: MouseEvent<HTMLButtonElement>) => {
@@ -87,8 +91,8 @@ export default function PostCard({ post, chapterNumber }: PostCardProps) {
         <p className="text-sm text-gray-500 mb-2">📍 {post.location}</p>
       )}
       <div className="flex items-center gap-4 text-sm text-gray-500">
-        <span>💬 {post.comments?.length || 0} コメント</span>
-        <span>❤️ {post.likes || 0} いいね</span>
+        <span>💬 {post.comments?.length || 0} 冒険者の声</span>
+        <span>❤️ {post.likes || 0} エール</span>
       </div>
     </div>
   )

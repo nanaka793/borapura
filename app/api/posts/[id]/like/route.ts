@@ -12,14 +12,32 @@ export async function POST(
       return NextResponse.json({ error: '投稿が見つかりません' }, { status: 404 })
     }
 
-    post.likes += 1
-    await savePost(post)
+    let reaction = '💛'
+    try {
+      const body = await request.json()
+      if (body && typeof body.reaction === 'string') {
+        reaction = body.reaction
+      }
+    } catch {
+      // ボディなしでも動くようにする
+    }
 
-    return NextResponse.json({ likes: post.likes })
+    const reactions = { ...(post.reactions || {}) }
+    reactions[reaction] = (reactions[reaction] || 0) + 1
+
+    post.likes = (post.likes || 0) + 1
+    post.reactions = reactions
+
+    const { post: savedPost } = await savePost(post)
+
+    return NextResponse.json({
+      likes: savedPost.likes,
+      reactions: savedPost.reactions || {},
+    })
   } catch (error) {
-    console.error('Error liking post:', error)
+    console.error('Error reacting to post:', error)
     return NextResponse.json(
-      { error: 'いいねに失敗しました' },
+      { error: 'スタンプの送信に失敗しました' },
       { status: 500 }
     )
   }

@@ -67,10 +67,11 @@ export default function PostForm({ currentUser }: PostFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-8">
-      <div className="mb-6 rounded-2xl bg-primary-50 px-4 py-3 text-primary-700">
-        {currentUser.name} として投稿します
-      </div>
+    <>
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-8">
+        <div className="mb-6 rounded-2xl bg-primary-50 px-4 py-3 text-primary-700">
+          {currentUser.name} として投稿します
+        </div>
 
       {error && (
         <div className="mb-6 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-red-700">
@@ -217,23 +218,38 @@ export default function PostForm({ currentUser }: PostFormProps) {
         )}
       </div>
 
-      <div className="flex gap-4">
-        <button
-          type="submit"
-          disabled={loading}
-          className="flex-1 bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {loading ? '投稿中...' : '投稿する'}
-        </button>
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="px-6 py-3 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
-        >
-          キャンセル
-        </button>
-      </div>
-    </form>
+        <div className="flex gap-4">
+          <button
+            type="submit"
+            disabled={loading}
+            className="flex-1 bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? '投稿中...' : '投稿する'}
+          </button>
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="px-6 py-3 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            キャンセル
+          </button>
+        </div>
+      </form>
+
+      {loading && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40">
+          <div className="mx-4 max-w-sm rounded-2xl bg-white px-6 py-5 text-center shadow-xl">
+            <div className="mb-3 flex justify-center">
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />
+            </div>
+            <p className="text-base font-semibold text-gray-800">投稿中…</p>
+            <p className="mt-2 text-xs text-gray-500">
+              画面はこのままお待ちください。画像枚数が多いと時間がかかる場合があります。
+            </p>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
 

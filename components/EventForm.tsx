@@ -26,6 +26,7 @@ export default function EventForm() {
   const [error, setError] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     title: '',
+    subtitle: '',
     description: '',
     categories: [] as string[],
     location: '',
@@ -35,6 +36,7 @@ export default function EventForm() {
     slots: '',
     cost: '',
     period: '',
+    styles: [] as string[],
   })
   const [images, setImages] = useState<File[]>([])
   const [previews, setPreviews] = useState<string[]>([])
@@ -94,6 +96,16 @@ export default function EventForm() {
     setPreviews((prev) => prev.filter((_, idx) => idx !== index))
   }
 
+  const toggleStyle = (value: string) => {
+    setFormData((prev) => {
+      const exists = prev.styles.includes(value)
+      return {
+        ...prev,
+        styles: exists ? prev.styles.filter((v) => v !== value) : [...prev.styles, value],
+      }
+    })
+  }
+
   const composeContent = () => {
     const info: string[] = []
     if (formData.date) {
@@ -144,6 +156,9 @@ export default function EventForm() {
     try {
       const formPayload = new FormData()
       formPayload.set('title', formData.title)
+      if (formData.subtitle) {
+        formPayload.set('subtitle', formData.subtitle)
+      }
       formPayload.set('content', composeContent())
       if (formData.date) {
         formPayload.set('eventDate', formData.date)
@@ -159,6 +174,9 @@ export default function EventForm() {
       formPayload.set('cost', formData.cost)
       if (formData.period) {
         formPayload.set('period', formData.period)
+      }
+      if (formData.styles.length > 0) {
+        formPayload.set('styles', JSON.stringify(formData.styles))
       }
       images.forEach((file) => {
         formPayload.append('images', file)
@@ -185,12 +203,13 @@ export default function EventForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
-      {error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-          {error}
-        </div>
-      )}
+    <>
+      <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
+        {error && (
+          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+            {error}
+          </div>
+        )}
 
       <div>
         <label className="mb-2 block text-sm font-semibold text-gray-700">イベント名 *</label>
@@ -206,6 +225,23 @@ export default function EventForm() {
       </div>
 
       <div>
+        <label className="mb-2 block text-sm font-semibold text-gray-700">
+          参加者へのミッション！（サブタイトル）
+        </label>
+        <input
+          type="text"
+          name="subtitle"
+          value={formData.subtitle}
+          onChange={handleChange}
+          className="w-full rounded-2xl border border-gray-300 px-4 py-3 focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+          placeholder="例: 海の自然と生き物を守るヒーローに！"
+        />
+        <p className="mt-1 text-xs text-gray-500">
+          このイベントを盛り上げるために、ボランティアへのミッションを一言で伝えてください。
+        </p>
+      </div>
+
+      <div>
         <label className="mb-2 block text-sm font-semibold text-gray-700">詳細 *</label>
         <textarea
           name="description"
@@ -214,7 +250,7 @@ export default function EventForm() {
           required
           rows={5}
           className="w-full rounded-2xl border border-gray-300 px-4 py-3 focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
-          placeholder="活動内容や参加条件などを記載してください"
+          placeholder="詳しい活動内容や団体の想いを記述してください（参加条件は以下に記述欄があります）"
         />
       </div>
 
@@ -374,6 +410,107 @@ export default function EventForm() {
         )}
       </div>
 
+      {/* 冒険スタイル（任意のマルチセレクト） */}
+      <div className="space-y-4">
+        <p className="mb-1 text-sm font-semibold text-gray-700">募集要件（任意・複数選択可）</p>
+
+        <div>
+          <p className="mb-2 text-sm font-semibold text-gray-700">【1】冒険者プロフィール</p>
+          <div className="flex flex-wrap gap-2">
+            {['未経験歓迎', '事前研修あり', '学生歓迎', '社会人歓迎', '友人同士の参加可'].map((label) => {
+              const selected = formData.styles.includes(label)
+              return (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => toggleStyle(label)}
+                  className={`rounded-full px-4 py-2 text-xs sm:text-sm font-semibold transition ${
+                    selected
+                      ? 'bg-primary-600 text-white shadow-sm'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {label}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        <div>
+          <p className="mb-2 text-sm font-semibold text-gray-700">【2】クエスト参加スタイル</p>
+          <div className="flex flex-wrap gap-2">
+            {['継続参加歓迎', 'フル参加必須', '途中参加・途中退出可', 'オンライン参加可'].map((label) => {
+              const selected = formData.styles.includes(label)
+              return (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => toggleStyle(label)}
+                  className={`rounded-full px-4 py-2 text-xs sm:text-sm font-semibold transition ${
+                    selected
+                      ? 'bg-primary-600 text-white shadow-sm'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {label}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        <div>
+          <p className="mb-2 text-sm font-semibold text-gray-700">【3】冒険フィールド情報</p>
+          <div className="flex flex-wrap gap-2">
+            {['室内活動', '屋外活動'].map((label) => {
+              const selected = formData.styles.includes(label)
+              return (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => toggleStyle(label)}
+                  className={`rounded-full px-4 py-2 text-xs sm:text-sm font-semibold transition ${
+                    selected
+                      ? 'bg-primary-600 text-white shadow-sm'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {label}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        <div>
+          <p className="mb-2 text-sm font-semibold text-gray-700">【4】冒険の証・決まりごと</p>
+          <div className="flex flex-wrap gap-2">
+            {['ボランティア証明書発行', '服装自由', '雨天決行', '雨天中止・相談'].map((label) => {
+              const selected = formData.styles.includes(label)
+              return (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => toggleStyle(label)}
+                  className={`rounded-full px-4 py-2 text-xs sm:text-sm font-semibold transition ${
+                    selected
+                      ? 'bg-primary-600 text-white shadow-sm'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {label}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        <p className="text-xs text-gray-500">
+          ※ すべて任意です。参加者にイメージしてほしいスタイルだけ選んでください。
+        </p>
+      </div>
+
       <button
         type="submit"
         disabled={loading}
@@ -382,6 +519,21 @@ export default function EventForm() {
         {loading ? '投稿中...' : '募集を登録する'}
       </button>
     </form>
+
+    {loading && (
+      <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40">
+        <div className="mx-4 max-w-sm rounded-2xl bg-white px-6 py-5 text-center shadow-xl">
+          <div className="mb-3 flex justify-center">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />
+          </div>
+          <p className="text-base font-semibold text-gray-800">投稿中…</p>
+          <p className="mt-2 text-xs text-gray-500">
+            画面はこのままお待ちください。画像枚数が多いと時間がかかる場合があります。
+          </p>
+        </div>
+      </div>
+    )}
+  </>
   )
 }
 

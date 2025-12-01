@@ -22,7 +22,7 @@ export default function TagFilterBar({ tags, selectedTag, onSelect }: TagFilterB
             : 'border-gray-200 bg-white text-gray-600 hover:border-primary-300 hover:text-primary-700'
         }`}
       >
-        すべて
+        すべてのカテゴリー
       </button>
       {tags.map((tag) => {
         const isActive = selectedTag === tag

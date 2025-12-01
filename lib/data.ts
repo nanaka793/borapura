@@ -22,6 +22,8 @@ interface UserFields {
   Badge?: string
   Location?: string
   Website?: string
+  Friends?: string
+  NextStep?: string
 }
 
 interface PostFields {
@@ -29,6 +31,7 @@ interface PostFields {
   Type?: string[]
   Author?: string
   Content?: string
+  SubTitle?: string
   Image?: Array<{ url: string }>
   Location?: string
   Organization?: string
@@ -37,9 +40,11 @@ interface PostFields {
   Period?: string
   Date?: string
   Tag?: string[]
+   Style?: string[]
   CreatedAt?: string
   Likes?: number
   Comments?: string
+  Reactions?: string
 }
 
 const localEvents: Event[] = [
@@ -113,6 +118,32 @@ function mapUser(record: { id: string; fields: UserFields; createdTime: string }
     following: [],
     followers: [],
     badge: fields.Badge,
+    friends: (() => {
+      if (!fields.Friends) return []
+      try {
+        const parsed = JSON.parse(fields.Friends)
+        if (Array.isArray(parsed)) {
+          return parsed.map((id) => id?.toString?.()).filter(Boolean)
+        }
+      } catch {
+        // JSONでなければカンマ区切り文字列として扱う（後方互換）
+        return fields.Friends.split(',').map((v) => v.trim()).filter(Boolean)
+      }
+      return []
+    })(),
+    nextSteps: (() => {
+      if (!fields.NextStep) return []
+      try {
+        const parsed = JSON.parse(fields.NextStep)
+        if (Array.isArray(parsed)) {
+          return parsed.map((id) => id?.toString?.()).filter(Boolean)
+        }
+      } catch {
+        // JSONでなければカンマ区切り文字列として扱う
+        return fields.NextStep.split(',').map((v) => v.trim()).filter(Boolean)
+      }
+      return []
+    })(),
   }
 }
 
@@ -144,11 +175,25 @@ function mapPost(record: { id: string; fields: PostFields; createdTime: string }
   }
   const authorName = fields.Author || '匿名'
   const author = userMap.get(authorName.toLowerCase())
+  let reactions: Record<string, number> | undefined
+  if (fields.Reactions) {
+    try {
+      const parsed = JSON.parse(fields.Reactions) as Record<string, number>
+      if (parsed && typeof parsed === 'object') {
+        reactions = Object.fromEntries(
+          Object.entries(parsed).map(([key, value]) => [key, typeof value === 'number' ? value : 0])
+        )
+      }
+    } catch {
+      reactions = undefined
+    }
+  }
   return {
     id,
     title: fields.Title || 'Untitled',
     type: fields.Type?.[0],
     content: fields.Content || '',
+    subtitle: fields.SubTitle,
     author: authorName,
     authorId: author?.id || '',
     category: fields.Tag?.[0],
@@ -158,9 +203,11 @@ function mapPost(record: { id: string; fields: PostFields; createdTime: string }
     cost: fields.Cost,
     period: fields.Period,
     eventDate: fields.Date,
+    styles: fields.Style,
     createdAt: fields.CreatedAt || createdTime,
     updatedAt: fields.CreatedAt || createdTime,
     likes: fields.Likes ?? 0,
+    reactions,
     comments: parseComments(fields.Comments),
     organization: fields.Organization,
     images: fields.Image?.map((image) => image.url).filter(Boolean) ?? [],
@@ -194,6 +241,9 @@ export async function saveUser(user: User): Promise<User> {
     Location: user.location,
     Website: user.website,
     CreatedAt: user.createdAt || new Date().toISOString(),
+    Friends: user.friends && user.friends.length > 0 ? JSON.stringify(user.friends) : undefined,
+    NextStep:
+      user.nextSteps && user.nextSteps.length > 0 ? JSON.stringify(user.nextSteps) : undefined,
   }
 
   const record = user.id
@@ -215,6 +265,8 @@ export async function updateUser(
     Avatar: updates.avatar ? [{ url: updates.avatar }] : undefined,
     Location: updates.location,
     Website: updates.website,
+    Friends: updates.friends ? JSON.stringify(updates.friends) : undefined,
+    NextStep: updates.nextSteps ? JSON.stringify(updates.nextSteps) : undefined,
   }
 
   try {
@@ -229,6 +281,18 @@ export async function updateUser(
     }
     throw error
   }
+}
+
+export async function updateUserFriends(
+  id: string,
+  friendIds: string[]
+): Promise<User | null> {
+  const fields: Partial<UserFields> = {
+    Friends: friendIds.length > 0 ? JSON.stringify(friendIds) : '',
+  }
+
+  const record = await updateRecord<UserFields>(USERS_TABLE, id, fields)
+  return record ? mapUser(record) : null
 }
 
 export async function getPosts(): Promise<Post[]> {
@@ -253,8 +317,10 @@ export async function savePost(post: Post): Promise<{ post: Post; recordId: stri
     Type: post.type ? [post.type] : ['記録投稿'],
     Author: post.author,
     Content: post.content,
+    SubTitle: post.subtitle,
     Location: post.location,
     Organization: post.organization,
+    Style: post.styles,
     Contact: post.contact,
     Cost: post.cost,
     Period: post.period,
@@ -269,6 +335,10 @@ export async function savePost(post: Post): Promise<{ post: Post; recordId: stri
 
   if (post.comments && post.comments.length > 0) {
     fields.Comments = JSON.stringify(post.comments)
+  }
+
+  if (post.reactions && Object.keys(post.reactions).length > 0) {
+    fields.Reactions = JSON.stringify(post.reactions)
   }
 
   try {
