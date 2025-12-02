@@ -16,6 +16,10 @@ export interface Post {
   cost?: string
   period?: string
   eventDate?: string
+  questStyle?: number // クエストスタイル: 0(成長できる経験) - 6(新しいワクワク)
+  emotionMeter?: number // 感情メーター: 0(ゆったり安心) - 6(ドキドキ大冒険)
+  growthDiscovery?: string // 自分の成長発見
+  finalBoss?: string // 今日のラスボス
   createdAt: string
   updatedAt: string
   likes: number
@@ -50,6 +54,7 @@ export interface User {
   following: string[]
   followers: string[]
   badge?: string
+  badges?: string[]
   friends?: string[]
   nextSteps?: string[]
 }
@@ -68,5 +73,25 @@ export interface Event {
   likes: number
   comments: number
   coverImage?: string
+}
+
+export interface Topic {
+  id: string
+  title: string
+  description?: string
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+  commentCount: number
+}
+
+export interface TopicComment {
+  id: string
+  topicId: string
+  author: string
+  authorId?: string
+  content: string
+  createdAt: string
+  likes: number
 }
 

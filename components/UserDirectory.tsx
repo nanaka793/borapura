@@ -13,6 +13,7 @@ interface UserSummary {
   website?: string
   postCount: number
   badge?: string
+  badges?: string[]
 }
 
 interface UserDirectoryProps {
@@ -67,6 +68,7 @@ export default function UserDirectory({ users }: UserDirectoryProps) {
               website={user.website}
               postCount={user.postCount}
               badge={user.badge}
+              badges={user.badges}
             />
           ))}
         </div>

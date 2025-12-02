@@ -19,13 +19,14 @@ export default async function UsersPage() {
     interests: user.interests || [],
     website: user.website,
     badge: user.badge,
+    badges: user.badges,
     postCount: postCountMap[user.id] || 0,
   }))
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-800 mb-8">ユーザー一覧</h1>
+        <h1 className="text-4xl font-bold text-gray-800 mb-8">冒険者一覧</h1>
         {userList.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-lg shadow-md">
             <p className="text-gray-500 text-lg">

@@ -33,6 +33,12 @@ async function airtableFetch<T>(path: string, init?: RequestInit): Promise<T> {
 
   if (!res.ok) {
     const errorText = await res.text()
+    console.error('Airtable API Error:', {
+      status: res.status,
+      statusText: res.statusText,
+      url: `${API_ENDPOINT}${path}`,
+      errorText: errorText,
+    })
     throw new Error(`Airtable error: ${res.status} ${res.statusText} - ${errorText}`)
   }
 

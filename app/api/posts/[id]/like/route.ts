@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getPost, savePost } from '@/lib/data'
+import { getPost, savePost, updateUserBadges } from '@/lib/data'
 
 export async function POST(
   request: NextRequest,
@@ -29,6 +29,13 @@ export async function POST(
     post.reactions = reactions
 
     const { post: savedPost } = await savePost(post)
+
+    // バッジを更新（非同期で実行、エラーが発生してもいいねは成功させる）
+    if (post.authorId) {
+      updateUserBadges(post.authorId).catch((error) => {
+        console.error('Failed to update user badges:', error)
+      })
+    }
 
     return NextResponse.json({
       likes: savedPost.likes,

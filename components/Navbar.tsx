@@ -41,7 +41,8 @@ export default function Navbar() {
     { href: '/', label: 'ホーム' },
     { href: '/posts', label: '冒険日誌' },
     { href: '/events', label: 'ボランティア募集' },
-    { href: '/users', label: 'ユーザー' },
+    { href: '/topics', label: '冒険者の酒場' },
+    { href: '/users', label: '冒険者一覧' },
   ]
 
   const isActive = (href: string) => {
@@ -57,7 +58,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-white shadow-md">
+    <nav className="sticky top-0 z-50 bg-white shadow-md">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* 左端: ぼらぷらロゴ */}

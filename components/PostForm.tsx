@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import AdventureSlider from './AdventureSlider'
 
 interface PostFormProps {
   currentUser: {
@@ -20,6 +21,10 @@ export default function PostForm({ currentUser }: PostFormProps) {
     content: '',
     category: '',
     location: '',
+    questStyle: 3, // デフォルトは中央（3 = ふつう）
+    emotionMeter: 3, // デフォルトは中央（3 = ふつう）
+    growthDiscovery: '', // 自分の成長発見
+    finalBoss: '', // 今日のラスボス
   })
   const [images, setImages] = useState<File[]>([])
   const [imagePreviews, setImagePreviews] = useState<string[]>([])
@@ -41,6 +46,10 @@ export default function PostForm({ currentUser }: PostFormProps) {
       formPayload.set('content', formData.content)
       formPayload.set('category', formData.category)
       formPayload.set('location', formData.location)
+      formPayload.set('questStyle', formData.questStyle.toString())
+      formPayload.set('emotionMeter', formData.emotionMeter.toString())
+      formPayload.set('growthDiscovery', formData.growthDiscovery)
+      formPayload.set('finalBoss', formData.finalBoss)
       images.forEach((file) => {
         formPayload.append('images', file)
       })
@@ -147,6 +156,56 @@ export default function PostForm({ currentUser }: PostFormProps) {
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           placeholder="活動の詳細を記入してください..."
         />
+      </div>
+
+      <div className="mb-6 border-t pt-6">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">冒険の記録</h3>
+        
+        <AdventureSlider
+          label="① クエストスタイル"
+          leftLabel="成長できる経験"
+          rightLabel="新しいワクワク"
+          value={formData.questStyle}
+          onChange={(value) => setFormData({ ...formData, questStyle: value })}
+        />
+        
+        <AdventureSlider
+          label="② 感情メーター"
+          leftLabel="ゆったり安心"
+          rightLabel="ドキドキ大冒険"
+          value={formData.emotionMeter}
+          onChange={(value) => setFormData({ ...formData, emotionMeter: value })}
+        />
+      </div>
+
+      <div className="mb-6 border-t pt-6">
+        <div className="mb-6">
+          <label htmlFor="growthDiscovery" className="block text-sm font-semibold text-gray-700 mb-2">
+            自分の成長発見 -小さな出来事から大きな挑戦まで-
+          </label>
+          <textarea
+            id="growthDiscovery"
+            rows={5}
+            value={formData.growthDiscovery}
+            onChange={(e) => setFormData({ ...formData, growthDiscovery: e.target.value })}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            placeholder="今回の活動で気づいた自分の成長や発見を自由に記述してください..."
+          />
+        </div>
+
+        <div className="mb-6">
+          <label htmlFor="finalBoss" className="block text-sm font-semibold text-gray-700 mb-2">
+            今日のラスボス（自由記述）
+          </label>
+          <textarea
+            id="finalBoss"
+            rows={5}
+            value={formData.finalBoss}
+            onChange={(e) => setFormData({ ...formData, finalBoss: e.target.value })}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            placeholder="今日の活動で直面した課題や挑戦を自由に記述してください..."
+          />
+        </div>
       </div>
 
       <div className="mb-6">

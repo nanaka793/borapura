@@ -13,6 +13,7 @@ interface UserCardProps {
   website?: string
   postCount: number
   badge?: string
+  badges?: string[]
 }
 
 export default function UserCard({
@@ -25,6 +26,7 @@ export default function UserCard({
   website,
   postCount,
   badge,
+  badges,
 }: UserCardProps) {
   const router = useRouter()
 
@@ -48,11 +50,6 @@ export default function UserCard({
         <Avatar src={avatar} name={name} size="md" />
         <div>
           <h3 className="text-2xl font-bold text-primary-600">{name}</h3>
-          {badge && (
-            <span className="mt-1 inline-flex items-center rounded-full bg-primary-50 px-2 py-0.5 text-xs font-semibold text-primary-600">
-              {badge}
-            </span>
-          )}
           {location && <p className="text-sm text-gray-500">📍 {location}</p>}
         </div>
       </div>

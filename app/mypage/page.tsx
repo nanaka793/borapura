@@ -1,9 +1,11 @@
 import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/lib/auth'
 import { getPosts, getUsers } from '@/lib/data'
-import ProfileForm from '@/components/ProfileForm'
 import PostCard from '@/components/PostCard'
 import Avatar from '@/components/Avatar'
+import NextStepsList from '@/components/NextStepsList'
+import FriendsList from '@/components/FriendsList'
+import { getBadgeEmoji } from '@/lib/badges'
 
 export default async function MyPage() {
   const currentUser = await getCurrentUser()
@@ -43,6 +45,26 @@ export default async function MyPage() {
               登録日: {new Date(currentUser.createdAt).toLocaleDateString('ja-JP')}
             </div>
           </div>
+          {(currentUser.badges && currentUser.badges.length > 0) || currentUser.badge ? (
+            <div className="mt-6 flex flex-wrap gap-2">
+              {currentUser.badges && currentUser.badges.length > 0 ? (
+                currentUser.badges.map((badge, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-sm font-semibold text-primary-600"
+                  >
+                    {getBadgeEmoji(badge)} {badge}
+                  </span>
+                ))
+              ) : (
+                currentUser.badge && (
+                  <span className="inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-sm font-semibold text-primary-600">
+                    {getBadgeEmoji(currentUser.badge)} {currentUser.badge}
+                  </span>
+                )
+              )}
+            </div>
+          ) : null}
           {currentUser.interests && currentUser.interests.length > 0 && (
             <div className="mt-6 flex flex-wrap gap-2">
               {currentUser.interests.map((topic) => (
@@ -95,31 +117,7 @@ export default async function MyPage() {
                   ボタンを押すと、ここに表示されます。
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {nextStepPosts.map((post) => (
-                    <a
-                      key={post.id}
-                      href={`/events/${post.id}`}
-                      className="flex flex-col rounded-2xl border border-gray-100 bg-amber-50 px-4 py-3 text-sm hover:border-amber-300 hover:bg-amber-100 transition"
-                    >
-                      <span className="font-semibold text-gray-900">{post.title}</span>
-                      {post.subtitle && (
-                        <span className="mt-1 text-xs text-gray-600 line-clamp-1">
-                          【ミッション】{post.subtitle}
-                        </span>
-                      )}
-                      {post.eventDate && (
-                        <span className="mt-1 text-xs text-gray-500">
-                          📅{' '}
-                          {new Date(post.eventDate).toLocaleDateString('ja-JP', {
-                            month: 'short',
-                            day: 'numeric',
-                          })}
-                        </span>
-                      )}
-                    </a>
-                  ))}
-                </div>
+                <NextStepsList posts={nextStepPosts} />
               )}
             </div>
 
@@ -133,29 +131,21 @@ export default async function MyPage() {
                   ボタンを押してみましょう。
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {friends.map((friend) => (
-                    <a
-                      key={friend.id}
-                      href={`/users/${friend.id}`}
-                      className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-gray-50 px-4 py-3 text-sm hover:border-primary-200 hover:bg-primary-50 transition"
-                    >
-                      <Avatar src={friend.avatar} name={friend.name} size="sm" />
-                      <div className="flex-1">
-                        <p className="font-semibold text-gray-800">{friend.name}</p>
-                        {friend.headline && (
-                          <p className="text-xs text-gray-500 line-clamp-1">{friend.headline}</p>
-                        )}
-                      </div>
-                    </a>
-                  ))}
-                </div>
+                <FriendsList friends={friends} />
               )}
             </div>
 
-            <div className="rounded-3xl bg-white p-8 shadow-md">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">プロフィール設定</h2>
-              <ProfileForm user={safeUser} />
+            <div className="rounded-3xl bg-white p-8 shadow-md space-y-4">
+              <h2 className="text-2xl font-bold text-gray-900">プロフィール設定</h2>
+              <p className="text-sm text-gray-600">
+                アイコンや自己紹介、関心テーマなどを変更したい場合は、設定変更ページから編集できます。
+              </p>
+              <a
+                href="/mypage/profile"
+                className="inline-flex items-center justify-center rounded-full bg-primary-600 px-6 py-2 text-sm font-semibold text-white shadow hover:bg-primary-700 transition"
+              >
+                設定変更ページへ進む
+              </a>
             </div>
           </div>
         </div>

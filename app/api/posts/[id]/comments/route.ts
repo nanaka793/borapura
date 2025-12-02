@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
-import { getPost, savePost } from '@/lib/data'
+import { getPost, savePost, updateUserBadges } from '@/lib/data'
+import { getCurrentUser } from '@/lib/auth'
 import { Comment } from '@/lib/types'
 
 export async function POST(
@@ -24,11 +25,16 @@ export async function POST(
       )
     }
 
+    // 認証済みユーザーを取得（オプション）
+    const currentUser = await getCurrentUser()
+    const authorId = currentUser?.id || `user-${Date.now()}`
+    const commentAuthor = currentUser?.name || author
+
     const newComment: Comment = {
       id: Date.now().toString(),
       postId: id,
-      author,
-      authorId: `user-${Date.now()}`,
+      author: commentAuthor,
+      authorId: authorId,
       content,
       createdAt: new Date().toISOString(),
       parentId,
@@ -52,6 +58,13 @@ export async function POST(
 
     post.updatedAt = new Date().toISOString()
     await savePost(post)
+
+    // バッジを更新（非同期で実行、エラーが発生してもコメントは成功させる）
+    if (currentUser?.id) {
+      updateUserBadges(currentUser.id).catch((error) => {
+        console.error('Failed to update user badges:', error)
+      })
+    }
 
     revalidatePath(`/posts/${id}`)
     revalidatePath('/')

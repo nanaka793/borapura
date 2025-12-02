@@ -8,6 +8,7 @@ import BookmarkButton from './BookmarkButton'
 import CommentSection from './CommentSection'
 import Link from 'next/link'
 import Avatar from './Avatar'
+import AdventureSliderDisplay from './AdventureSliderDisplay'
 
 interface PostDetailProps {
   post: Post
@@ -290,6 +291,52 @@ export default function PostDetail({
               className="mt-4 text-gray-700 leading-relaxed text-base sm:text-lg"
               dangerouslySetInnerHTML={{ __html: metaHtml }}
             />
+          )}
+        </div>
+      )}
+
+      {!isRecruitment && (post.questStyle !== undefined || post.emotionMeter !== undefined) && (
+        <div className="mb-6 sm:mb-8 border-t pt-6">
+          <h2 className="mb-4 text-base sm:text-lg font-semibold text-gray-800">冒険の記録</h2>
+          
+          {post.questStyle !== undefined && (
+            <AdventureSliderDisplay
+              label="① クエストスタイル"
+              leftLabel="成長できる経験"
+              rightLabel="新しいワクワク"
+              value={post.questStyle}
+            />
+          )}
+          
+          {post.emotionMeter !== undefined && (
+            <AdventureSliderDisplay
+              label="② 感情メーター"
+              leftLabel="ゆったり安心"
+              rightLabel="ドキドキ大冒険"
+              value={post.emotionMeter}
+            />
+          )}
+
+          {post.growthDiscovery && post.growthDiscovery.trim() && (
+            <div className="mb-4">
+              <h4 className="text-sm font-semibold text-gray-700 mb-2">
+                自分の成長発見 -小さな出来事から大きな挑戦まで-
+              </h4>
+              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                {post.growthDiscovery}
+              </p>
+            </div>
+          )}
+
+          {post.finalBoss && post.finalBoss.trim() && (
+            <div className="mb-4">
+              <h4 className="text-sm font-semibold text-gray-700 mb-2">
+                今日のラスボス（自由記述）
+              </h4>
+              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                {post.finalBoss}
+              </p>
+            </div>
           )}
         </div>
       )}

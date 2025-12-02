@@ -10,7 +10,7 @@ export default async function EventsPage() {
   return (
     <div className="container mx-auto px-4 py-10">
       <div className="mx-auto max-w-5xl">
-        <div className="mb-10 rounded-3xl bg-gradient-to-r from-primary-50 to-blue-50 p-8 shadow-inner">
+        <div className="mb-10 rounded-3xl bg-white p-8 shadow-lg">
           <p className="text-sm font-semibold uppercase tracking-widest text-primary-600">
             Volunteer Opportunities
           </p>
@@ -21,12 +21,6 @@ export default async function EventsPage() {
             これから開催されるボランティアイベントの情報です。気になる活動を見つけたら、主催団体にお問い合わせください。
           </p>
           <div className="mt-6 flex flex-wrap gap-4">
-            <Link
-              href="/posts"
-              className="rounded-full border border-primary-200 px-6 py-3 font-semibold text-primary-700 hover:bg-white"
-            >
-              冒険日誌を読む
-            </Link>
             <Link
               href="/events/new"
               className="rounded-full bg-primary-600 px-6 py-3 font-semibold text-white shadow-lg hover:bg-primary-700"

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { savePost, getPosts, getPost } from '@/lib/data'
+import { savePost, getPosts, getPost, updateUserBadges } from '@/lib/data'
 import { Post } from '@/lib/types'
 import { getCurrentUser } from '@/lib/auth'
 import { uploadAttachment } from '@/lib/airtable'
@@ -33,6 +33,10 @@ export async function POST(request: NextRequest) {
     let subtitle = ''
     let styles: string[] = []
     let tags: string[] = []
+    let questStyle: number | undefined
+    let emotionMeter: number | undefined
+    let growthDiscovery = ''
+    let finalBoss = ''
     let imageFiles: File[] = []
 
     if (contentType.includes('multipart/form-data')) {
@@ -70,6 +74,25 @@ export async function POST(request: NextRequest) {
       }
       period = (formData.get('period') ?? '').toString().trim()
       eventDateValue = (formData.get('eventDate') ?? formData.get('date') ?? '').toString().trim()
+      
+      const questStyleValue = formData.get('questStyle')
+      if (questStyleValue) {
+        const parsed = parseInt(questStyleValue.toString(), 10)
+        if (!isNaN(parsed) && parsed >= 0 && parsed <= 6) {
+          questStyle = parsed
+        }
+      }
+      
+      const emotionMeterValue = formData.get('emotionMeter')
+      if (emotionMeterValue) {
+        const parsed = parseInt(emotionMeterValue.toString(), 10)
+        if (!isNaN(parsed) && parsed >= 0 && parsed <= 6) {
+          emotionMeter = parsed
+        }
+      }
+
+      growthDiscovery = (formData.get('growthDiscovery') ?? '').toString().trim()
+      finalBoss = (formData.get('finalBoss') ?? '').toString().trim()
 
       const images = formData.getAll('images') || []
       imageFiles = images.filter(
@@ -94,6 +117,27 @@ export async function POST(request: NextRequest) {
       }
       period = (body.period ?? '').toString().trim()
       eventDateValue = (body.eventDate ?? body.date ?? '').toString().trim()
+      
+      if (typeof body.questStyle === 'number' && body.questStyle >= 0 && body.questStyle <= 6) {
+        questStyle = body.questStyle
+      } else if (typeof body.questStyle === 'string') {
+        const parsed = parseInt(body.questStyle, 10)
+        if (!isNaN(parsed) && parsed >= 0 && parsed <= 6) {
+          questStyle = parsed
+        }
+      }
+      
+      if (typeof body.emotionMeter === 'number' && body.emotionMeter >= 0 && body.emotionMeter <= 6) {
+        emotionMeter = body.emotionMeter
+      } else if (typeof body.emotionMeter === 'string') {
+        const parsed = parseInt(body.emotionMeter, 10)
+        if (!isNaN(parsed) && parsed >= 0 && parsed <= 6) {
+          emotionMeter = parsed
+        }
+      }
+      
+      growthDiscovery = (body.growthDiscovery ?? '').toString().trim()
+      finalBoss = (body.finalBoss ?? '').toString().trim()
     }
 
     if (!title || !content) {
@@ -127,6 +171,10 @@ export async function POST(request: NextRequest) {
       cost: cost || undefined,
       period: period || undefined,
       eventDate: eventDateValue || undefined,
+      questStyle: questStyle !== undefined ? questStyle : undefined,
+      emotionMeter: emotionMeter !== undefined ? emotionMeter : undefined,
+      growthDiscovery: growthDiscovery || undefined,
+      finalBoss: finalBoss || undefined,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       likes: 0,
@@ -146,6 +194,11 @@ export async function POST(request: NextRequest) {
     }
 
     const finalPost = imageFiles.length > 0 ? await getPost(recordId) : savedPost
+
+    // バッジを更新（非同期で実行、エラーが発生しても投稿は成功させる）
+    updateUserBadges(currentUser.id).catch((error) => {
+      console.error('Failed to update user badges:', error)
+    })
 
     return NextResponse.json(finalPost, { status: 201 })
   } catch (error) {

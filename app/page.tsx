@@ -204,6 +204,28 @@ export default async function Home() {
         )}
       </section>
 
+      {/* 冒険者の酒場 CTA */}
+      <section className="mt-12 rounded-3xl bg-gradient-to-r from-amber-500 to-orange-500 p-8 text-white shadow-lg">
+        <h2 className="text-3xl font-bold">冒険者の酒場</h2>
+        <p className="mt-4 text-white/90">
+          ボランティア参加の有無に関わらず、みんなでテーマについて語り合いましょう。週替わりのテーマにコメントを残して、他の冒険者との交流を楽しんでください。
+        </p>
+        <div className="mt-6 flex flex-wrap gap-4">
+          <Link
+            href="/topics"
+            className="rounded-full bg-white/90 px-6 py-3 font-semibold text-amber-700 hover:bg-white"
+          >
+            酒場に行く
+          </Link>
+          <Link
+            href="/topics"
+            className="rounded-full border border-white/30 px-6 py-3 font-semibold text-white hover:bg-white/10"
+          >
+            テーマを見る
+          </Link>
+        </div>
+      </section>
+
       {/* My Page CTA */}
       <section className="mt-12 grid gap-8 lg:grid-cols-2">
         <div className="rounded-3xl bg-gradient-to-r from-primary-50 to-blue-50 p-8 shadow-inner">
