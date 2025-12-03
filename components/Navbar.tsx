@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Avatar from './Avatar'
@@ -58,16 +59,32 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 bg-white shadow-md">
+    <nav className="sticky top-0 z-50 bg-white shadow-md py-2">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          {/* 左端: ぼらぷらロゴ */}
-          <Link 
-            href="/" 
-            className="text-xl sm:text-2xl font-bold text-primary-600 hover:text-primary-700 transition-colors"
+          {/* 左端: アイコン + ロゴ画像 */}
+          <Link
+            href="/"
+            className="flex items-center gap-2"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            ぼらぷら
+            <span className="sr-only">ぼらぷら ホームへ</span>
+            <Image
+              src="/borapura-icon.png"
+              alt="ぼらぷら アイコン"
+              width={100}
+              height={100}
+              className="h-10 w-10 sm:h-12 sm:w-12 rounded-full"
+              priority
+            />
+            <Image
+              src="/borapura-logo.png"
+              alt="ぼらぷら"
+              width={160}
+              height={40}
+              className="h-6 w-auto sm:h-8"
+              priority
+            />
           </Link>
 
           {/* デスクトップ: 通常のナビゲーション */}
