@@ -22,3 +22,4 @@ export function getBadgeEmoji(badgeName: string): string {
   return GENRE_BADGE_EMOJIS[badgeName] || '🏅'
 }
 
+
