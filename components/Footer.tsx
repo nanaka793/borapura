@@ -16,8 +16,8 @@ export default function Footer() {
         />
       </div>
 
-      {/* フッター本体（背景色 #1562A0） */}
-      <footer className="mt-auto bg-[#1562A0] text-white">
+      {/* フッター本体（二色の海：上 #1562A0 / 下 #185784） */}
+      <footer className="mt-auto text-white bg-[linear-gradient(to_top_right,_#185784_0,_#185784_48%,_#1562A0_48%,_#1562A0_100%)]">
         <div className="mx-auto max-w-6xl px-6 py-10 md:py-12">
           <div className="grid gap-10 md:grid-cols-[1.2fr,1fr,1fr] items-start">
             {/* 左列: Volunteer Platform + ロゴ（Navbarと同じロゴ構成／アイコンなし） */}
