@@ -8,6 +8,7 @@ import HeroSection from '@/components/HeroSection'
 import AdventureDiarySection from '@/components/AdventureDiarySection'
 import RecruitmentSection from '@/components/RecruitmentSection'
 import TavernSection from '@/components/TavernSection'
+import AdventurerListSection from '@/components/AdventurerListSection'
 
 const HERO_STORIES = [
   {
@@ -314,6 +315,19 @@ export default async function Home() {
 
       {/* 冒険者の酒場セクション */}
       <TavernSection topics={topics} />
+
+      {/* 冒険者リストセクション */}
+      <AdventurerListSection 
+        users={users.map((user) => ({
+          id: user.id,
+          name: user.name,
+          avatar: user.avatar,
+          headline: user.headline,
+          location: user.location,
+          postCount: posts.filter((p) => p.authorId === user.id || p.author === user.name).length,
+        }))}
+        currentUserPostCount={currentUser ? posts.filter((p) => p.authorId === currentUser.id || p.author === currentUser.name).length : undefined}
+      />
 
       {/* 既存のコンテンツ */}
       <div className="container mx-auto px-4 py-10">
