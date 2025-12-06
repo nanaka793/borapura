@@ -9,6 +9,7 @@ import AdventureDiarySection from '@/components/AdventureDiarySection'
 import RecruitmentSection from '@/components/RecruitmentSection'
 import TavernSection from '@/components/TavernSection'
 import AdventurerListSection from '@/components/AdventurerListSection'
+import MyPageSection from '@/components/MyPageSection'
 
 const HERO_STORIES = [
   {
@@ -327,6 +328,11 @@ export default async function Home() {
           postCount: posts.filter((p) => p.authorId === user.id || p.author === user.name).length,
         }))}
         currentUserPostCount={currentUser ? posts.filter((p) => p.authorId === currentUser.id || p.author === currentUser.name).length : undefined}
+      />
+
+      {/* マイページ誘導セクション */}
+      <MyPageSection 
+        currentUser={currentUser ? { id: currentUser.id, name: currentUser.name, avatar: currentUser.avatar } : null}
       />
 
       {/* 既存のコンテンツ */}
