@@ -1,9 +1,12 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getTopics } from '@/lib/data'
 
-export async function GET(request: Request) {
+// このAPIルートを動的レンダリングとして明示的に指定
+export const dynamic = 'force-dynamic'
+
+export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl
     const activeOnly = searchParams.get('activeOnly') === 'true'
     
     const topics = await getTopics(activeOnly)
