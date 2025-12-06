@@ -5,6 +5,7 @@ import EventCard from '@/components/EventCard'
 import PostGalleryCard from '@/components/PostGalleryCard'
 import { getCurrentUser } from '@/lib/auth'
 import HeroSection from '@/components/HeroSection'
+import AdventureDiarySection from '@/components/AdventureDiarySection'
 
 const HERO_STORIES = [
   {
@@ -301,6 +302,9 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* 冒険日誌の新着セクション */}
+      <AdventureDiarySection posts={activityPosts} users={users} />
 
       {/* 既存のコンテンツ */}
       <div className="container mx-auto px-4 py-10">

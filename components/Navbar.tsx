@@ -61,7 +61,7 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-md py-2">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-11">
           {/* 左端: アイコン + ロゴ画像 */}
           <Link 
             href="/" 
