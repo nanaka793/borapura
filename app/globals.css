@@ -94,3 +94,43 @@ body {
   animation: twinkle 2s ease-in-out infinite;
 }
 
+/* スクロールスナップ（無効化 - 自然なスクロール） */
+html {
+  scroll-behavior: smooth;
+}
+
+/* スクロールスナップ対象のセクション */
+.scroll-snap-section {
+  /* スクロールスナップを無効化 - スライドインアニメーションのみ有効 */
+  position: relative;
+}
+
+/* セクションスライドインアニメーション */
+.section-slide-in {
+  opacity: 0;
+  transform: translateY(80px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.section-slide-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 各セクションごとに異なる遅延時間を設定（オプション） */
+.section-slide-in.delay-1 {
+  transition-delay: 0.1s;
+}
+
+.section-slide-in.delay-2 {
+  transition-delay: 0.2s;
+}
+
+.section-slide-in.delay-3 {
+  transition-delay: 0.3s;
+}
+
+.section-slide-in.delay-4 {
+  transition-delay: 0.4s;
+}
+

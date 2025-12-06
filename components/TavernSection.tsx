@@ -24,10 +24,11 @@ export default function TavernSection({ topics }: TavernSectionProps) {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setIsVisible(true)
+            observer.disconnect()
           }
         })
       },
-      { threshold: 0.2 }
+      { threshold: 0.15, rootMargin: '50px' }
     )
 
     if (sectionRef.current) {
@@ -50,7 +51,11 @@ export default function TavernSection({ topics }: TavernSectionProps) {
   }
 
   return (
-    <section ref={sectionRef} className="relative w-full overflow-hidden" style={{ minHeight: '100vh' }}>
+    <section 
+      ref={sectionRef} 
+      className={`relative w-full overflow-hidden scroll-snap-section section-slide-in ${isVisible ? 'visible' : ''}`}
+      style={{ minHeight: '100vh' }}
+    >
       {/* 1. 紫のグラデーション背景 */}
       <div className="absolute inset-0 z-0">
         <Image

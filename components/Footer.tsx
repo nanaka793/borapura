@@ -82,7 +82,7 @@ export default function Footer() {
                 href="/users"
                 className="block text-lg md:text-xl font-semibold hover:text-accent transition-colors"
               >
-                冒険者一覧
+                冒険者リスト
               </Link>
               <Link
                 href="/mypage"

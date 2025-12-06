@@ -75,6 +75,33 @@ function TypewriterText({ text, delay = 100, startDelay = 0 }: { text: string; d
 
 export default function RecruitmentSection({ posts, users }: RecruitmentSectionProps) {
   const router = useRouter()
+  const [isVisible, setIsVisible] = useState(false)
+  const sectionRef = useRef<HTMLElement>(null)
+
+  // スクロール検知でアニメーション開始
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true)
+            observer.disconnect()
+          }
+        })
+      },
+      { threshold: 0.15, rootMargin: '50px' }
+    )
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current)
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current)
+      }
+    }
+  }, [])
   
   // ユーザーマップを作成
   const userMap = users.reduce<Record<string, User>>((acc, user) => {
@@ -108,7 +135,11 @@ export default function RecruitmentSection({ posts, users }: RecruitmentSectionP
   }
 
   return (
-    <section className="relative w-full overflow-hidden">
+    <section 
+      ref={sectionRef}
+      className={`relative w-full overflow-hidden scroll-snap-section section-slide-in ${isVisible ? 'visible' : ''}`}
+      style={{ minHeight: '100vh' }}
+    >
       {/* 背景画像 */}
       <div className="relative w-full">
         <Image

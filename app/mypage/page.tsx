@@ -28,21 +28,41 @@ export default async function MyPage() {
     <div className="container mx-auto px-4 py-10">
       <div className="mx-auto max-w-6xl space-y-10">
         <div className="rounded-3xl bg-white/80 p-8 shadow-lg ring-1 ring-gray-100">
-          <div className="flex flex-wrap items-center justify-between gap-6">
-            <div>
+          <div className="flex items-start gap-6">
+            <div className="flex-1">
               <p className="text-sm font-semibold uppercase tracking-widest text-primary-600">
-                My Page
+                My Camp
               </p>
               <h1 className="text-4xl font-bold text-gray-900">
-                {currentUser.name} さんのマイページ
+                {currentUser.name} さんのキャンプ
               </h1>
               {currentUser.headline && (
                 <p className="mt-2 text-lg text-gray-600">{currentUser.headline}</p>
               )}
             </div>
-            <Avatar src={currentUser.avatar} name={currentUser.name} size="lg" />
-            <div className="rounded-2xl bg-primary-50 px-4 py-2 text-sm text-primary-700">
-              登録日: {new Date(currentUser.createdAt).toLocaleDateString('ja-JP')}
+            <div className="flex-shrink-0">
+              <div className="w-32 h-32 rounded-full bg-white border-4 border-primary-100 p-1 shadow-md flex items-center justify-center">
+                <div className="w-full h-full rounded-full overflow-hidden">
+                  {currentUser.avatar ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={currentUser.avatar}
+                      alt={`${currentUser.name}のアイコン`}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold text-2xl">
+                      {currentUser.name
+                        .trim()
+                        .split(/\s+/)
+                        .map((part) => part[0])
+                        .join('')
+                        .slice(0, 2)
+                        .toUpperCase()}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
           {(currentUser.badges && currentUser.badges.length > 0) || currentUser.badge ? (
@@ -77,6 +97,11 @@ export default async function MyPage() {
               ))}
             </div>
           )}
+          <div className="mt-6 pt-4 border-t border-gray-200">
+            <p className="text-xs text-gray-400">
+              登録日: {new Date(currentUser.createdAt).toLocaleDateString('ja-JP')}
+            </p>
+          </div>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">

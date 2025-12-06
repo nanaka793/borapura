@@ -67,7 +67,7 @@ export default function Navbar() {
     { href: '/posts', label: '冒険日誌' },
     { href: '/events', label: 'ボランティア募集' },
     { href: '/topics', label: '冒険者の酒場' },
-    { href: '/users', label: '冒険者一覧' },
+    { href: '/users', label: '冒険者リスト' },
   ]
 
   const isActive = (href: string) => {
@@ -144,7 +144,7 @@ export default function Navbar() {
                   }`}
                 >
                   <Avatar src={sessionUser.avatar} name={sessionUser.name} size="sm" />
-                  <span>マイページ</span>
+                  <span>マイキャンプ</span>
                 </Link>
                 <button
                   onClick={handleLogout}
@@ -189,7 +189,7 @@ export default function Navbar() {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <Avatar src={sessionUser.avatar} name={sessionUser.name} size="sm" />
-                <span className="hidden sm:inline">マイページ</span>
+                <span className="hidden sm:inline">マイキャンプ</span>
               </Link>
             ) : (
               <Link

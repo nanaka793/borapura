@@ -5,7 +5,7 @@ export default async function TopicsPage() {
   const topics = await getTopics(true) // アクティブなトピックのみ取得
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 pt-24 pb-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">冒険者の酒場</h1>

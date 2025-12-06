@@ -106,10 +106,11 @@ export default function AdventurerListSection({ users, currentUserPostCount }: A
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setIsVisible(true)
+            observer.disconnect()
           }
         })
       },
-      { threshold: 0.2 }
+      { threshold: 0.15, rootMargin: '50px' }
     )
 
     if (sectionRef.current) {
@@ -135,7 +136,11 @@ export default function AdventurerListSection({ users, currentUserPostCount }: A
   const userLevel = currentUserPostCount !== undefined ? currentUserPostCount : null
 
   return (
-    <section ref={sectionRef} className="relative w-full overflow-hidden" style={{ minHeight: '100vh' }}>
+    <section 
+      ref={sectionRef} 
+      className={`relative w-full overflow-hidden scroll-snap-section section-slide-in ${isVisible ? 'visible' : ''}`}
+      style={{ minHeight: '100vh' }}
+    >
       {/* グレーのグラデーション背景（左から右に濃くなる） */}
       <div 
         className="absolute inset-0 z-0"

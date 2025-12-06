@@ -24,7 +24,7 @@ export default async function UsersPage() {
   }))
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 pt-24 pb-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-gray-800 mb-8">冒険者一覧</h1>
         {userList.length === 0 ? (

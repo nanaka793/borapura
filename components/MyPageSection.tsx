@@ -20,10 +20,11 @@ export default function MyPageSection({ currentUser }: MyPageSectionProps) {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setIsVisible(true)
+            observer.disconnect()
           }
         })
       },
-      { threshold: 0.2 }
+      { threshold: 0.15, rootMargin: '50px' }
     )
 
     if (sectionRef.current) {
@@ -50,7 +51,11 @@ export default function MyPageSection({ currentUser }: MyPageSectionProps) {
   }
 
   return (
-    <section ref={sectionRef} className="relative w-full overflow-hidden" style={{ minHeight: '100vh' }}>
+    <section 
+      ref={sectionRef} 
+      className={`relative w-full overflow-hidden scroll-snap-section section-slide-in ${isVisible ? 'visible' : ''}`}
+      style={{ minHeight: '100vh' }}
+    >
       {/* 背景グラデーション（上#0B1024、下#FFFFFF） */}
       <div 
         className="absolute inset-0 z-0"
