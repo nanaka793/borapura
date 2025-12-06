@@ -23,6 +23,12 @@ body {
   }
 }
 
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: 0.03em;
+  }
+}
+
 /* スライドアウトアニメーション */
 @keyframes slide-out-left {
   0% {

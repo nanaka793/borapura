@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import type { Post, User } from '@/lib/types'
@@ -12,38 +12,10 @@ interface AdventureDiarySectionProps {
 }
 
 // タイプライターアニメーション用のコンポーネント
-function TypewriterText({ text, delay = 100, startDelay = 0 }: { text: string; delay?: number; startDelay?: number }) {
+function TypewriterText({ text, delay = 50, startDelay = 0 }: { text: string; delay?: number; startDelay?: number }) {
   const [displayedText, setDisplayedText] = useState('')
-  const [isVisible, setIsVisible] = useState(false)
-  const textRef = useRef<HTMLSpanElement>(null)
 
-  // Intersection Observerで要素が表示されたかを監視
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true)
-            observer.disconnect()
-          }
-        })
-      },
-      { threshold: 0.1 }
-    )
-
-    if (textRef.current) {
-      observer.observe(textRef.current)
-    }
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [])
-
-  // 表示されたらアニメーション開始
-  useEffect(() => {
-    if (!isVisible) return
-
     setDisplayedText('')
     let currentIndex = 0
     let timer: NodeJS.Timeout | null = null
@@ -63,10 +35,10 @@ function TypewriterText({ text, delay = 100, startDelay = 0 }: { text: string; d
       clearTimeout(startTimer)
       if (timer) clearInterval(timer)
     }
-  }, [text, delay, startDelay, isVisible])
+  }, [text, delay, startDelay])
 
   return (
-    <span ref={textRef}>
+    <span>
       {displayedText}
       <span className="animate-pulse">|</span>
     </span>
@@ -149,7 +121,7 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
         <div className="container mx-auto px-4 w-full h-full">
           <div className="max-w-6xl mx-auto h-full relative">
             {/* タイトル */}
-            <div className="text-center mb-8 md:mb-12" style={{ top: '11%', transform: 'translateY(-50%)', position: 'absolute', width: '100%' }}>
+            <div className="text-center mb-8 md:mb-12" style={{ top: '%', transform: 'translateY(-50%)', position: 'absolute', width: '100%' }}>
               <p className="text-sm md:text-base font-semibold text-gray-700 mb-2">
                 先人のボランティア活動記録
               </p>
@@ -276,7 +248,7 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
                   className="block hover:opacity-80 transition-all group"
                   style={{ textAlign: 'left', marginLeft: '50%' }}
                 >
-                  <TypewriterText text="▶︎ 日誌一覧を読む" delay={100} startDelay={0} />
+                  <TypewriterText text="▶︎ 日誌一覧を読む" delay={30} startDelay={0} />
                 </button>
                 
                 {/* 自分の日誌を書く */}
@@ -285,7 +257,7 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
                   className="block hover:opacity-80 transition-all group"
                   style={{ textAlign: 'left', marginLeft: '50%' }}
                 >
-                  <TypewriterText text="▶︎ 自分の日誌を書く" delay={100} startDelay={500} />
+                  <TypewriterText text="▶︎ 自分の日誌を書く" delay={30} startDelay={500} />
                 </button>
               </div>
             </div>

@@ -18,6 +18,8 @@ export default function Navbar() {
   const router = useRouter()
   const [sessionUser, setSessionUser] = useState<SessionUser | null>(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+  const isHomePage = pathname === '/'
 
   useEffect(() => {
     let isMounted = true
@@ -37,6 +39,28 @@ export default function Navbar() {
       isMounted = false
     }
   }, [pathname])
+
+  // ホーム画面でのスクロール検知
+  useEffect(() => {
+    if (!isHomePage) {
+      setIsScrolled(true)
+      return
+    }
+
+    const handleScroll = () => {
+      // ヒーローセクションの高さ（約700px）を超えたら表示
+      const scrollThreshold = 500
+      setIsScrolled(window.scrollY > scrollThreshold)
+    }
+
+    // 初期状態を設定
+    handleScroll()
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [isHomePage])
 
   const navLinks = [
     { href: '/', label: 'ホーム' },
@@ -58,8 +82,15 @@ export default function Navbar() {
     router.refresh()
   }
 
+  // ホーム画面ではスクロールしていないときは非表示
+  const shouldShow = !isHomePage || isScrolled
+
   return (
-    <nav className="sticky top-0 z-50 bg-white shadow-md py-2">
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 bg-white shadow-md py-2 transition-transform duration-300 ${
+        shouldShow ? 'translate-y-0' : '-translate-y-full'
+      }`}
+    >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-11">
           {/* 左端: アイコン + ロゴ画像 */}

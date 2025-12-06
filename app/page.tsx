@@ -1,11 +1,13 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { getPosts, getUsers, getRecruitmentPosts } from '@/lib/data'
+import { getPosts, getUsers, getRecruitmentPosts, getTopics } from '@/lib/data'
 import EventCard from '@/components/EventCard'
 import PostGalleryCard from '@/components/PostGalleryCard'
 import { getCurrentUser } from '@/lib/auth'
 import HeroSection from '@/components/HeroSection'
 import AdventureDiarySection from '@/components/AdventureDiarySection'
+import RecruitmentSection from '@/components/RecruitmentSection'
+import TavernSection from '@/components/TavernSection'
 
 const HERO_STORIES = [
   {
@@ -35,11 +37,12 @@ const HERO_STORIES = [
 ]
 
 export default async function Home() {
-  const [posts, recruitmentPosts, users, currentUser] = await Promise.all([
+  const [posts, recruitmentPosts, users, currentUser, topics] = await Promise.all([
     getPosts(),
     getRecruitmentPosts(),
     getUsers(),
     getCurrentUser(),
+    getTopics(true), // アクティブなトピックのみ取得
   ])
   const userMap = users.reduce<Record<string, (typeof users)[number]>>((acc, user) => {
     acc[user.id] = user
@@ -306,6 +309,12 @@ export default async function Home() {
       {/* 冒険日誌の新着セクション */}
       <AdventureDiarySection posts={activityPosts} users={users} />
 
+      {/* ボランティア募集の新着セクション */}
+      <RecruitmentSection posts={recruitmentPosts} users={users} />
+
+      {/* 冒険者の酒場セクション */}
+      <TavernSection topics={topics} />
+
       {/* 既存のコンテンツ */}
       <div className="container mx-auto px-4 py-10">
         {/* Hero */}
@@ -455,28 +464,6 @@ export default async function Home() {
             ))}
           </div>
         )}
-      </section>
-
-      {/* 冒険者の酒場 CTA */}
-      <section className="mt-12 rounded-3xl bg-gradient-to-r from-amber-500 to-orange-500 p-8 text-white shadow-lg">
-        <h2 className="text-3xl font-bold">冒険者の酒場</h2>
-        <p className="mt-4 text-white/90">
-          ボランティア参加の有無に関わらず、みんなでテーマについて語り合いましょう。週替わりのテーマにコメントを残して、他の冒険者との交流を楽しんでください。
-        </p>
-        <div className="mt-6 flex flex-wrap gap-4">
-          <Link
-            href="/topics"
-            className="rounded-full bg-white/90 px-6 py-3 font-semibold text-amber-700 hover:bg-white"
-          >
-            酒場に行く
-          </Link>
-          <Link
-            href="/topics"
-            className="rounded-full border border-white/30 px-6 py-3 font-semibold text-white hover:bg-white/10"
-          >
-            テーマを見る
-          </Link>
-        </div>
       </section>
 
       {/* My Page CTA */}
