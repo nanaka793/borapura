@@ -121,7 +121,7 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
         <div className="container mx-auto px-4 w-full h-full">
           <div className="max-w-6xl mx-auto h-full relative">
             {/* タイトル */}
-            <div className="text-center mb-8 md:mb-12" style={{ top: '%', transform: 'translateY(-50%)', position: 'absolute', width: '100%' }}>
+            <div className="text-center mb-8 md:mb-12" style={{ top: '10%', transform: 'translateY(-50%)', position: 'absolute', width: '100%' }}>
               <p className="text-sm md:text-base font-semibold text-gray-700 mb-2">
                 先人のボランティア活動記録
               </p>

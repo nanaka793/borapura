@@ -3,18 +3,27 @@
 @tailwind utilities;
 
 :root {
-  /* テキストカラー: #09314E */
-  --foreground-rgb: 9, 49, 78;
-  /* ベースカラー: #EFE9DC */
-  --background-start-rgb: 239, 233, 220;
-  --background-end-rgb: 239, 233, 220;
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background-color: rgb(var(--background-start-rgb));
-  font-family: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3',
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
 }
 
 @layer utilities {
@@ -23,56 +32,17 @@ body {
   }
 }
 
-@layer base {
-  h1, h2, h3, h4, h5, h6 {
-    letter-spacing: 0.03em;
+/* お酒のボトル斜めスライドアニメーション */
+@keyframes slideDiagonal {
+  0%, 100% {
+    transform: translateX(-10%) translateY(10%);
+  }
+  50% {
+    transform: translateX(-25%) translateY(0%);
   }
 }
 
-/* スライドアウトアニメーション */
-@keyframes slide-out-left {
-  0% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-}
-
-@keyframes slide-out-right {
-  0% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-}
-
-/* ポップアップアニメーション */
-@keyframes popup-in {
-  0% {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.animate-slide-out-left {
-  animation: slide-out-left 0.5s ease-out forwards;
-}
-
-.animate-slide-out-right {
-  animation: slide-out-right 0.5s ease-out forwards;
-}
-
-.animate-popup-in {
-  animation: popup-in 0.5s ease-out forwards;
+.animate-slide-diagonal {
+  animation: slideDiagonal 8s ease-in-out infinite;
 }
 
