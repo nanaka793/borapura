@@ -212,7 +212,12 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
                           className="object-cover"
                         />
                       ) : (
-                        <div className="absolute inset-0 bg-gradient-to-br from-yellow-200 to-yellow-400" />
+                        <div 
+                          className="absolute inset-0" 
+                          style={{ 
+                            background: 'linear-gradient(to bottom right, #B8CDD5, #9BB5C0)' 
+                          }} 
+                        />
                       )}
                       
                       {/* オーバーレイ（グラデーション） */}

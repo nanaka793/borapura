@@ -5,6 +5,13 @@ import { useRouter } from 'next/navigation'
 import { TopicComment } from '@/lib/types'
 import Avatar from './Avatar'
 
+interface SessionUser {
+  id: string
+  name: string
+  email: string
+  avatar?: string
+}
+
 interface TopicCommentSectionProps {
   topicId: string
   initialComments: TopicComment[]
@@ -20,13 +27,28 @@ export default function TopicCommentSection({
   const [authorName, setAuthorName] = useState('')
   const [loading, setLoading] = useState(false)
   const [likeLoadingId, setLikeLoadingId] = useState<string | null>(null)
+  const [currentUser, setCurrentUser] = useState<SessionUser | null>(null)
 
   // initialCommentsが変更されたら状態を更新
   useEffect(() => {
     setComments(initialComments)
   }, [initialComments])
 
-  const postComment = async (payload: { content: string; author: string }) => {
+  // ログイン状態を取得
+  useEffect(() => {
+    const fetchSession = async () => {
+      try {
+        const res = await fetch('/api/auth/session', { cache: 'no-store' })
+        const data = await res.json()
+        setCurrentUser(data.user)
+      } catch {
+        setCurrentUser(null)
+      }
+    }
+    fetchSession()
+  }, [])
+
+  const postComment = async (payload: { content: string; author?: string }) => {
     const response = await fetch(`/api/topics/${topicId}/comments`, {
       method: 'POST',
       headers: {
@@ -45,17 +67,32 @@ export default function TopicCommentSection({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!newComment.trim() || !authorName.trim()) {
-      alert('お名前とコメントを入力してください')
+    
+    // バリデーション
+    if (!newComment.trim()) {
+      alert('コメントを入力してください')
+      return
+    }
+    
+    // ログインしていない場合は名前が必須
+    if (!currentUser && !authorName.trim()) {
+      alert('お名前を入力してください')
       return
     }
 
     setLoading(true)
     try {
-      const comment = await postComment({
+      // ログインしている場合はauthorを送信しない（API側でユーザー名を使用）
+      // ログインしていない場合はauthorを送信する
+      const payload: { content: string; author?: string } = {
         content: newComment,
-        author: authorName,
-      })
+      }
+      
+      if (!currentUser) {
+        payload.author = authorName
+      }
+      
+      const comment = await postComment(payload)
       // 新しいコメントを追加
       setComments((prev) => [...prev, comment])
       setNewComment('')
@@ -99,16 +136,22 @@ export default function TopicCommentSection({
   return (
     <div>
       <form onSubmit={handleSubmit} className="mb-8 bg-gray-50 rounded-lg p-6">
-        <div className="mb-4">
-          <input
-            type="text"
-            placeholder="お名前"
-            value={authorName}
-            onChange={(e) => setAuthorName(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-2 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            required
-          />
-        </div>
+        {currentUser ? (
+          <div className="mb-4 rounded-lg bg-primary-50 px-4 py-3 text-primary-700">
+            {currentUser.name} として投稿します
+          </div>
+        ) : (
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="お名前"
+              value={authorName}
+              onChange={(e) => setAuthorName(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-2 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              required
+            />
+          </div>
+        )}
         <div className="mb-4">
           <textarea
             placeholder="コメントを入力..."

@@ -62,6 +62,28 @@ export default function Navbar() {
     }
   }, [isHomePage])
 
+  // テーマカラーのマッピング
+  const themeColors: Record<string, { bg: string; text: string }> = {
+    '/': { bg: '#F7C215', text: '#FFFFFF' }, // ホーム - 黄色（明るいので黒文字）
+    '/posts': { bg: '#57AABC', text: '#FFFFFF' }, // 冒険日誌 - 青（白文字）
+    '/events': { bg: '#799A0E', text: '#FFFFFF' }, // ボランティア募集 - 緑（白文字）
+    '/topics': { bg: '#87354F', text: '#FFFFFF' }, // 冒険者の酒場 - 赤紫（白文字）
+    '/users': { bg: '#626262', text: '#FFFFFF' }, // 冒険者リスト - グレー（白文字）
+    '/mypage': { bg: '#0B1024', text: '#FFFFFF' }, // マイキャンプ - ほぼ黒（白文字）
+  }
+
+  // 現在のパスからテーマカラーを取得
+  const getThemeColor = (path: string) => {
+    // パスに基づいてテーマカラーを判定
+    if (path === '/') return themeColors['/']
+    if (path.startsWith('/posts')) return themeColors['/posts']
+    if (path.startsWith('/events')) return themeColors['/events']
+    if (path.startsWith('/topics')) return themeColors['/topics']
+    if (path.startsWith('/users')) return themeColors['/users']
+    if (path.startsWith('/mypage')) return themeColors['/mypage']
+    return null
+  }
+
   const navLinks = [
     { href: '/', label: 'ホーム' },
     { href: '/posts', label: '冒険日誌' },
@@ -120,28 +142,70 @@ export default function Navbar() {
 
           {/* デスクトップ: 通常のナビゲーション */}
           <div className="hidden md:flex items-center gap-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors ${
-                  isActive(link.href)
-                    ? 'bg-primary-100 text-primary-700'
-                    : 'text-gray-600 hover:text-primary-600'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const active = isActive(link.href)
+              const theme = themeColors[link.href]
+              
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="rounded-md px-4 py-2 text-sm font-semibold transition-colors"
+                  style={
+                    active && theme
+                      ? {
+                          backgroundColor: `${theme.bg}E6`, // 透明度90%（E6は16進数で約90%）
+                          color: theme.text,
+                        }
+                      : {
+                          color: '#4B5563', // text-gray-600
+                        }
+                  }
+                  onMouseEnter={(e) => {
+                    if (!active && theme) {
+                      e.currentTarget.style.backgroundColor = `${theme.bg}1A` // ホバー時は透明度10%
+                      e.currentTarget.style.color = '#4B5563' // ホバー時はグレーのまま
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!active) {
+                      e.currentTarget.style.backgroundColor = ''
+                      e.currentTarget.style.color = '#4B5563'
+                    }
+                  }}
+                >
+                  {link.label}
+                </Link>
+              )
+            })}
             {sessionUser ? (
               <>
                 <Link
                   href="/mypage"
-                  className={`flex items-center gap-2 rounded-full border border-transparent px-3 py-1.5 text-sm font-semibold transition ${
-                    isActive('/mypage')
-                      ? 'border-primary-200 text-primary-700'
-                      : 'text-gray-600 hover:text-primary-600'
-                  }`}
+                  className="flex items-center gap-2 rounded-full border border-transparent px-3 py-1.5 text-sm font-semibold transition"
+                  style={
+                    isActive('/mypage') && themeColors['/mypage']
+                      ? {
+                          backgroundColor: `${themeColors['/mypage'].bg}E6`,
+                          color: themeColors['/mypage'].text,
+                          borderColor: `${themeColors['/mypage'].bg}66`,
+                        }
+                      : {
+                          color: '#4B5563',
+                        }
+                  }
+                  onMouseEnter={(e) => {
+                    if (!isActive('/mypage') && themeColors['/mypage']) {
+                      e.currentTarget.style.backgroundColor = `${themeColors['/mypage'].bg}1A`
+                      e.currentTarget.style.color = '#4B5563' // ホバー時はグレーのまま
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive('/mypage')) {
+                      e.currentTarget.style.backgroundColor = ''
+                      e.currentTarget.style.color = '#4B5563'
+                    }
+                  }}
                 >
                   <Avatar src={sessionUser.avatar} name={sessionUser.name} size="sm" />
                   <span>マイキャンプ</span>
@@ -157,11 +221,17 @@ export default function Navbar() {
               <>
                 <Link
                   href="/login"
-                  className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors ${
+                  className="rounded-md px-4 py-2 text-sm font-semibold transition-colors"
+                  style={
                     isActive('/login')
-                      ? 'bg-primary-100 text-primary-700'
-                      : 'text-gray-600 hover:text-primary-600'
-                  }`}
+                      ? {
+                          backgroundColor: '#E5E7EB', // bg-gray-100相当
+                          color: '#374151', // text-gray-700相当
+                        }
+                      : {
+                          color: '#4B5563', // text-gray-600
+                        }
+                  }
                 >
                   ログイン
                 </Link>
@@ -181,12 +251,31 @@ export default function Navbar() {
             {sessionUser ? (
               <Link
                 href="/mypage"
-                className={`flex items-center gap-2 rounded-full border border-transparent px-3 py-1.5 text-sm font-semibold transition ${
-                  isActive('/mypage')
-                    ? 'border-primary-200 text-primary-700'
-                    : 'text-gray-600 hover:text-primary-600'
-                }`}
+                className="flex items-center gap-2 rounded-full border border-transparent px-3 py-1.5 text-sm font-semibold transition"
+                style={
+                  isActive('/mypage') && themeColors['/mypage']
+                    ? {
+                        backgroundColor: `${themeColors['/mypage'].bg}E6`,
+                        color: themeColors['/mypage'].text,
+                        borderColor: `${themeColors['/mypage'].bg}66`,
+                      }
+                    : {
+                        color: '#4B5563',
+                      }
+                }
                 onClick={() => setIsMobileMenuOpen(false)}
+                onMouseEnter={(e) => {
+                  if (!isActive('/mypage') && themeColors['/mypage']) {
+                    e.currentTarget.style.backgroundColor = `${themeColors['/mypage'].bg}1A`
+                    e.currentTarget.style.color = '#4B5563' // ホバー時はグレーのまま
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive('/mypage')) {
+                    e.currentTarget.style.backgroundColor = ''
+                    e.currentTarget.style.color = '#4B5563'
+                  }
+                }}
               >
                 <Avatar src={sessionUser.avatar} name={sessionUser.name} size="sm" />
                 <span className="hidden sm:inline">マイキャンプ</span>
@@ -194,11 +283,17 @@ export default function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className={`rounded-md px-3 py-1.5 text-sm font-semibold transition-colors ${
+                className="rounded-md px-3 py-1.5 text-sm font-semibold transition-colors"
+                style={
                   isActive('/login')
-                    ? 'bg-primary-100 text-primary-700'
-                    : 'text-gray-600 hover:text-primary-600'
-                }`}
+                    ? {
+                        backgroundColor: '#E5E7EB',
+                        color: '#374151',
+                      }
+                    : {
+                        color: '#4B5563',
+                      }
+                }
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 ログイン
@@ -234,29 +329,76 @@ export default function Navbar() {
         {isMobileMenuOpen && (
           <div className="md:hidden border-t border-gray-200 py-4">
             <div className="flex flex-col gap-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors ${
-                    isActive(link.href)
-                      ? 'bg-primary-100 text-primary-700'
-                      : 'text-gray-600 hover:text-primary-600 hover:bg-gray-50'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                const active = isActive(link.href)
+                const theme = themeColors[link.href]
+                
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="rounded-md px-4 py-2 text-sm font-semibold transition-colors"
+                    style={
+                      active && theme
+                        ? {
+                            backgroundColor: `${theme.bg}E6`,
+                            color: theme.text,
+                          }
+                        : {
+                            color: '#4B5563',
+                          }
+                    }
+                    onMouseEnter={(e) => {
+                      if (!active && theme) {
+                        e.currentTarget.style.backgroundColor = `${theme.bg}1A`
+                        e.currentTarget.style.color = '#4B5563' // ホバー時はグレーのまま
+                      } else if (!active) {
+                        e.currentTarget.style.backgroundColor = '#F9FAFB' // bg-gray-50
+                        e.currentTarget.style.color = '#4B5563'
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!active) {
+                        e.currentTarget.style.backgroundColor = ''
+                        e.currentTarget.style.color = '#4B5563'
+                      }
+                    }}
+                  >
+                    {link.label}
+                  </Link>
+                )
+              })}
               {sessionUser && (
                 <Link
                   href="/mypage#friends"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors ${
-                    isActive('/mypage')
-                      ? 'bg-emerald-100 text-emerald-700'
-                      : 'text-gray-600 hover:text-primary-600 hover:bg-gray-50'
-                  }`}
+                  className="rounded-md px-4 py-2 text-sm font-semibold transition-colors"
+                  style={
+                    isActive('/mypage') && themeColors['/mypage']
+                      ? {
+                          backgroundColor: `${themeColors['/mypage'].bg}E6`,
+                          color: themeColors['/mypage'].text,
+                        }
+                      : {
+                          color: '#4B5563',
+                        }
+                  }
+                  onMouseEnter={(e) => {
+                    if (!isActive('/mypage') && themeColors['/mypage']) {
+                      e.currentTarget.style.backgroundColor = `${themeColors['/mypage'].bg}1A`
+                      e.currentTarget.style.color = '#4B5563' // ホバー時はグレーのまま
+                    } else if (!isActive('/mypage')) {
+                      e.currentTarget.style.backgroundColor = '#F9FAFB'
+                      e.currentTarget.style.color = '#4B5563'
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive('/mypage')) {
+                      e.currentTarget.style.backgroundColor = ''
+                      e.currentTarget.style.color = '#4B5563'
+                    }
+                  }}
                 >
                   旅の仲間リスト
                 </Link>

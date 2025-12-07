@@ -45,15 +45,24 @@ export async function POST(
     const body = await request.json()
     const { content, author } = body
 
-    if (!content || !author) {
+    // 認証済みユーザーを取得（オプション）
+    const currentUser = await getCurrentUser()
+    
+    // バリデーション: ログインしていない場合はauthorが必須
+    if (!content) {
       return NextResponse.json(
-        { error: 'コメントとお名前は必須です' },
+        { error: 'コメントは必須です' },
+        { status: 400 }
+      )
+    }
+    
+    if (!currentUser && !author) {
+      return NextResponse.json(
+        { error: 'ログインしていない場合はお名前の入力が必要です' },
         { status: 400 }
       )
     }
 
-    // 認証済みユーザーを取得（オプション）
-    const currentUser = await getCurrentUser()
     const authorId = currentUser?.id
     const commentAuthor = currentUser?.name || author
 

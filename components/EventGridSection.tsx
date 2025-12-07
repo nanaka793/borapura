@@ -7,9 +7,10 @@ import TagFilterBar from './TagFilterBar'
 
 interface EventGridSectionProps {
   posts: Post[]
+  showActiveOnly?: boolean
 }
 
-export default function EventGridSection({ posts }: EventGridSectionProps) {
+export default function EventGridSection({ posts, showActiveOnly = false }: EventGridSectionProps) {
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
   const [selectedStyles, setSelectedStyles] = useState<string[]>([])
 
@@ -31,6 +32,19 @@ export default function EventGridSection({ posts }: EventGridSectionProps) {
 
   const filteredPosts = useMemo(() => {
     let result = posts
+    
+    // 募集中のみフィルター
+    if (showActiveOnly) {
+      const now = new Date()
+      now.setHours(0, 0, 0, 0) // 時刻を00:00:00にリセット
+      result = result.filter((post) => {
+        if (!post.period) return false // periodがない場合は除外
+        const deadline = new Date(post.period)
+        deadline.setHours(0, 0, 0, 0) // 時刻を00:00:00にリセット
+        return deadline >= now // 締め切り日が今日以降
+      })
+    }
+    
     if (selectedTag !== null) {
       result = result.filter((post) => post.tags?.includes(selectedTag))
     }
@@ -41,7 +55,7 @@ export default function EventGridSection({ posts }: EventGridSectionProps) {
       })
     }
     return result
-  }, [posts, selectedTag, selectedStyles])
+  }, [posts, selectedTag, selectedStyles, showActiveOnly])
 
   const handleTagSelect = (tag: string | null) => {
     setSelectedTag((prev) => (prev === tag ? null : tag))
@@ -58,33 +72,62 @@ export default function EventGridSection({ posts }: EventGridSectionProps) {
       <TagFilterBar tags={availableTags} selectedTag={selectedTag} onSelect={handleTagSelect} />
 
       {availableStyles.length > 0 && (
-        <div className="mb-2 flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => setSelectedStyles([])}
-            className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
-              selectedStyles.length === 0
-                ? 'border-primary-600 bg-primary-600 text-white shadow'
-                : 'border-gray-200 bg-white text-gray-600 hover:border-primary-300 hover:text-primary-700'
-            }`}
-          >
-            募集要件指定なし
-          </button>
+        <div className="mb-6 flex flex-wrap gap-3">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={selectedStyles.length === 0}
+              onChange={() => setSelectedStyles([])}
+              className="sr-only"
+            />
+            <div
+              className={`flex items-center justify-center w-5 h-5 rounded border-2 transition ${
+                selectedStyles.length === 0
+                  ? 'bg-primary-600 border-primary-600'
+                  : 'bg-white border-gray-300'
+              }`}
+            >
+              {selectedStyles.length === 0 && (
+                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+            </div>
+            <span className={`text-sm font-semibold ${
+              selectedStyles.length === 0 ? 'text-primary-600' : 'text-gray-600'
+            }`}>
+              募集要件指定なし
+            </span>
+          </label>
           {availableStyles.map((style) => {
             const isActive = selectedStyles.includes(style)
             return (
-              <button
-                key={style}
-                type="button"
-                onClick={() => handleStyleToggle(style)}
-                className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
-                  isActive
-                    ? 'border-primary-600 bg-primary-50 text-primary-700 shadow-sm'
-                    : 'border-gray-200 bg-white text-gray-600 hover:border-primary-300 hover:text-primary-700'
-                }`}
-              >
-                {style}
-              </button>
+              <label key={style} className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isActive}
+                  onChange={() => handleStyleToggle(style)}
+                  className="sr-only"
+                />
+                <div
+                  className={`flex items-center justify-center w-5 h-5 rounded border-2 transition ${
+                    isActive
+                      ? 'bg-primary-600 border-primary-600'
+                      : 'bg-white border-gray-300 hover:border-primary-400'
+                  }`}
+                >
+                  {isActive && (
+                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </div>
+                <span className={`text-sm font-medium ${
+                  isActive ? 'text-primary-700' : 'text-gray-600'
+                }`}>
+                  {style}
+                </span>
+              </label>
             )
           })}
         </div>
