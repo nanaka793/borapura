@@ -8,6 +8,9 @@ import TavernSection from '@/components/TavernSection'
 import AdventurerListSection from '@/components/AdventurerListSection'
 import MyPageSection from '@/components/MyPageSection'
 
+// このページを動的レンダリングとして明示的に指定
+export const dynamic = 'force-dynamic'
+
 export default async function Home() {
   const [posts, recruitmentPosts, users, currentUser, topics] = await Promise.all([
     getPosts(),

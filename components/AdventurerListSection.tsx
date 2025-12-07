@@ -240,7 +240,7 @@ export default function AdventurerListSection({ users, currentUserPostCount }: A
                 ボランティア活動を通して人と人のつながりを創り出す勇者...
               </p>
               <p className="text-base md:text-lg leading-relaxed mb-4">
-                それがこのボラプラの"冒険者"
+                それがこのボラプラの&ldquo;冒険者&rdquo;
               </p>
               <p className="text-base md:text-lg leading-relaxed mb-6">
                 冒険者レベルを上げながらさまざまなバッジを獲得し、

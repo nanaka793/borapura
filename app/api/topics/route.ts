@@ -3,12 +3,12 @@ import { getTopics } from '@/lib/data'
 
 // このAPIルートを動的レンダリングとして明示的に指定
 export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const fetchCache = 'force-no-store'
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = request.nextUrl
-    const activeOnly = searchParams.get('activeOnly') === 'true'
-    
+    const activeOnly = request.nextUrl.searchParams.get('activeOnly') === 'true'
     const topics = await getTopics(activeOnly)
     return NextResponse.json(topics)
   } catch (error) {
