@@ -8,6 +8,54 @@ interface MyPageSectionProps {
   currentUser: { id: string; name: string; avatar?: string } | null
 }
 
+// 星の装飾コンポーネント（クライアント側でのみランダム値を生成）
+function StarDecoration() {
+  const [stars, setStars] = useState<Array<{
+    left: number
+    top: number
+    width: number
+    height: number
+    opacity: number
+    delay: number
+    duration: number
+  }>>([])
+
+  useEffect(() => {
+    // クライアント側でのみランダム値を生成
+    setStars(
+      [...Array(30)].map(() => ({
+        left: Math.random() * 100,
+        top: Math.random() * 50,
+        width: Math.random() * 3 + 1,
+        height: Math.random() * 3 + 1,
+        opacity: Math.random() * 0.8 + 0.2,
+        delay: Math.random() * 3,
+        duration: Math.random() * 2 + 2,
+      }))
+    )
+  }, [])
+
+  return (
+    <div className="absolute inset-0 overflow-hidden" style={{ zIndex: 5 }}>
+      {stars.map((star, i) => (
+        <div
+          key={i}
+          className="absolute rounded-full bg-white animate-twinkle"
+          style={{
+            left: `${star.left}%`,
+            top: `${star.top}%`,
+            width: `${star.width}px`,
+            height: `${star.height}px`,
+            opacity: star.opacity,
+            animationDelay: `${star.delay}s`,
+            animationDuration: `${star.duration}s`
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
 export default function MyPageSection({ currentUser }: MyPageSectionProps) {
   const router = useRouter()
   const [isVisible, setIsVisible] = useState(false)
@@ -65,27 +113,7 @@ export default function MyPageSection({ currentUser }: MyPageSectionProps) {
       />
 
       {/* 星の装飾 */}
-      <div className="absolute inset-0 overflow-hidden" style={{ zIndex: 5 }}>
-        {[...Array(30)].map((_, i) => {
-          const delay = Math.random() * 3
-          const duration = Math.random() * 2 + 2
-          return (
-            <div
-              key={i}
-              className="absolute rounded-full bg-white animate-twinkle"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 50}%`,
-                width: `${Math.random() * 3 + 1}px`,
-                height: `${Math.random() * 3 + 1}px`,
-                opacity: Math.random() * 0.8 + 0.2,
-                animationDelay: `${delay}s`,
-                animationDuration: `${duration}s`
-              }}
-            />
-          )
-        })}
-      </div>
+      <StarDecoration />
 
       {/* コンテンツ */}
       <div className="relative z-10 container mx-auto px-4" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: '15vh', paddingBottom: '15vh' }}>

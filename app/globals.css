@@ -133,3 +133,81 @@ html {
 .section-slide-in.delay-4 {
   transition-delay: 0.4s;
 }
+
+/* 波に揺れるアニメーション（ヨットとヤシの木用） */
+@keyframes waveSway50 {
+  0%, 100% {
+    transform: translateY(-50%) translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-52%) translateX(2px) rotate(1deg);
+  }
+  50% {
+    transform: translateY(-48%) translateX(0) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-52%) translateX(-2px) rotate(-1deg);
+  }
+}
+
+@keyframes waveSway60 {
+  0%, 100% {
+    transform: translateY(-60%) translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-62%) translateX(2px) rotate(1deg);
+  }
+  50% {
+    transform: translateY(-58%) translateX(0) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-62%) translateX(-2px) rotate(-1deg);
+  }
+}
+
+.animate-wave-sway-50 {
+  animation: waveSway50 3s ease-in-out infinite;
+}
+
+.animate-wave-sway-60 {
+  animation: waveSway60 3s ease-in-out infinite;
+}
+
+/* 風に揺れるアニメーション（ロゴとテキスト用） */
+@keyframes windSway {
+  0%, 100% {
+    transform: translateX(-50%) translateY(-50%) translateX(0);
+  }
+  25% {
+    transform: translateX(-50%) translateY(-50%) translateX(6px);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-50%) translateX(0);
+  }
+  75% {
+    transform: translateX(-50%) translateY(-50%) translateX(-6px);
+  }
+}
+
+@keyframes windSwayText {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateX(-50%) translateY(0) translateX(5px);
+  }
+  50% {
+    transform: translateX(-50%) translateY(0) translateX(0);
+  }
+  75% {
+    transform: translateX(-50%) translateY(0) translateX(-5px);
+  }
+}
+
+.animate-wind-sway {
+  animation: windSway 4s ease-in-out infinite;
+}
+
+.animate-wind-sway-text {
+  animation: windSwayText 4s ease-in-out infinite;
+}

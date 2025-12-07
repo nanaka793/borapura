@@ -2,11 +2,13 @@ import Image from 'next/image'
 import { getPosts, getUsers, getRecruitmentPosts, getTopics } from '@/lib/data'
 import { getCurrentUser } from '@/lib/auth'
 import HeroSection from '@/components/HeroSection'
+import ThoughtSection from '@/components/ThoughtSection'
 import AdventureDiarySection from '@/components/AdventureDiarySection'
 import RecruitmentSection from '@/components/RecruitmentSection'
 import TavernSection from '@/components/TavernSection'
 import AdventurerListSection from '@/components/AdventurerListSection'
 import MyPageSection from '@/components/MyPageSection'
+import ClosingSection from '@/components/ClosingSection'
 
 // このページを動的レンダリングとして明示的に指定
 export const dynamic = 'force-dynamic'
@@ -27,37 +29,7 @@ export default async function Home() {
       <HeroSection />
 
       {/* このサイトへの想いセクション */}
-      <section className="relative w-full overflow-hidden">
-        {/* 背景画像 - 横幅いっぱいに表示、上端をヒーロー画面の下端に揃える */}
-        <div className="relative w-full" style={{ aspectRatio: 'auto' }}>
-          <Image
-            src="/beach-bg.png"
-            alt=""
-            width={1920}
-            height={1080}
-            className="w-full h-auto object-cover"
-            priority
-          />
-        </div>
-
-        {/* コンテンツ - 背景画像の上に重ねる */}
-        <div className="absolute inset-0 z-10 flex items-center justify-center">
-          <div className="container mx-auto px-4 w-full">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold text-textmain mb-6 text-center">
-                このサイトへの想い
-              </h2>
-              <div className="bg-white/90 rounded-lg p-8 md:p-12 shadow-lg">
-              <p className="text-lg md:text-xl text-gray-700 leading-relaxed whitespace-pre-wrap">
-                ここにこのサイトへの想いを記述します。
-                ボランティア活動を通じて、多くの人々がつながり、共に成長していく場を作りたいという想いを込めています。
-                一人ひとりの小さなアクションが、大きな変化につながることを信じています。
-              </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ThoughtSection />
 
       {/* このサイトでできることセクション */}
       <section className="relative w-full overflow-hidden">
@@ -74,46 +46,25 @@ export default async function Home() {
         </div>
 
         {/* コンテンツ - 背景画像の上に重ねる */}
-        <div className="absolute inset-0 z-10 flex items-center justify-center">
+        <div className="absolute inset-0 z-10 flex items-start justify-center pt-16 md:pt-24">
           <div className="container mx-auto px-4 w-full">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold text-textmain mb-8 text-center">
-                このサイトでできること
+            <div className="max-w-4xl mx-auto flex flex-col items-center justify-center gap-8">
+              {/* タイトル（背景の外） */}
+              <h2 className="text-3xl md:text-4xl font-bold text-textmain text-center">
+                ぼらぷら で できること
               </h2>
-              <div className="bg-white/90 rounded-lg p-8 md:p-12 shadow-lg">
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-xl md:text-2xl font-semibold text-primary-600 mb-3">
-                      冒険日誌を書く
-                    </h3>
-                    <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                      ボランティア活動の記録や体験を投稿できます。写真やメモを添えて、あなたの冒険を共有しましょう。
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="text-xl md:text-2xl font-semibold text-primary-600 mb-3">
-                      ボランティア募集を探す
-                    </h3>
-                    <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                      地域のボランティア活動やイベントを探して、参加したい活動を見つけることができます。
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="text-xl md:text-2xl font-semibold text-primary-600 mb-3">
-                      冒険者の酒場で交流
-                    </h3>
-                    <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                      週替わりのテーマについて、みんなでコメントを残して交流を楽しめます。ボランティア参加の有無に関わらず、誰でも参加できます。
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="text-xl md:text-2xl font-semibold text-primary-600 mb-3">
-                      冒険者同士でつながる
-                    </h3>
-                    <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                      他のユーザーのプロフィールを閲覧したり、友達として登録して、活動の輪を広げることができます。
-                    </p>
-                  </div>
+              
+              {/* 手紙のような白い背景（画像のみ） */}
+              <div className="bg-white rounded-lg shadow-2xl p-12 md:p-16 lg:p-20 transform rotate-[-2deg] hover:rotate-[-1deg] transition-transform duration-300">
+                <div className="transform scale-[1.3]">
+                  <Image
+                    src="/closing-illustration.png"
+                    alt=""
+                    width={800}
+                    height={600}
+                    className="w-full h-auto max-w-2xl object-contain"
+                    priority
+                  />
                 </div>
               </div>
             </div>
@@ -295,6 +246,9 @@ export default async function Home() {
       <MyPageSection 
         currentUser={currentUser ? { id: currentUser.id, name: currentUser.name, avatar: currentUser.avatar } : null}
       />
+
+      {/* 締めのコピーセクション */}
+      <ClosingSection />
     </div>
   )
 }

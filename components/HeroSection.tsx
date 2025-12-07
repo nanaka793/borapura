@@ -12,6 +12,14 @@ export default function HeroSection() {
     text: false,
   })
 
+  const [canSway, setCanSway] = useState({
+    palmTree: false,
+    yellowBoat: false,
+    whiteBoat: false,
+    logo: false,
+    text: false,
+  })
+
   useEffect(() => {
     // 順番にアニメーションを開始
     const timer1 = setTimeout(() => setIsVisible((prev) => ({ ...prev, palmTree: true })), 200)
@@ -20,12 +28,29 @@ export default function HeroSection() {
     const timer4 = setTimeout(() => setIsVisible((prev) => ({ ...prev, logo: true })), 1400)
     const timer5 = setTimeout(() => setIsVisible((prev) => ({ ...prev, text: true })), 1800)
 
+    // ポップアップアニメーション完了後に波のアニメーションを開始
+    // ヤシの木: 200ms + 700ms = 900ms
+    const swayTimer1 = setTimeout(() => setCanSway((prev) => ({ ...prev, palmTree: true })), 900)
+    // 黄色のヨット: 600ms + 700ms = 1300ms
+    const swayTimer2 = setTimeout(() => setCanSway((prev) => ({ ...prev, yellowBoat: true })), 1300)
+    // 白色のヨット: 1000ms + 700ms = 1700ms
+    const swayTimer3 = setTimeout(() => setCanSway((prev) => ({ ...prev, whiteBoat: true })), 1700)
+    // ロゴ: 1400ms + 700ms = 2100ms
+    const swayTimer4 = setTimeout(() => setCanSway((prev) => ({ ...prev, logo: true })), 2100)
+    // テキスト: 1800ms + 700ms = 2500ms
+    const swayTimer5 = setTimeout(() => setCanSway((prev) => ({ ...prev, text: true })), 2500)
+
     return () => {
       clearTimeout(timer1)
       clearTimeout(timer2)
       clearTimeout(timer3)
       clearTimeout(timer4)
       clearTimeout(timer5)
+      clearTimeout(swayTimer1)
+      clearTimeout(swayTimer2)
+      clearTimeout(swayTimer3)
+      clearTimeout(swayTimer4)
+      clearTimeout(swayTimer5)
     }
   }, [])
 
@@ -49,7 +74,7 @@ export default function HeroSection() {
           <div
             className={`absolute top-[38%] -translate-y-1/2 left-1/2 -translate-x-1/2 transition-all duration-700 ${
               isVisible.logo
-                ? 'opacity-100 scale-100'
+                ? `opacity-100 scale-100 ${canSway.logo ? 'animate-wind-sway' : ''}`
                 : 'opacity-0 scale-75'
             }`}
             style={{ transitionDelay: '200ms' }}
@@ -67,7 +92,7 @@ export default function HeroSection() {
           <div
             className={`absolute top-[45%] -translate-y-1/2 left-1/2 -translate-x-1/2 transition-all duration-700 ${
               isVisible.text
-                ? 'opacity-100 translate-y-0'
+                ? `opacity-100 translate-y-0 ${canSway.text ? 'animate-wind-sway-text' : ''}`
                 : 'opacity-0 translate-y-4'
             }`}
             style={{ transitionDelay: '600ms' }}
@@ -79,9 +104,9 @@ export default function HeroSection() {
 
           {/* ヤシの木（左側、海と空の境目） */}
           <div
-            className={`absolute left-[12%] top-[55%] -translate-y-1/2 transition-all duration-700 ${
+            className={`absolute left-[12%] top-[55%] transition-all duration-700 ${
               isVisible.palmTree
-                ? 'opacity-100 translate-y-[-50%]'
+                ? `opacity-100 translate-y-[-50%] ${canSway.palmTree ? 'animate-wave-sway-50' : ''}`
                 : 'opacity-0 translate-y-[-30%]'
             }`}
             style={{ transitionDelay: '1000ms' }}
@@ -97,9 +122,9 @@ export default function HeroSection() {
 
           {/* 黄色のヨット（中央左、海と空の境目） */}
           <div
-            className={`absolute left-[38%] top-[66%] -translate-y-1/2 transition-all duration-700 ${
+            className={`absolute left-[38%] top-[66%] transition-all duration-700 ${
               isVisible.yellowBoat
-                ? 'opacity-100 translate-y-[-60%]'
+                ? `opacity-100 translate-y-[-60%] ${canSway.yellowBoat ? 'animate-wave-sway-60' : ''}`
                 : 'opacity-0 translate-y-[-30%]'
             }`}
             style={{ transitionDelay: '1400ms' }}
@@ -115,9 +140,9 @@ export default function HeroSection() {
 
           {/* 白色のヨット（中央右、海と空の境目） */}
           <div
-            className={`absolute right-[10%] top-[66%] -translate-y-1/2 transition-all duration-700 ${
+            className={`absolute right-[10%] top-[66%] transition-all duration-700 ${
               isVisible.whiteBoat
-                ? 'opacity-100 translate-y-[-50%]'
+                ? `opacity-100 translate-y-[-50%] ${canSway.whiteBoat ? 'animate-wave-sway-50' : ''}`
                 : 'opacity-0 translate-y-[-30%]'
             }`}
             style={{ transitionDelay: '1800ms' }}

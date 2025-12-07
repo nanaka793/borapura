@@ -6,6 +6,9 @@ import Footer from '@/components/Footer'
 export const metadata: Metadata = {
   title: 'ボランティアプラットフォーム',
   description: 'ボランティア同士がつながり、冒険日誌を共有するプラットフォーム',
+  icons: {
+    icon: '/borapura-icon.png',
+  },
 }
 
 export default function RootLayout({
