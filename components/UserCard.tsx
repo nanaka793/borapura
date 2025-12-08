@@ -14,6 +14,7 @@ interface UserCardProps {
   postCount: number
   badge?: string
   badges?: string[]
+  themeColor?: string
 }
 
 export default function UserCard({
@@ -27,7 +28,9 @@ export default function UserCard({
   postCount,
   badge,
   badges,
+  themeColor,
 }: UserCardProps) {
+  const defaultThemeColor = themeColor || '#626262'
   const router = useRouter()
 
   const handleCardClick = () => {
@@ -49,20 +52,21 @@ export default function UserCard({
       <div className="flex items-center gap-4 mb-4">
         <Avatar src={avatar} name={name} size="md" />
         <div>
-          <h3 className="text-2xl font-bold text-primary-600">{name}</h3>
+          <h3 className="text-2xl font-bold" style={{ color: defaultThemeColor }}>{name}</h3>
           {location && <p className="text-sm text-gray-500">📍 {location}</p>}
         </div>
       </div>
       {headline && <p className="text-gray-600 mb-2">{headline}</p>}
       <p className="text-sm text-gray-500 mb-4">
-        <span className="font-semibold text-primary-600">Lv : {postCount}</span>
+        <span className="font-semibold" style={{ color: defaultThemeColor }}>Lv : {postCount}</span>
         <span className="text-gray-400 ml-2">(投稿数{postCount}件)</span>
       </p>
       <div className="flex flex-wrap gap-2 mb-4">
         {interests.slice(0, 3).map((tag) => (
           <span
             key={tag}
-            className="rounded-full bg-primary-50 px-3 py-1 text-sm font-medium text-primary-700"
+            className="rounded-full px-3 py-1 text-sm font-medium"
+            style={{ backgroundColor: `${defaultThemeColor}15`, color: defaultThemeColor }}
           >
             #{tag}
           </span>
@@ -78,14 +82,15 @@ export default function UserCard({
           <button
             type="button"
             onClick={handleWebsiteClick}
-            className="inline-flex items-center gap-1 text-sm text-primary-600 hover:text-primary-700 hover:underline"
+            className="inline-flex items-center gap-1 text-sm hover:underline"
+            style={{ color: defaultThemeColor }}
           >
             <span>🔗</span>
             <span className="truncate max-w-[200px]">Webサイト</span>
           </button>
         </div>
       )}
-      <div className="text-primary-600 hover:text-primary-700 font-semibold">
+      <div className="font-semibold" style={{ color: defaultThemeColor }}>
         プロフィールを見る →
       </div>
     </div>

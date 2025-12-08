@@ -5,6 +5,7 @@ import type { Post } from '@/lib/types'
 
 interface EventCardProps {
   post: Post
+  themeColor?: string
 }
 
 const EVENT_GRADIENTS = [
@@ -22,11 +23,40 @@ function getEventGradient(key: string) {
   return EVENT_GRADIENTS[Math.abs(hash) % EVENT_GRADIENTS.length]
 }
 
-export default function EventCard({ post }: EventCardProps) {
+function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null
+}
+
+export default function EventCard({ post, themeColor }: EventCardProps) {
   const router = useRouter()
   const eventDate = new Date(post.createdAt)
-  const gradient = getEventGradient(post.id)
   const coverImage = post.images && post.images.length > 0 ? post.images[0] : null
+  
+  // テーマカラーがある場合はそれを使用、ない場合は従来のグラデーション
+  const getGradientStyle = () => {
+    if (themeColor) {
+      // テーマカラーから少し明るい色を作成
+      const rgb = hexToRgb(themeColor)
+      if (rgb) {
+        const lighterRgb = {
+          r: Math.min(255, rgb.r + 30),
+          g: Math.min(255, rgb.g + 30),
+          b: Math.min(255, rgb.b + 30),
+        }
+        return `linear-gradient(135deg, ${themeColor}, rgb(${lighterRgb.r}, ${lighterRgb.g}, ${lighterRgb.b}))`
+      }
+    }
+    return getEventGradient(post.id)
+  }
+  
+  const gradient = getGradientStyle()
   const coverStyle = coverImage
     ? {
         backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.65)), url(${coverImage})`,
@@ -42,7 +72,7 @@ export default function EventCard({ post }: EventCardProps) {
   return (
     <div
       onClick={handleClick}
-      className="group relative block aspect-[4/5] cursor-pointer overflow-hidden rounded-[32px] text-white shadow-lg transition hover:-translate-y-1 hover:shadow-2xl"
+      className="group relative block aspect-[4/5] cursor-pointer overflow-hidden rounded-[32px] text-white drop-shadow-lg transition hover:-translate-y-1 hover:drop-shadow-2xl"
       style={coverStyle}
     >
       <div className="absolute inset-0 flex flex-col justify-between p-5">

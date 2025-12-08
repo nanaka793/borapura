@@ -190,12 +190,23 @@ export default function MyPageSection({ currentUser }: MyPageSectionProps) {
               >
                 <div className="flex items-center gap-4 mb-4">
                   <div 
-                    className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-2xl font-bold text-white"
-                    style={{
-                      boxShadow: '0 4px 12px rgba(255, 140, 0, 0.5)'
-                    }}
+                    className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center overflow-hidden drop-shadow-md"
                   >
-                    {currentUser ? '🏕️' : '⭐'}
+                    {currentUser && currentUser.avatar ? (
+                      <img
+                        src={currentUser.avatar}
+                        alt={`${currentUser.name}のアイコン`}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <Image
+                        src="/borapura-icon.png"
+                        alt="ぼらぷら アイコン"
+                        width={64}
+                        height={64}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-white">

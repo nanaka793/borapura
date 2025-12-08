@@ -7,10 +7,10 @@ export async function POST(
   { params }: { params: Promise<{ id: string; commentId: string }> }
 ) {
   try {
-    const { commentId } = await params
+    const { id, commentId } = await params
     const result = await likeTopicComment(commentId)
     
-    revalidatePath(`/topics/${await params.then(p => p.id)}`)
+    revalidatePath(`/topics/${id}`)
     
     return NextResponse.json(result)
   } catch (error) {

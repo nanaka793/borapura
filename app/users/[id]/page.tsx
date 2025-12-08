@@ -53,9 +53,19 @@ export default async function UserProfilePage({ params }: PageProps) {
             <Avatar src={user.avatar} name={user.name} size="lg" />
             <div className="flex-1">
               <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <h1 className="text-4xl font-bold text-primary-600">
-                  {user.name}
-                </h1>
+                <div className="flex items-center gap-4">
+                  <h1 className="text-4xl font-bold text-primary-600">
+                    {user.name}
+                  </h1>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-2xl font-bold text-primary-600">
+                      Lv : {userPosts.length}
+                    </span>
+                    <span className="text-sm text-gray-500">
+                      (投稿数{userPosts.length}件)
+                    </span>
+                  </div>
+                </div>
                 {currentUser && (
                   <FriendButton
                     currentUserId={currentUser.id}
@@ -64,6 +74,7 @@ export default async function UserProfilePage({ params }: PageProps) {
                   />
                 )}
               </div>
+              {user.location && <p className="text-gray-500 mb-3">📍 {user.location}</p>}
               {(user.badges && user.badges.length > 0) || user.badge ? (
                 <div className="flex flex-wrap gap-2 mb-3">
                   {user.badges && user.badges.length > 0 ? (
@@ -87,7 +98,6 @@ export default async function UserProfilePage({ params }: PageProps) {
               {user.headline && (
                 <p className="text-gray-600 text-lg mb-2">{user.headline}</p>
               )}
-              {user.location && <p className="text-gray-500 mb-4">📍 {user.location}</p>}
               {user.bio && <p className="text-gray-600 whitespace-pre-wrap mb-4">{user.bio}</p>}
               
               {user.interests && user.interests.length > 0 && (
@@ -119,14 +129,6 @@ export default async function UserProfilePage({ params }: PageProps) {
                   </a>
                 </div>
               )}
-              <div className="mt-4 flex items-baseline gap-3">
-                <span className="text-2xl font-bold text-primary-600">
-                  Lv : {userPosts.length}
-                </span>
-                <span className="text-gray-500">
-                  (投稿数{userPosts.length}件)
-                </span>
-              </div>
             </div>
           </div>
         </div>

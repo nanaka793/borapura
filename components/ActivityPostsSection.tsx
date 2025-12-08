@@ -9,9 +9,10 @@ type ActivityPostWithAvatar = Post & { authorAvatar?: string }
 
 interface ActivityPostsSectionProps {
   posts: ActivityPostWithAvatar[]
+  themeColor?: string
 }
 
-export default function ActivityPostsSection({ posts }: ActivityPostsSectionProps) {
+export default function ActivityPostsSection({ posts, themeColor }: ActivityPostsSectionProps) {
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
 
   const availableTags = useMemo(() => {
@@ -31,9 +32,9 @@ export default function ActivityPostsSection({ posts }: ActivityPostsSectionProp
 
   return (
     <div className="space-y-6">
-      <TagFilterBar tags={availableTags} selectedTag={selectedTag} onSelect={handleTagSelect} />
+      <TagFilterBar tags={availableTags} selectedTag={selectedTag} onSelect={handleTagSelect} themeColor={themeColor} />
       {filteredPosts.length === 0 ? (
-        <div className="rounded-3xl bg-white/70 p-10 text-center shadow-inner">
+        <div className="rounded-3xl bg-white/85 p-10 text-center drop-shadow-lg">
           <p className="text-gray-500">このタグの冒険日誌はまだありません。</p>
         </div>
       ) : (
@@ -44,6 +45,7 @@ export default function ActivityPostsSection({ posts }: ActivityPostsSectionProp
               post={post}
               authorAvatar={post.authorAvatar}
               showTypeBadge={false}
+              themeColor={themeColor}
             />
           ))}
         </div>

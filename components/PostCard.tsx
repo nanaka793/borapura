@@ -5,9 +5,21 @@ import { useRouter } from 'next/navigation'
 import type { MouseEvent } from 'react'
 import { Post } from '@/lib/types'
 
+function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null
+}
+
 interface PostCardProps {
   post: Post
   chapterNumber?: number
+  themeColor?: string
 }
 
 const TYPE_BADGES: Record<string, { label: string; className: string }> = {
@@ -15,8 +27,25 @@ const TYPE_BADGES: Record<string, { label: string; className: string }> = {
   募集投稿: { label: 'ボランティア募集', className: 'bg-yellow-100 text-yellow-800' },
 }
 
-export default function PostCard({ post, chapterNumber }: PostCardProps) {
+export default function PostCard({ post, chapterNumber, themeColor }: PostCardProps) {
   const router = useRouter()
+  const defaultThemeColor = themeColor || '#0B1024'
+  
+  // テーマカラーからグラデーションを作成
+  const getGradientStyle = () => {
+    if (themeColor) {
+      const rgb = hexToRgb(themeColor)
+      if (rgb) {
+        const lighterRgb = {
+          r: Math.min(255, rgb.r + 30),
+          g: Math.min(255, rgb.g + 30),
+          b: Math.min(255, rgb.b + 30),
+        }
+        return `linear-gradient(135deg, ${themeColor}, rgb(${lighterRgb.r}, ${lighterRgb.g}, ${lighterRgb.b}))`
+      }
+    }
+    return 'linear-gradient(to bottom right, #f3f4f6, #e5e7eb)'
+  }
 
   const handleCardClick = () => {
     if (post.type === '募集投稿') {
@@ -56,21 +85,22 @@ export default function PostCard({ post, chapterNumber }: PostCardProps) {
               className="object-cover"
             />
           ) : (
-            <div className="h-full w-full bg-gradient-to-br from-gray-100 to-gray-200" />
+            <div className="h-full w-full" style={{ background: getGradientStyle() }} />
           )}
         </div>
       </div>
       <div className="flex items-start justify-between mb-4">
         <div className="space-y-2">
           {chapterNumber !== undefined && (
-            <p className="text-lg font-semibold text-primary-600">第{chapterNumber}章</p>
+            <p className="text-lg font-semibold" style={{ color: defaultThemeColor }}>第{chapterNumber}章</p>
           )}
           <h3 className="text-2xl font-bold text-gray-800">{post.title}</h3>
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <button
               type="button"
               onClick={handleAuthorClick}
-              className="font-semibold text-primary-600 hover:underline focus:outline-none"
+              className="font-semibold hover:underline focus:outline-none"
+              style={{ color: defaultThemeColor }}
             >
               {post.author}
             </button>

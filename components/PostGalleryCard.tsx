@@ -22,10 +22,22 @@ function getGradient(key: string) {
   return GRADIENTS[Math.abs(hash) % GRADIENTS.length]
 }
 
+function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null
+}
+
 interface PostGalleryCardProps {
   post: Post
   authorAvatar?: string
   showTypeBadge?: boolean
+  themeColor?: string
 }
 
 const TYPE_BADGES: Record<
@@ -48,11 +60,30 @@ export default function PostGalleryCard({
   post,
   authorAvatar,
   showTypeBadge = true,
+  themeColor,
 }: PostGalleryCardProps) {
   const router = useRouter()
-  const gradient = getGradient(post.category || post.id)
   const previewImage = post.images && post.images.length > 0 ? post.images[0] : null
   const typeInfo = TYPE_BADGES[post.type || '記録投稿'] || TYPE_BADGES['記録投稿']
+  
+  // テーマカラーがある場合はそれを使用、ない場合は従来のグラデーション
+  const getGradientStyle = () => {
+    if (themeColor) {
+      // テーマカラーから少し明るい色を作成
+      const rgb = hexToRgb(themeColor)
+      if (rgb) {
+        const lighterRgb = {
+          r: Math.min(255, rgb.r + 30),
+          g: Math.min(255, rgb.g + 30),
+          b: Math.min(255, rgb.b + 30),
+        }
+        return `linear-gradient(135deg, ${themeColor}, rgb(${lighterRgb.r}, ${lighterRgb.g}, ${lighterRgb.b}))`
+      }
+    }
+    return getGradient(post.category || post.id)
+  }
+  
+  const gradient = getGradientStyle()
 
   const handleCardClick = () => {
     router.push(`/posts/${post.id}`)
@@ -66,7 +97,7 @@ export default function PostGalleryCard({
   return (
     <div
       onClick={handleCardClick}
-      className="group relative block aspect-[4/5] overflow-hidden rounded-[32px] shadow-lg transition hover:-translate-y-1 hover:shadow-2xl cursor-pointer"
+      className="group relative block aspect-[4/5] overflow-hidden rounded-[32px] drop-shadow-lg transition hover:-translate-y-1 hover:drop-shadow-2xl cursor-pointer"
     >
       {showTypeBadge && (
         <div className="absolute right-4 top-4 z-10">

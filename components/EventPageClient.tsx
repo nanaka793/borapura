@@ -7,9 +7,10 @@ import EventHeader from './EventHeader'
 
 interface EventPageClientProps {
   events: Post[]
+  themeColor?: string
 }
 
-export default function EventPageClient({ events }: EventPageClientProps) {
+export default function EventPageClient({ events, themeColor }: EventPageClientProps) {
   const [showActiveOnly, setShowActiveOnly] = useState(false)
 
   const handleFilterChange = (value: boolean) => {
@@ -18,7 +19,7 @@ export default function EventPageClient({ events }: EventPageClientProps) {
 
   return (
     <>
-      <EventHeader onFilterChange={handleFilterChange} />
+      <EventHeader onFilterChange={handleFilterChange} themeColor={themeColor} />
       {events.length === 0 ? (
         <div className="rounded-3xl bg-white p-10 text-center shadow-lg">
           <p className="text-gray-500">
@@ -26,7 +27,7 @@ export default function EventPageClient({ events }: EventPageClientProps) {
           </p>
         </div>
       ) : (
-        <EventGridSection posts={events} showActiveOnly={showActiveOnly} />
+        <EventGridSection posts={events} showActiveOnly={showActiveOnly} themeColor={themeColor} />
       )}
     </>
   )

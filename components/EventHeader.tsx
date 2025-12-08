@@ -5,10 +5,12 @@ import { useState } from 'react'
 
 interface EventHeaderProps {
   onFilterChange: (showActiveOnly: boolean) => void
+  themeColor?: string
 }
 
-export default function EventHeader({ onFilterChange }: EventHeaderProps) {
+export default function EventHeader({ onFilterChange, themeColor }: EventHeaderProps) {
   const [showActiveOnly, setShowActiveOnly] = useState(false)
+  const defaultThemeColor = themeColor || '#799A0E'
 
   const handleToggle = (value: boolean) => {
     setShowActiveOnly(value)
@@ -16,8 +18,8 @@ export default function EventHeader({ onFilterChange }: EventHeaderProps) {
   }
 
   return (
-    <div className="mb-10 rounded-3xl bg-white p-8 shadow-lg">
-      <p className="text-sm font-semibold uppercase tracking-widest text-primary-600">
+    <div className="mb-10 rounded-3xl bg-white/85 p-8 drop-shadow-lg">
+      <p className="text-sm font-semibold uppercase tracking-widest" style={{ color: defaultThemeColor }}>
         Volunteer Opportunities
       </p>
       <h1 className="text-4xl font-bold text-gray-900">
@@ -28,12 +30,13 @@ export default function EventHeader({ onFilterChange }: EventHeaderProps) {
       </p>
       <div className="mt-6 flex flex-wrap items-center gap-4">
         {/* すべて表示 / 募集中のみフィルター */}
-        <div className="relative inline-flex rounded-full border-2 border-primary-600 bg-white p-1">
+        <div className="relative inline-flex rounded-full border-2 bg-white/85 p-1 drop-shadow-md" style={{ borderColor: defaultThemeColor }}>
           {/* スライドする背景 */}
           <div
-            className={`absolute top-1 bottom-1 rounded-full bg-primary-600 shadow-sm transition-all duration-300 ease-in-out ${
+            className={`absolute top-1 bottom-1 rounded-full shadow-sm transition-all duration-300 ease-in-out ${
               showActiveOnly ? 'left-1/2 right-1' : 'left-1 right-1/2'
             }`}
+            style={{ backgroundColor: defaultThemeColor }}
           />
           <button
             type="button"
@@ -41,8 +44,9 @@ export default function EventHeader({ onFilterChange }: EventHeaderProps) {
             className={`relative z-10 rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-300 ${
               !showActiveOnly
                 ? 'text-white'
-                : 'text-primary-600 hover:text-primary-700'
+                : ''
             }`}
+            style={!showActiveOnly ? {} : { color: defaultThemeColor }}
           >
             すべて表示
           </button>
@@ -52,15 +56,17 @@ export default function EventHeader({ onFilterChange }: EventHeaderProps) {
             className={`relative z-10 rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-300 ${
               showActiveOnly
                 ? 'text-white'
-                : 'text-primary-600 hover:text-primary-700'
+                : ''
             }`}
+            style={showActiveOnly ? {} : { color: defaultThemeColor }}
           >
             募集中のみ
           </button>
         </div>
         <Link
           href="/events/new"
-          className="rounded-full bg-primary-600 px-6 py-3 font-semibold text-white shadow-lg hover:bg-primary-700"
+          className="rounded-full px-6 py-3 font-semibold text-white shadow-lg hover:opacity-90"
+          style={{ backgroundColor: defaultThemeColor }}
         >
           募集を掲載する
         </Link>

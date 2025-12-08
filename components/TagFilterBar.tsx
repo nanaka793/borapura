@@ -4,9 +4,11 @@ interface TagFilterBarProps {
   tags: string[]
   selectedTag: string | null
   onSelect: (tag: string | null) => void
+  themeColor?: string
 }
 
-export default function TagFilterBar({ tags, selectedTag, onSelect }: TagFilterBarProps) {
+export default function TagFilterBar({ tags, selectedTag, onSelect, themeColor }: TagFilterBarProps) {
+  const defaultThemeColor = themeColor || '#57AABC' // Fallback for posts page
   if (tags.length === 0) {
     return null
   }
@@ -16,11 +18,12 @@ export default function TagFilterBar({ tags, selectedTag, onSelect }: TagFilterB
       <button
         type="button"
         onClick={() => onSelect(null)}
-        className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
+        className={`rounded-full border px-4 py-2 text-sm font-semibold transition drop-shadow-md ${
           selectedTag === null
-            ? 'border-primary-600 bg-primary-600 text-white shadow'
-            : 'border-gray-200 bg-white text-gray-600 hover:border-primary-300 hover:text-primary-700'
+            ? 'text-white'
+            : 'border-gray-200 bg-white/85 text-gray-600 hover:border-gray-300'
         }`}
+        style={selectedTag === null ? { borderColor: defaultThemeColor, backgroundColor: `${defaultThemeColor}D9` } : {}}
       >
         すべてのカテゴリー
       </button>
@@ -31,11 +34,12 @@ export default function TagFilterBar({ tags, selectedTag, onSelect }: TagFilterB
             key={tag}
             type="button"
             onClick={() => onSelect(tag)}
-            className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+            className={`rounded-full border px-4 py-2 text-sm font-medium transition drop-shadow-md ${
               isActive
-                ? 'border-primary-600 bg-primary-50 text-primary-700 shadow-sm'
-                : 'border-gray-200 bg-white text-gray-600 hover:border-primary-300 hover:text-primary-700'
+                ? ''
+                : 'border-gray-200 bg-white/85 text-gray-600 hover:border-gray-300'
             }`}
+            style={isActive ? { borderColor: defaultThemeColor, backgroundColor: `${defaultThemeColor}15`, color: defaultThemeColor } : {}}
           >
             #{tag}
           </button>

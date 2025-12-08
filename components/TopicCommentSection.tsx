@@ -115,19 +115,21 @@ export default function TopicCommentSection({
         { method: 'POST' }
       )
 
+      const data = await response.json()
+
       if (!response.ok) {
-        throw new Error('like failed')
+        throw new Error(data.error || 'いいねに失敗しました')
       }
 
-      const data = await response.json()
+      // 成功時は即座にUIを更新
       setComments((prev) =>
         prev.map((comment) =>
           comment.id === commentId ? { ...comment, likes: data.likes } : comment
         )
       )
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error liking comment:', error)
-      alert('コメントへのいいねに失敗しました')
+      alert(error.message || 'コメントへのいいねに失敗しました')
     } finally {
       setLikeLoadingId(null)
     }

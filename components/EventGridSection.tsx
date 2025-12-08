@@ -8,9 +8,10 @@ import TagFilterBar from './TagFilterBar'
 interface EventGridSectionProps {
   posts: Post[]
   showActiveOnly?: boolean
+  themeColor?: string
 }
 
-export default function EventGridSection({ posts, showActiveOnly = false }: EventGridSectionProps) {
+export default function EventGridSection({ posts, showActiveOnly = false, themeColor }: EventGridSectionProps) {
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
   const [selectedStyles, setSelectedStyles] = useState<string[]>([])
 
@@ -67,9 +68,11 @@ export default function EventGridSection({ posts, showActiveOnly = false }: Even
     )
   }
 
+  const defaultThemeColor = themeColor || '#799A0E' // Fallback for events page
+
   return (
     <div className="space-y-6">
-      <TagFilterBar tags={availableTags} selectedTag={selectedTag} onSelect={handleTagSelect} />
+      <TagFilterBar tags={availableTags} selectedTag={selectedTag} onSelect={handleTagSelect} themeColor={themeColor} />
 
       {availableStyles.length > 0 && (
         <div className="mb-6 flex flex-wrap gap-3">
@@ -81,11 +84,12 @@ export default function EventGridSection({ posts, showActiveOnly = false }: Even
               className="sr-only"
             />
             <div
-              className={`flex items-center justify-center w-5 h-5 rounded border-2 transition ${
+              className={`flex items-center justify-center w-5 h-5 rounded border-2 transition drop-shadow-sm ${
                 selectedStyles.length === 0
-                  ? 'bg-primary-600 border-primary-600'
-                  : 'bg-white border-gray-300'
+                  ? ''
+                  : 'bg-white/85 border-gray-300'
               }`}
+              style={selectedStyles.length === 0 ? { backgroundColor: `${defaultThemeColor}D9`, borderColor: defaultThemeColor } : {}}
             >
               {selectedStyles.length === 0 && (
                 <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,9 +97,12 @@ export default function EventGridSection({ posts, showActiveOnly = false }: Even
                 </svg>
               )}
             </div>
-            <span className={`text-sm font-semibold ${
-              selectedStyles.length === 0 ? 'text-primary-600' : 'text-gray-600'
-            }`}>
+            <span
+              className={`text-sm font-semibold ${
+                selectedStyles.length === 0 ? '' : 'text-gray-600'
+              }`}
+              style={selectedStyles.length === 0 ? { color: defaultThemeColor } : {}}
+            >
               募集要件指定なし
             </span>
           </label>
@@ -110,11 +117,12 @@ export default function EventGridSection({ posts, showActiveOnly = false }: Even
                   className="sr-only"
                 />
                 <div
-                  className={`flex items-center justify-center w-5 h-5 rounded border-2 transition ${
+                  className={`flex items-center justify-center w-5 h-5 rounded border-2 transition drop-shadow-sm ${
                     isActive
-                      ? 'bg-primary-600 border-primary-600'
-                      : 'bg-white border-gray-300 hover:border-primary-400'
+                      ? ''
+                      : 'bg-white/85 border-gray-300 hover:border-gray-400'
                   }`}
+                  style={isActive ? { backgroundColor: `${defaultThemeColor}D9`, borderColor: defaultThemeColor } : {}}
                 >
                   {isActive && (
                     <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,9 +130,12 @@ export default function EventGridSection({ posts, showActiveOnly = false }: Even
                     </svg>
                   )}
                 </div>
-                <span className={`text-sm font-medium ${
-                  isActive ? 'text-primary-700' : 'text-gray-600'
-                }`}>
+                <span
+                  className={`text-sm font-medium ${
+                    isActive ? '' : 'text-gray-600'
+                  }`}
+                  style={isActive ? { color: defaultThemeColor } : {}}
+                >
                   {style}
                 </span>
               </label>
@@ -134,13 +145,13 @@ export default function EventGridSection({ posts, showActiveOnly = false }: Even
       )}
 
       {filteredPosts.length === 0 ? (
-        <div className="rounded-3xl bg-white/70 p-10 text-center shadow-inner">
+        <div className="rounded-3xl bg-white/85 p-10 text-center drop-shadow-lg">
           <p className="text-gray-500">このタグの募集情報はまだありません。</p>
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {filteredPosts.map((post) => (
-            <EventCard key={post.id} post={post} />
+            <EventCard key={post.id} post={post} themeColor={themeColor} />
           ))}
         </div>
       )}

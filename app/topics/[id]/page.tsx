@@ -2,6 +2,18 @@ import { getTopic, getTopicComments } from '@/lib/data'
 import { notFound } from 'next/navigation'
 import TopicCommentSection from '@/components/TopicCommentSection'
 import Link from 'next/link'
+import Image from 'next/image'
+
+function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null
+}
 
 export default async function TopicDetailPage({
   params,
@@ -18,8 +30,21 @@ export default async function TopicDetailPage({
     notFound()
   }
 
+  const themeColor = '#87354F' // 冒険者の酒場のテーマカラー
+  // テーマカラーを落ち着いたトーンに調整（元の色と白を混ぜる）
+  const softenColor = (hex: string, whiteRatio: number = 0.75) => {
+    const rgb = hexToRgb(hex)
+    if (!rgb) return hex
+    // 元の色と白を混ぜる（whiteRatioが高いほど白に近づく）
+    const r = Math.round(rgb.r * (1 - whiteRatio) + 255 * whiteRatio)
+    const g = Math.round(rgb.g * (1 - whiteRatio) + 255 * whiteRatio)
+    const b = Math.round(rgb.b * (1 - whiteRatio) + 255 * whiteRatio)
+    return `rgb(${r}, ${g}, ${b})`
+  }
+  const lightThemeColor = softenColor(themeColor, 0.75)
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-base to-white">
+    <div className="min-h-screen" style={{ background: `linear-gradient(to bottom, ${lightThemeColor}, white)` }}>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
         <Link
@@ -41,6 +66,17 @@ export default async function TopicDetailPage({
         </Link>
 
         <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+          {topic.image && (
+            <div className="mb-6 rounded-lg overflow-hidden flex justify-center">
+              <Image
+                src={topic.image}
+                alt={topic.title}
+                width={800}
+                height={400}
+                className="max-w-full h-auto object-contain max-h-96"
+              />
+            </div>
+          )}
           <div className="flex items-start justify-between mb-4">
             <h1 className="text-3xl font-bold text-gray-800 flex-1">
               {topic.title}

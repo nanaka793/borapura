@@ -18,9 +18,10 @@ interface UserSummary {
 
 interface UserDirectoryProps {
   users: UserSummary[]
+  themeColor?: string
 }
 
-export default function UserDirectory({ users }: UserDirectoryProps) {
+export default function UserDirectory({ users, themeColor }: UserDirectoryProps) {
   const [keyword, setKeyword] = useState('')
 
   const filteredUsers = useMemo(() => {
@@ -33,11 +34,14 @@ export default function UserDirectory({ users }: UserDirectoryProps) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-100">
+      <div className="rounded-2xl bg-white/85 p-4 drop-shadow-lg ring-1 ring-gray-100">
         <label className="block text-sm font-semibold text-gray-600" htmlFor="user-search-input">
           ユーザー名で検索
         </label>
-        <div className="mt-2 flex items-center rounded-xl border border-gray-200 bg-gray-50 px-4 py-2 focus-within:ring-2 focus-within:ring-primary-200">
+        <div 
+          className="mt-2 flex items-center rounded-xl border border-gray-200 bg-gray-50 px-4 py-2 focus-within:ring-2"
+          style={themeColor ? { '--tw-ring-color': themeColor } as React.CSSProperties : {}}
+        >
           <span className="text-gray-400">🔍</span>
           <input
             id="user-search-input"
@@ -51,7 +55,7 @@ export default function UserDirectory({ users }: UserDirectoryProps) {
       </div>
 
       {filteredUsers.length === 0 ? (
-        <div className="rounded-2xl bg-white p-8 text-center text-gray-500 shadow-inner">
+        <div className="rounded-2xl bg-white/85 p-8 text-center text-gray-500 drop-shadow-lg">
           該当するユーザーが見つかりませんでした。
         </div>
       ) : (
@@ -69,6 +73,7 @@ export default function UserDirectory({ users }: UserDirectoryProps) {
               postCount={user.postCount}
               badge={user.badge}
               badges={user.badges}
+              themeColor={themeColor}
             />
           ))}
         </div>

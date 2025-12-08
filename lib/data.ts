@@ -760,6 +760,7 @@ export async function updateUserBadges(userId: string): Promise<User | null> {
 interface TopicFields {
   Title?: string
   Description?: string
+  Image?: Array<{ url: string }>
   IsActive?: boolean
   CreatedAt?: string
   UpdatedAt?: string
@@ -781,6 +782,7 @@ function mapTopic(record: { id: string; fields: TopicFields; createdTime: string
     id,
     title: fields.Title || '無題のテーマ',
     description: fields.Description,
+    image: fields.Image?.[0]?.url,
     isActive: fields.IsActive ?? true,
     createdAt: fields.CreatedAt || createdTime,
     updatedAt: fields.UpdatedAt || createdTime,
