@@ -9,9 +9,78 @@ interface TavernSectionProps {
   topics: Topic[]
 }
 
+// タイプライターアニメーション用のコンポーネント
+function TypewriterText({ text, delay = 100, isVisible = false, onComplete }: { text: string; delay?: number; isVisible?: boolean; onComplete?: () => void }) {
+  const [displayedText, setDisplayedText] = useState('')
+  const [isTextVisible, setIsTextVisible] = useState(false)
+  const [isComplete, setIsComplete] = useState(false)
+  const textRef = useRef<HTMLSpanElement>(null)
+
+  // Intersection Observerで要素が表示されたかを監視
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsTextVisible(true)
+            observer.disconnect()
+          }
+        })
+      },
+      { threshold: 0.1 }
+    )
+
+    if (textRef.current) {
+      observer.observe(textRef.current)
+    }
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [])
+
+  // セクションが表示され、かつ要素も表示されたらアニメーション開始
+  useEffect(() => {
+    if (!isVisible || !isTextVisible) return
+
+    setDisplayedText('')
+    setIsComplete(false)
+    let currentIndex = 0
+    let timer: NodeJS.Timeout | null = null
+
+    timer = setInterval(() => {
+      if (currentIndex < text.length) {
+        setDisplayedText(text.slice(0, currentIndex + 1))
+        currentIndex++
+      } else {
+        if (timer) clearInterval(timer)
+        setIsComplete(true)
+        if (onComplete) {
+          // タイトル完了後、少し間を置いてからテキストを表示
+          setTimeout(() => {
+            onComplete()
+          }, 300)
+        }
+      }
+    }, delay)
+
+    return () => {
+      if (timer) clearInterval(timer)
+    }
+  }, [text, delay, isVisible, isTextVisible, onComplete])
+
+  return (
+    <span ref={textRef}>
+      {displayedText}
+      {!isComplete && <span className="animate-pulse">|</span>}
+    </span>
+  )
+}
+
 export default function TavernSection({ topics }: TavernSectionProps) {
   const router = useRouter()
   const [isVisible, setIsVisible] = useState(false)
+  const [isTitleComplete, setIsTitleComplete] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
   
   // 最新の4つのトピックを取得
@@ -231,14 +300,23 @@ export default function TavernSection({ topics }: TavernSectionProps) {
             <div style={{ marginLeft: '15%' }}>
               <h2 
                 className="text-xl md:text-2xl font-bold mb-1"
-                style={{ lineHeight: '2' }}
+                style={{ lineHeight: '2', minHeight: '3rem' }}
               >
-                冒険者の酒場
+                <TypewriterText 
+                  text="冒険者の酒場" 
+                  delay={100} 
+                  isVisible={isVisible}
+                  onComplete={() => setIsTitleComplete(true)}
+                />
               </h2>
               <div className="h-px bg-white mb-1 md:mb-1" style={{ width: '100%' }}></div>
             </div>
             <div 
-              className="leading-relaxed text-white overflow-hidden"
+              className={`leading-relaxed text-white overflow-hidden transition-all duration-700 ${
+                isTitleComplete 
+                  ? 'opacity-100 translate-y-0' 
+                  : 'opacity-0 translate-y-8'
+              }`}
               style={{
                 aspectRatio: '3/4',
                 maxWidth: '100%',

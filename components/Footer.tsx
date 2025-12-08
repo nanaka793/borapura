@@ -44,13 +44,13 @@ export default function Footer() {
               </Link>
               <div className="mt-2 space-y-1 text-sm md:text-base text-white/90">
                 <Link
-                  href="/"
+                  href="/#can-do"
                   className="block hover:text-accent transition-colors"
                 >
                   - このサイトでできること
                 </Link>
                 <Link
-                  href="/"
+                  href="/#adventure-map"
                   className="block hover:text-accent transition-colors"
                 >
                   - MAP 冒険する世界

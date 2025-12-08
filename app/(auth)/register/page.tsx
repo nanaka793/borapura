@@ -3,8 +3,9 @@ import AuthForm from '@/components/AuthForm'
 
 export default function RegisterPage() {
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="mx-auto max-w-xl rounded-3xl bg-white/80 p-8 shadow-lg ring-1 ring-gray-100">
+    <div className="min-h-screen bg-gradient-to-b from-base to-white">
+      <div className="container mx-auto px-4 pt-24 pb-12">
+        <div className="mx-auto max-w-xl rounded-3xl bg-white/80 p-8 shadow-lg ring-1 ring-gray-100">
         <p className="text-sm font-semibold uppercase tracking-widest text-primary-600">
           Join
         </p>
@@ -23,6 +24,7 @@ export default function RegisterPage() {
             ログインする
           </Link>
         </p>
+        </div>
       </div>
     </div>
   )

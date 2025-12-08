@@ -28,8 +28,9 @@ export default async function UserProfilePage({ params }: PageProps) {
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-b from-base to-white">
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
         <Link
           href="/users"
           className="inline-flex items-center text-primary-600 hover:text-primary-700 mb-6"
@@ -118,18 +119,20 @@ export default async function UserProfilePage({ params }: PageProps) {
                   </a>
                 </div>
               )}
-              <p className="text-gray-600 text-lg mt-4">投稿数: {userPosts.length}件</p>
+              <div className="mt-4 flex items-baseline gap-3">
+                <span className="text-2xl font-bold text-primary-600">
+                  Lv : {userPosts.length}
+                </span>
+                <span className="text-gray-500">
+                  (投稿数{userPosts.length}件)
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
         <h2 className="text-3xl font-bold text-gray-800 mb-6">
           冒険日誌
-          {userPosts.length > 0 && (
-            <span className="ml-3 text-xl font-normal text-gray-600">
-              {userPosts.length}ページ
-            </span>
-          )}
         </h2>
         {userPosts.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-gray-200 p-6 text-center text-gray-500">
@@ -142,6 +145,7 @@ export default async function UserProfilePage({ params }: PageProps) {
             ))}
           </div>
         )}
+        </div>
       </div>
     </div>
   )

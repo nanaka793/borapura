@@ -54,7 +54,10 @@ export default function UserCard({
         </div>
       </div>
       {headline && <p className="text-gray-600 mb-2">{headline}</p>}
-      <p className="text-sm text-gray-500 mb-4">投稿数: {postCount}件</p>
+      <p className="text-sm text-gray-500 mb-4">
+        <span className="font-semibold text-primary-600">Lv : {postCount}</span>
+        <span className="text-gray-400 ml-2">(投稿数{postCount}件)</span>
+      </p>
       <div className="flex flex-wrap gap-2 mb-4">
         {interests.slice(0, 3).map((tag) => (
           <span

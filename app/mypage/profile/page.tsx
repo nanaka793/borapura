@@ -12,8 +12,9 @@ export default async function ProfileSettingsPage() {
   const { passwordHash: _passwordHash, ...safeUser } = currentUser
 
   return (
-    <div className="container mx-auto px-4 py-10">
-      <div className="mx-auto max-w-3xl space-y-8">
+    <div className="min-h-screen bg-gradient-to-b from-base to-white">
+      <div className="container mx-auto px-4 py-10">
+        <div className="mx-auto max-w-3xl space-y-8">
         <div className="flex items-center gap-4">
           <Avatar src={currentUser.avatar} name={currentUser.name} size="lg" />
           <div>
@@ -30,6 +31,7 @@ export default async function ProfileSettingsPage() {
           <ProfileForm user={safeUser} />
         </div>
       </div>
+    </div>
     </div>
   )
 }

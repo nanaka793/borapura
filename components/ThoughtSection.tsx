@@ -5,11 +5,11 @@ import Image from 'next/image'
 
 export default function ThoughtSection() {
   const [titleText, setTitleText] = useState('')
-  const [currentLineIndex, setCurrentLineIndex] = useState(-1)
-  const [currentCharIndex, setCurrentCharIndex] = useState(0)
+  const [visibleLines, setVisibleLines] = useState<number[]>([])
   const [isTitleComplete, setIsTitleComplete] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
+  const lineIndexRef = useRef(0)
 
   const fullTitle = 'ボランティアは、世界を広げる "冒険" だ'
   const fullBodyLines = [
@@ -62,46 +62,40 @@ export default function ThoughtSection() {
   }, [isVisible])
 
   useEffect(() => {
-    // タイトル完了後に本文のタイプライターアニメーションを開始
+    // タイトル完了後に本文を一行ずつふわっと表示
     if (!isTitleComplete) return
 
-    let bodyInterval: NodeJS.Timeout | null = null
+    lineIndexRef.current = 0
+    let lineInterval: NodeJS.Timeout | null = null
 
     // タイトル完了後、少し間を置いてからテキストアニメーションを開始
     const delayTimer = setTimeout(() => {
-      setCurrentLineIndex(0)
-      setCurrentCharIndex(0)
-
-      let lineIndex = 0
-      let charIndex = 0
-      bodyInterval = setInterval(() => {
-        if (lineIndex < fullBodyLines.length) {
-          const currentLine = fullBodyLines[lineIndex]
-          if (charIndex < currentLine.length) {
-            setCurrentLineIndex(lineIndex)
-            setCurrentCharIndex(charIndex + 1)
-            charIndex++
-          } else {
-            // 現在の行が完了したら次の行へ
-            lineIndex++
-            charIndex = 0
-            setCurrentLineIndex(lineIndex)
-            setCurrentCharIndex(0)
-          }
+      // 最初の行を即座に表示
+      setVisibleLines([0])
+      lineIndexRef.current = 1
+      
+      // 最初の行を表示した後、すぐに800ms間隔で次の行を表示
+      lineInterval = setInterval(() => {
+        const currentIndex = lineIndexRef.current
+        if (currentIndex < fullBodyLines.length) {
+          setVisibleLines((prev) => {
+            if (!prev.includes(currentIndex)) {
+              return [...prev, currentIndex]
+            }
+            return prev
+          })
+          lineIndexRef.current = currentIndex + 1
         } else {
-          if (bodyInterval) clearInterval(bodyInterval)
-          // アニメーション完了後も全ての行を表示するため、最後の行インデックスを保持
-          setCurrentLineIndex(fullBodyLines.length - 1)
-          setCurrentCharIndex(fullBodyLines[fullBodyLines.length - 1].length)
+          if (lineInterval) clearInterval(lineInterval)
         }
-      }, 75) // 75msごとに1文字
+      }, 800) // 800msごとに次の行を表示
     }, 400) // タイトル完了後400ms待つ
 
     return () => {
       clearTimeout(delayTimer)
-      if (bodyInterval) clearInterval(bodyInterval)
+      if (lineInterval) clearInterval(lineInterval)
     }
-  }, [isTitleComplete])
+  }, [isTitleComplete, fullBodyLines.length])
 
   return (
     <section ref={sectionRef} className="relative w-full overflow-hidden">
@@ -126,35 +120,21 @@ export default function ThoughtSection() {
               {titleText}
               {!isTitleComplete && <span className="animate-pulse">|</span>}
             </h2>
-            {/* テキスト - 常に表示して高さを固定 */}
-            <div className="text-lg md:text-xl text-gray-700 text-center" style={{ lineHeight: '2.5', minHeight: `${2.5 * fullBodyLines.length}em` }}>
+            {/* テキスト - 一行ずつふわっと表示 */}
+            <div className="text-lg md:text-xl text-gray-700 text-center" style={{ lineHeight: '2.5' }}>
               {fullBodyLines.map((fullLine, index) => {
-                const isCurrentLine = index === currentLineIndex
-                const isComplete = index < currentLineIndex || (index === currentLineIndex && currentCharIndex >= fullLine.length)
-                const showCursor = isCurrentLine && currentCharIndex < fullLine.length
-                
-                // アニメーション完了後も全ての行を表示
-                let typedLength = 0
-                if (index < currentLineIndex) {
-                  // 前の行は全て表示
-                  typedLength = fullLine.length
-                } else if (index === currentLineIndex) {
-                  // 現在の行はタイプされた部分まで表示
-                  typedLength = currentCharIndex
-                } else {
-                  // 後の行は非表示
-                  typedLength = 0
-                }
+                const isVisible = visibleLines.includes(index)
                 
                 return (
-                  <div key={index} className="relative h-[2.5em] flex items-center justify-center">
-                    <span className="relative inline-block">
-                      {fullLine.substring(0, typedLength)}
-                      {showCursor && <span className="animate-pulse">|</span>}
-                      {typedLength < fullLine.length && (
-                        <span className="opacity-0">{fullLine.substring(typedLength)}</span>
-                      )}
-                    </span>
+                  <div 
+                    key={index} 
+                    className={`relative h-[2.5em] flex items-center justify-center transition-all duration-700 ${
+                      isVisible 
+                        ? 'opacity-100 translate-y-0' 
+                        : 'opacity-0 translate-y-4'
+                    }`}
+                  >
+                    <span>{fullLine}</span>
                   </div>
                 )
               })}

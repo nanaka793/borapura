@@ -19,8 +19,9 @@ export default async function TopicDetailPage({
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-b from-base to-white">
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
         <Link
           href="/topics"
           className="inline-flex items-center text-primary-600 hover:text-primary-700 mb-6"
@@ -68,6 +69,7 @@ export default async function TopicDetailPage({
         </div>
 
         <TopicCommentSection topicId={id} initialComments={comments} />
+        </div>
       </div>
     </div>
   )

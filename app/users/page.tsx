@@ -24,8 +24,9 @@ export default async function UsersPage() {
   }))
 
   return (
-    <div className="container mx-auto px-4 pt-24 pb-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-b from-base to-white">
+      <div className="container mx-auto px-4 pt-24 pb-8">
+        <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-gray-800 mb-8">冒険者一覧</h1>
         {userList.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-lg shadow-md">
@@ -39,6 +40,7 @@ export default async function UsersPage() {
         ) : (
           <UserDirectory users={userList} />
         )}
+        </div>
       </div>
     </div>
   )

@@ -149,22 +149,20 @@ export default function MyPageSection({ currentUser }: MyPageSectionProps) {
               }`}
             >
               <div>
-                <h2 className="text-3xl md:text-5xl font-bold mb-4" style={{ color: '#0B1024' }}>
+                <h2 className="text-3xl md:text-5xl font-bold mb-6 md:mb-8 leading-normal" style={{ color: '#0B1024' }}>
                   {currentUser ? (
                     <>
-                      <span className="text-white drop-shadow-lg">あなただけの</span>
-                      <br />
-                      <span className="text-white drop-shadow-lg">冒険の拠点</span>
+                      <span className="text-white drop-shadow-lg block mb-2">あなただけの</span>
+                      <span className="text-white drop-shadow-lg block">冒険の拠点</span>
                     </>
                   ) : (
                     <>
-                      <span className="text-white drop-shadow-lg">冒険の拠点を</span>
-                      <br />
-                      <span className="text-white drop-shadow-lg">作ろう</span>
+                      <span className="text-white drop-shadow-lg block mb-2">冒険の拠点を</span>
+                      <span className="text-white drop-shadow-lg block">作ろう</span>
                     </>
                   )}
                 </h2>
-                <p className="text-lg md:text-xl text-white/90 leading-relaxed drop-shadow-md">
+                <p className="text-lg md:text-xl text-white/90 leading-loose drop-shadow-md mt-2">
                   {currentUser ? (
                     <>
                       あなたの冒険の記録、獲得したバッジ、<br />

@@ -12,10 +12,38 @@ interface AdventureDiarySectionProps {
 }
 
 // タイプライターアニメーション用のコンポーネント
-function TypewriterText({ text, delay = 50, startDelay = 0 }: { text: string; delay?: number; startDelay?: number }) {
+function TypewriterText({ text, delay = 100, startDelay = 0, isVisible = false }: { text: string; delay?: number; startDelay?: number; isVisible?: boolean }) {
   const [displayedText, setDisplayedText] = useState('')
+  const [isTextVisible, setIsTextVisible] = useState(false)
+  const textRef = useRef<HTMLSpanElement>(null)
 
+  // Intersection Observerで要素が表示されたかを監視
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsTextVisible(true)
+            observer.disconnect()
+          }
+        })
+      },
+      { threshold: 0.1 }
+    )
+
+    if (textRef.current) {
+      observer.observe(textRef.current)
+    }
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [])
+
+  // セクションが表示され、かつ要素も表示されたらアニメーション開始
+  useEffect(() => {
+    if (!isVisible || !isTextVisible) return
+
     setDisplayedText('')
     let currentIndex = 0
     let timer: NodeJS.Timeout | null = null
@@ -35,10 +63,10 @@ function TypewriterText({ text, delay = 50, startDelay = 0 }: { text: string; de
       clearTimeout(startTimer)
       if (timer) clearInterval(timer)
     }
-  }, [text, delay, startDelay])
+  }, [text, delay, startDelay, isVisible, isTextVisible])
 
   return (
-    <span>
+    <span ref={textRef}>
       {displayedText}
       <span className="animate-pulse">|</span>
     </span>
@@ -284,7 +312,7 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
                   className="block hover:opacity-80 transition-all group"
                   style={{ textAlign: 'left', marginLeft: '50%' }}
                 >
-                  <TypewriterText text="▶︎ 日誌一覧を読む" delay={30} startDelay={0} />
+                  <TypewriterText text="▶︎ 日誌一覧を読む" delay={100} startDelay={0} isVisible={isVisible} />
                 </button>
                 
                 {/* 自分の日誌を書く */}
@@ -293,7 +321,7 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
                   className="block hover:opacity-80 transition-all group"
                   style={{ textAlign: 'left', marginLeft: '50%' }}
                 >
-                  <TypewriterText text="▶︎ 自分の日誌を書く" delay={30} startDelay={500} />
+                  <TypewriterText text="▶︎ 自分の日誌を書く" delay={100} startDelay={500} isVisible={isVisible} />
                 </button>
               </div>
             </div>

@@ -23,8 +23,9 @@ export default async function EventDetailPage({ params }: PageProps) {
   const initialBookmarked = nextSteps.includes(post.id)
 
   return (
-    <div className="container mx-auto px-4 py-10">
-      <div className="mx-auto max-w-4xl">
+    <div className="min-h-screen bg-gradient-to-b from-base to-white">
+      <div className="container mx-auto px-4 py-10">
+        <div className="mx-auto max-w-4xl">
         <Link
           href="/events"
           className="inline-flex items-center text-primary-600 hover:text-primary-700 mb-6"
@@ -47,6 +48,7 @@ export default async function EventDetailPage({ params }: PageProps) {
           canBookmark={!!currentUser}
           initialBookmarked={initialBookmarked}
         />
+        </div>
       </div>
     </div>
   )

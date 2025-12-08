@@ -25,8 +25,9 @@ export default async function MyPage() {
   const nextStepPosts = posts.filter((post) => nextStepIds.includes(post.id))
 
   return (
-    <div className="container mx-auto px-4 py-10">
-      <div className="mx-auto max-w-6xl space-y-10">
+    <div className="min-h-screen bg-gradient-to-b from-base to-white">
+      <div className="container mx-auto px-4 pt-24 pb-10">
+        <div className="mx-auto max-w-6xl space-y-10">
         <div className="rounded-3xl bg-white/80 p-8 shadow-lg ring-1 ring-gray-100">
           <div className="flex items-start gap-6">
             <div className="flex-1">
@@ -38,6 +39,9 @@ export default async function MyPage() {
               </h1>
               {currentUser.headline && (
                 <p className="mt-2 text-lg text-gray-600">{currentUser.headline}</p>
+              )}
+              {currentUser.bio && (
+                <p className="mt-3 text-base text-gray-600 whitespace-pre-wrap">{currentUser.bio}</p>
               )}
             </div>
             <div className="flex-shrink-0">
@@ -98,6 +102,14 @@ export default async function MyPage() {
             </div>
           )}
           <div className="mt-6 pt-4 border-t border-gray-200">
+            <div className="flex items-baseline gap-3 mb-2">
+              <span className="text-2xl font-bold text-primary-600">
+                Lv : {userPosts.length}
+              </span>
+              <span className="text-sm text-gray-500">
+                (投稿数{userPosts.length}件)
+              </span>
+            </div>
             <p className="text-xs text-gray-400">
               登録日: {new Date(currentUser.createdAt).toLocaleDateString('ja-JP')}
             </p>
@@ -175,6 +187,7 @@ export default async function MyPage() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   )
 }

@@ -22,8 +22,9 @@ export default async function PostsPage() {
   }))
 
   return (
-    <div className="container mx-auto px-4 py-10">
-      <div className="mx-auto max-w-5xl">
+    <div className="min-h-screen bg-gradient-to-b from-base to-white">
+      <div className="container mx-auto px-4 pt-24 pb-10">
+        <div className="mx-auto max-w-5xl">
         <div className="mb-10 rounded-3xl bg-white/80 p-8 shadow-lg ring-1 ring-gray-100 backdrop-blur">
           <p className="text-sm font-semibold uppercase tracking-widest text-primary-600">
             Activity Stories
@@ -49,6 +50,7 @@ export default async function PostsPage() {
         ) : (
           <ActivityPostsSection posts={activityPostsWithAvatar} />
         )}
+        </div>
       </div>
     </div>
   )
