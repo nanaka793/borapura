@@ -152,16 +152,16 @@ html {
 
 @keyframes waveSway60 {
   0%, 100% {
-    transform: translateY(-60%) translateX(0) rotate(0deg);
+    transform: translateY(-50%) translateX(0) rotate(0deg);
   }
   25% {
-    transform: translateY(-62%) translateX(2px) rotate(1deg);
+    transform: translateY(-52%) translateX(2px) rotate(1deg);
   }
   50% {
-    transform: translateY(-58%) translateX(0) rotate(0deg);
+    transform: translateY(-48%) translateX(0) rotate(0deg);
   }
   75% {
-    transform: translateY(-62%) translateX(-2px) rotate(-1deg);
+    transform: translateY(-52%) translateX(-2px) rotate(-1deg);
   }
 }
 
@@ -191,16 +191,16 @@ html {
 
 @keyframes windSwayText {
   0%, 100% {
-    transform: translateX(-50%) translateY(0) translateX(0);
+    transform: translateX(-50%) translateX(0);
   }
   25% {
-    transform: translateX(-50%) translateY(0) translateX(5px);
+    transform: translateX(-50%) translateX(5px);
   }
   50% {
-    transform: translateX(-50%) translateY(0) translateX(0);
+    transform: translateX(-50%) translateX(0);
   }
   75% {
-    transform: translateX(-50%) translateY(0) translateX(-5px);
+    transform: translateX(-50%) translateX(-5px);
   }
 }
 

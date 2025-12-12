@@ -125,7 +125,7 @@ export default function TavernSection({ topics }: TavernSectionProps) {
       className={`relative w-full overflow-hidden scroll-snap-section section-slide-in ${isVisible ? 'visible' : ''}`}
       style={{ minHeight: '100vh' }}
     >
-      {/* 1. 紫のグラデーション背景 */}
+      {/* 1. 紫のグラデーション背景 - 縦を画面いっぱいに広げ、はみ出た横をカット */}
       <div className="absolute inset-0 z-0">
         <Image
           src="/tavern-gradient-bg.png"
@@ -134,6 +134,7 @@ export default function TavernSection({ topics }: TavernSectionProps) {
           height={1080}
           className="w-full h-full object-cover"
           priority
+          style={{ objectPosition: 'center' }}
         />
       </div>
 
@@ -170,7 +171,7 @@ export default function TavernSection({ topics }: TavernSectionProps) {
           transformOrigin: 'top right'
         }}
       >
-        <div className="relative w-full flex flex-col">
+        <div className="relative w-full flex flex-col md:scale-[1.3] md:translate-y-12 lg:scale-110 lg:translate-y-0">
           {/* メニュー表の画像 */}
           <Image
             src="/tavern-menu-card.png"
@@ -184,8 +185,8 @@ export default function TavernSection({ topics }: TavernSectionProps) {
           />
           
           {/* メニュー表の上にコンテンツを配置 */}
-          <div className="absolute inset-0" style={{ padding: '12rem 5rem 2rem 14rem' }}>
-            <div className="h-full flex flex-col">
+          <div className="absolute inset-0 pt-48 pl-56 pb-8 pr-20 md:pt-24 md:pl-40 lg:pt-48 lg:pl-56">
+            <div className="h-full flex flex-col md:scale-[0.769] lg:scale-100">
               {/* MENUタイトル */}
               <div className="mb-4 md:mb-6 flex-shrink-0">
                 <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-1" style={{ letterSpacing: '0.1em' }}>
@@ -258,7 +259,7 @@ export default function TavernSection({ topics }: TavernSectionProps) {
       {/* 4. テキストボックス - 最上レイヤー */}
       <div 
         onClick={handleMoreClick}
-        className={`absolute z-30 text-white transition-all duration-300 ease-in-out cursor-pointer hover:opacity-80 ${
+        className={`absolute z-30 transition-all duration-300 ease-in-out cursor-pointer hover:opacity-90 ${
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
         style={{
@@ -270,37 +271,16 @@ export default function TavernSection({ topics }: TavernSectionProps) {
         }}
       >
         <div 
-          className="relative"
+          className="bg-black rounded-lg border-2 border-gray-400 p-4 md:p-6"
           style={{
-            padding: '1rem',
-            boxSizing: 'border-box'
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)'
           }}
         >
-          <Image
-            src="/tavern-text-box.png"
-            alt=""
-            width={400}
-            height={600}
-            className="w-full h-auto"
-            style={{
-              aspectRatio: 'auto'
-            }}
-          />
-          <div 
-            className="absolute inset-0 flex flex-col justify-start items-start"
-            style={{
-              top: '0',
-              left: '0',
-              right: '0',
-              bottom: '0',
-              padding: '2rem 1.5rem',
-              boxSizing: 'border-box'
-            }}
-          >
-            <div style={{ marginLeft: '15%' }}>
+          <div className="flex flex-col">
+            <div className="mb-3 md:mb-4">
               <h2 
-                className="text-xl md:text-2xl font-bold mb-1"
-                style={{ lineHeight: '2', minHeight: '3rem' }}
+                className="text-xl md:text-2xl font-bold text-white mb-2"
+                style={{ lineHeight: '1.5' }}
               >
                 <TypewriterText 
                   text="冒険者の酒場" 
@@ -309,30 +289,22 @@ export default function TavernSection({ topics }: TavernSectionProps) {
                   onComplete={() => setIsTitleComplete(true)}
                 />
               </h2>
-              <div className="h-px bg-white mb-1 md:mb-1" style={{ width: '100%' }}></div>
+              <div className="h-px bg-gray-400"></div>
             </div>
             <div 
-              className={`leading-relaxed text-white overflow-hidden transition-all duration-700 ${
+              className={`leading-relaxed text-white transition-all duration-700 ${
                 isTitleComplete 
                   ? 'opacity-100 translate-y-0' 
                   : 'opacity-0 translate-y-8'
               }`}
               style={{
-                aspectRatio: '3/4',
-                maxWidth: '100%',
-                padding: '0.6rem 0.6rem',
-                boxSizing: 'border-box',
-                marginLeft: '8%',
-                fontSize: '0.75rem'
+                fontSize: '0.75rem',
+                lineHeight: '1.6'
               }}
             >
-              <div className="h-full overflow-y-auto" style={{ paddingLeft: '8%', lineHeight: '1.5' }}>
-                <p>冒険者が集う酒場…</p>
-                <br />
-                <p>ここはボランティア活動の有無に関わらず、冒険者がどんなときでも楽しく交流できるトークルーム。</p>
-                <br />
-                <p>活動への思いなど熱いルームから、ちょっぴり変なお遊びルームまでさまざま。</p>
-              </div>
+              <p className="mb-2">冒険者が集う酒場…</p>
+              <p className="mb-2">ここはボランティア活動の有無に関わらず、冒険者がどんなときでも楽しく交流できるトークルーム。</p>
+              <p>活動への思いなど熱いルームから、ちょっぴり変なお遊びルームまでさまざま。</p>
             </div>
           </div>
         </div>

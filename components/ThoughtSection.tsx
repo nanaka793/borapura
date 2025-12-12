@@ -98,16 +98,17 @@ export default function ThoughtSection() {
   }, [isTitleComplete, fullBodyLines.length])
 
   return (
-    <section ref={sectionRef} className="relative w-full overflow-hidden">
-      {/* 背景画像 - 横幅いっぱいに表示、上端をヒーロー画面の下端に揃える */}
-      <div className="relative w-full" style={{ aspectRatio: 'auto' }}>
+    <section ref={sectionRef} className="relative w-full overflow-hidden" style={{ minHeight: '100vh' }}>
+      {/* 背景画像 - 縦を画面いっぱいに広げ、はみ出た横をカット */}
+      <div className="absolute inset-0 w-full h-full">
         <Image
           src="/beach-bg.png"
           alt=""
           width={1920}
           height={1080}
-          className="w-full h-auto object-cover"
+          className="w-full h-full object-cover"
           priority
+          style={{ objectPosition: 'center' }}
         />
       </div>
 

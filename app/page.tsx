@@ -33,16 +33,17 @@ export default async function Home() {
       <ThoughtSection />
 
       {/* このサイトでできることセクション */}
-      <section id="can-do" className="relative w-full overflow-hidden">
-        {/* 背景画像 - 横幅いっぱいに表示、上端を前のセクションの下端に揃える */}
-        <div className="relative w-full">
+      <section id="can-do" className="relative w-full overflow-hidden" style={{ minHeight: '100vh' }}>
+        {/* 背景画像 - 縦を画面いっぱいに広げ、はみ出た横をカット */}
+        <div className="absolute inset-0 w-full h-full">
           <Image
             src="/beach-elements-bg.png"
             alt=""
             width={1920}
             height={1080}
-            className="w-full h-auto object-cover"
+            className="w-full h-full object-cover"
             priority
+            style={{ objectPosition: 'center' }}
           />
         </div>
 
@@ -70,16 +71,17 @@ export default async function Home() {
 
       {/* 冒険マップセクション */}
       <AdventureMapSection>
-      <div id="adventure-map" className="relative w-full overflow-hidden">
-        {/* 背景画像 - 横幅いっぱいに表示、上端を前のセクションの下端に揃える */}
-        <div className="relative w-full z-0">
+      <div id="adventure-map" className="relative w-full overflow-hidden" style={{ minHeight: '100vh', backgroundColor: '#EAE4D8' }}>
+        {/* 背景画像 - 横を画面いっぱいに広げ、横が切れないように表示、中央に配置 */}
+        <div className="absolute inset-0 w-full z-0 flex items-center justify-center" style={{ backgroundColor: '#EAE4D8' }}>
           <Image
             src="/map-bg.png"
             alt=""
             width={1920}
             height={1080}
-            className="w-full h-auto object-cover"
+            className="w-full h-full object-contain"
             priority
+            style={{ objectPosition: 'center center' }}
           />
         </div>
 
@@ -94,9 +96,9 @@ export default async function Home() {
                 冒険者が活躍するさまざまなボランティア。<br />
                 活動の報告数に応じて獲得できるバッジを確認！
               </p>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0.5">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-0.5 md:gap-0">
                 {/* 教育 */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[85%] h-[85%] mx-auto group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[85%] h-[85%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -115,7 +117,7 @@ export default async function Home() {
                 </div>
 
                 {/* 子ども */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] mx-auto m-1 group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -134,7 +136,7 @@ export default async function Home() {
                 </div>
 
                 {/* 国際協力 */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] mx-auto m-1 group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -153,7 +155,7 @@ export default async function Home() {
                 </div>
 
                 {/* 環境保護 */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] mx-auto m-1 group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -172,7 +174,7 @@ export default async function Home() {
                 </div>
 
                 {/* 福祉 */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] mx-auto m-1 group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -191,7 +193,7 @@ export default async function Home() {
                 </div>
 
                 {/* 災害支援 */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] mx-auto m-1 group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -210,7 +212,7 @@ export default async function Home() {
                 </div>
 
                 {/* 地域活動 */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] mx-auto m-1 group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -229,7 +231,7 @@ export default async function Home() {
                 </div>
 
                 {/* 医療・健康 */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] mx-auto m-1 group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -248,7 +250,7 @@ export default async function Home() {
                 </div>
 
                 {/* スポーツ */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] mx-auto m-1 group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -267,7 +269,7 @@ export default async function Home() {
                 </div>
 
                 {/* 文化 */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] mx-auto m-1 group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -286,7 +288,7 @@ export default async function Home() {
                 </div>
 
                 {/* イベント */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] mx-auto m-1 group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>

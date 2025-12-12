@@ -76,11 +76,11 @@ export default function AdventurerListSection({ users, currentUserPostCount }: A
   const rightBlockRef = useRef<HTMLDivElement>(null)
   const [randomUsers, setRandomUsers] = useState<User[]>([])
 
-  // ランダムに6人のユーザーを選択
+  // ランダムに4人のユーザーを選択
   useEffect(() => {
     if (users.length > 0) {
       const shuffled = [...users].sort(() => Math.random() - 0.5)
-      setRandomUsers(shuffled.slice(0, 6))
+      setRandomUsers(shuffled.slice(0, 4))
     }
   }, [users])
 
@@ -240,7 +240,7 @@ export default function AdventurerListSection({ users, currentUserPostCount }: A
                 ボランティア活動を通して人と人のつながりを創り出す勇者...
               </p>
               <p className="text-base md:text-lg leading-relaxed mb-4">
-                それがこのボラプラの&ldquo;冒険者&rdquo;
+                それがこのぼらぷらの&ldquo;冒険者&rdquo;
               </p>
               <p className="text-base md:text-lg leading-relaxed mb-6">
                 冒険者レベルを上げながらさまざまなバッジを獲得し、

@@ -119,11 +119,11 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
     .filter((post) => post.type !== '募集投稿')
     .slice(0, 8)
 
-  // 表示する4つの投稿を決定
+  // 表示する2つの投稿を決定
   const getVisiblePosts = () => {
     if (latestPosts.length === 0) return []
     const postsToShow: Post[] = []
-    for (let i = 0; i < 4 && i < latestPosts.length; i++) {
+    for (let i = 0; i < 2 && i < latestPosts.length; i++) {
       const idx = (currentIndex + i) % latestPosts.length
       postsToShow.push(latestPosts[idx])
     }
@@ -132,12 +132,12 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
   const visiblePosts = getVisiblePosts()
 
   const handlePrev = () => {
-    if (latestPosts.length <= 4) return
+    if (latestPosts.length <= 2) return
     setCurrentIndex((prev) => (prev - 1 + latestPosts.length) % latestPosts.length)
   }
 
   const handleNext = () => {
-    if (latestPosts.length <= 4) return
+    if (latestPosts.length <= 2) return
     setCurrentIndex((prev) => (prev + 1) % latestPosts.length)
   }
 
@@ -163,15 +163,16 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
       className={`relative w-full overflow-hidden scroll-snap-section section-slide-in ${isVisible ? 'visible' : ''}`}
       style={{ minHeight: '100vh' }}
     >
-      {/* 背景画像 */}
-      <div className="relative w-full">
+      {/* 背景画像 - 縦を画面いっぱいに広げ、はみ出た横をカット */}
+      <div className="absolute inset-0 w-full h-full">
         <Image
           src="/diary-bg.png"
           alt=""
           width={1920}
           height={1080}
-          className="w-full h-auto object-cover"
+          className="w-full h-full object-cover"
           priority
+          style={{ objectPosition: 'center' }}
         />
       </div>
 
@@ -190,12 +191,12 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
             </div>
 
             {/* 投稿カードエリア（ノートの上に配置） */}
-            <div className="relative flex items-center justify-center gap-4 md:gap-8 min-h-[300px]" style={{ top: '42%', transform: 'translateY(-50%)', position: 'absolute', width: '100%' }}>
+            <div className="relative min-h-[300px]" style={{ top: '42%', transform: 'translateY(-50%)', position: 'absolute', width: '100%' }}>
               {/* 左矢印 */}
-              {latestPosts.length > 4 && (
+              {latestPosts.length > 2 && (
                 <button
                   onClick={handlePrev}
-                  className="flex-shrink-0 w-10 h-10 md:w-14 md:h-14 bg-yellow-400 hover:bg-yellow-500 rounded-full flex items-center justify-center transition-all hover:scale-110 z-20"
+                  className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 flex-shrink-0 w-10 h-10 md:w-14 md:h-14 bg-yellow-400 hover:bg-yellow-500 rounded-full flex items-center justify-center transition-all hover:scale-110 z-20"
                   style={{ boxShadow: '-4px 4px 8px rgba(0, 0, 0, 0.3)' }}
                   aria-label="前の投稿"
                 >
@@ -209,15 +210,11 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
                 </button>
               )}
 
-              {/* 投稿カード（4つ表示） */}
-              <div className={`flex-1 grid gap-4 md:gap-6 ${
+              {/* 投稿カード（2つ表示） */}
+              <div className={`grid gap-4 md:gap-8 lg:gap-16 mx-auto max-w-lg md:max-w-lg lg:max-w-xl ${
                 visiblePosts.length === 1 
-                  ? 'grid-cols-1 max-w-md mx-auto' 
-                  : visiblePosts.length === 2
-                  ? 'grid-cols-1 md:grid-cols-2'
-                  : visiblePosts.length === 3
-                  ? 'grid-cols-1 md:grid-cols-3'
-                  : 'grid-cols-2 md:grid-cols-4'
+                  ? 'grid-cols-1 max-w-md' 
+                  : 'grid-cols-1 md:grid-cols-2'
               }`}>
                 {visiblePosts.map((post, idx) => {
                   const authorUser = userMap[post.authorId] || userNameMap[post.author.toLowerCase()]
@@ -285,10 +282,10 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
               </div>
 
               {/* 右矢印 */}
-              {latestPosts.length > 4 && (
+              {latestPosts.length > 2 && (
                 <button
                   onClick={handleNext}
-                  className="flex-shrink-0 w-10 h-10 md:w-14 md:h-14 bg-yellow-400 hover:bg-yellow-500 rounded-full flex items-center justify-center transition-all hover:scale-110 z-20"
+                  className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 flex-shrink-0 w-10 h-10 md:w-14 md:h-14 bg-yellow-400 hover:bg-yellow-500 rounded-full flex items-center justify-center transition-all hover:scale-110 z-20"
                   style={{ boxShadow: '-4px 4px 8px rgba(0, 0, 0, 0.3)' }}
                   aria-label="次の投稿"
                 >

@@ -113,10 +113,10 @@ export default function RecruitmentSection({ posts, users }: RecruitmentSectionP
     return acc
   }, {})
   
-  // 最新の5つの募集投稿を取得
+  // 最新の4つの募集投稿を取得
   const latestRecruitmentPosts = posts
     .filter((post) => post.type === '募集投稿')
-    .slice(0, 5)
+    .slice(0, 4)
 
   const handlePostClick = (postId: string) => {
     router.push(`/events/${postId}`)
@@ -140,15 +140,16 @@ export default function RecruitmentSection({ posts, users }: RecruitmentSectionP
       className={`relative w-full overflow-hidden scroll-snap-section section-slide-in ${isVisible ? 'visible' : ''}`}
       style={{ minHeight: '100vh' }}
     >
-      {/* 背景画像 */}
-      <div className="relative w-full">
+      {/* 背景画像 - 縦を画面いっぱいに広げ、はみ出た横をカット */}
+      <div className="absolute inset-0 w-full h-full">
         <Image
           src="/board-bg.png"
           alt=""
           width={1920}
           height={1080}
-          className="w-full h-auto object-cover"
+          className="w-full h-full object-cover"
           priority
+          style={{ objectPosition: 'center' }}
         />
       </div>
 
@@ -179,17 +180,15 @@ export default function RecruitmentSection({ posts, users }: RecruitmentSectionP
 
             {/* 投稿カードエリア（掲示板の上に配置） */}
             <div className="relative flex items-center justify-center gap-3 md:gap-4 min-h-[300px]" style={{ top: '42%', transform: 'translateY(-50%)', position: 'absolute', width: '100%' }}>
-              {/* 投稿カード（5つ表示） */}
-              <div className={`flex-1 grid gap-3 md:gap-4 ${
+              {/* 投稿カード（4つ表示） */}
+              <div className={`flex-1 grid gap-3 md:gap-6 mx-auto max-w-5xl ${
                 latestRecruitmentPosts.length === 1 
-                  ? 'grid-cols-1 max-w-md mx-auto' 
+                  ? 'grid-cols-1 max-w-md' 
                   : latestRecruitmentPosts.length === 2
                   ? 'grid-cols-1 md:grid-cols-2'
                   : latestRecruitmentPosts.length === 3
                   ? 'grid-cols-1 md:grid-cols-3'
-                  : latestRecruitmentPosts.length === 4
-                  ? 'grid-cols-2 md:grid-cols-4'
-                  : 'grid-cols-2 md:grid-cols-5'
+                  : 'grid-cols-2 md:grid-cols-4'
               }`}>
                 {latestRecruitmentPosts.map((post) => {
                   const authorUser = userMap[post.authorId] || userNameMap[post.author.toLowerCase()]
