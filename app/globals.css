@@ -304,3 +304,149 @@ html {
   animation: slideInRight 0.5s ease-out;
 }
 
+/* 雲のアニメーション - 左右から流れる */
+@keyframes cloudMoveLeft {
+  0% {
+    transform: translateX(100vw);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes cloudMoveRight {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100vw);
+  }
+}
+
+.animate-cloud-left {
+  animation: cloudMoveLeft 30s linear infinite;
+}
+
+.animate-cloud-right {
+  animation: cloudMoveRight 35s linear infinite;
+}
+
+/* 雲のアニメーション - 初期位置をバラけたバージョン */
+@keyframes cloudMoveLeftFromStart {
+  0% {
+    transform: translateX(100vw);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes cloudMoveRightFromStart {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100vw);
+  }
+}
+
+/* 各雲が異なる初期位置から始まるように、アニメーションの開始位置を調整 */
+.animate-cloud-left-start-0 {
+  animation: cloudMoveLeftFromStart 30s linear infinite;
+  animation-delay: 0s;
+}
+
+.animate-cloud-left-start-1 {
+  animation: cloudMoveLeftFromStart 30s linear infinite;
+  animation-delay: -7.5s; /* アニメーションの25%の位置から開始 */
+}
+
+.animate-cloud-left-start-2 {
+  animation: cloudMoveLeftFromStart 30s linear infinite;
+  animation-delay: -15s; /* アニメーションの50%の位置から開始 */
+}
+
+.animate-cloud-left-start-3 {
+  animation: cloudMoveLeftFromStart 30s linear infinite;
+  animation-delay: -22.5s; /* アニメーションの75%の位置から開始 */
+}
+
+.animate-cloud-right-start-0 {
+  animation: cloudMoveRightFromStart 35s linear infinite;
+  animation-delay: 0s;
+}
+
+.animate-cloud-right-start-1 {
+  animation: cloudMoveRightFromStart 35s linear infinite;
+  animation-delay: -8.75s; /* アニメーションの25%の位置から開始 */
+}
+
+.animate-cloud-right-start-2 {
+  animation: cloudMoveRightFromStart 35s linear infinite;
+  animation-delay: -17.5s; /* アニメーションの50%の位置から開始 */
+}
+
+.animate-cloud-right-start-3 {
+  animation: cloudMoveRightFromStart 35s linear infinite;
+  animation-delay: -26.25s; /* アニメーションの75%の位置から開始 */
+}
+
+/* スマホ版用の雲アニメーション（速度を調整） */
+@keyframes cloudMoveLeftMobile {
+  0% {
+    transform: translateX(100vw);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes cloudMoveRightMobile {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100vw);
+  }
+}
+
+.animate-cloud-left-mobile-start-0 {
+  animation: cloudMoveLeftMobile 25s linear infinite;
+  animation-delay: 0s;
+}
+
+.animate-cloud-left-mobile-start-1 {
+  animation: cloudMoveLeftMobile 25s linear infinite;
+  animation-delay: -6.25s; /* アニメーションの25%の位置から開始 */
+}
+
+.animate-cloud-left-mobile-start-2 {
+  animation: cloudMoveLeftMobile 25s linear infinite;
+  animation-delay: -12.5s; /* アニメーションの50%の位置から開始 */
+}
+
+.animate-cloud-left-mobile-start-3 {
+  animation: cloudMoveLeftMobile 25s linear infinite;
+  animation-delay: -18.75s; /* アニメーションの75%の位置から開始 */
+}
+
+.animate-cloud-right-mobile-start-0 {
+  animation: cloudMoveRightMobile 30s linear infinite;
+  animation-delay: 0s;
+}
+
+.animate-cloud-right-mobile-start-1 {
+  animation: cloudMoveRightMobile 30s linear infinite;
+  animation-delay: -7.5s; /* アニメーションの25%の位置から開始 */
+}
+
+.animate-cloud-right-mobile-start-2 {
+  animation: cloudMoveRightMobile 30s linear infinite;
+  animation-delay: -15s; /* アニメーションの50%の位置から開始 */
+}
+
+.animate-cloud-right-mobile-start-3 {
+  animation: cloudMoveRightMobile 30s linear infinite;
+  animation-delay: -22.5s; /* アニメーションの75%の位置から開始 */
+}
+

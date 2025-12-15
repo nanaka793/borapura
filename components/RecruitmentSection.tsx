@@ -168,6 +168,150 @@ export default function RecruitmentSection({ posts, users }: RecruitmentSectionP
         </div>
       </div>
 
+      {/* 雲のアニメーション - md以上 */}
+      <div className="hidden md:block absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-[5]">
+        {/* 左から右に流れる雲1 */}
+        <div className="absolute animate-cloud-right-start-0" style={{ top: '8%' }}>
+          <Image
+            src="/cloud.png"
+            alt=""
+            width={200}
+            height={100}
+            className="opacity-80"
+            style={{ width: '200px', height: 'auto' }}
+          />
+        </div>
+        {/* 右から左に流れる雲1 */}
+        <div className="absolute animate-cloud-left-start-1" style={{ top: '15%' }}>
+          <Image
+            src="/cloud.png"
+            alt=""
+            width={200}
+            height={100}
+            className="opacity-70"
+            style={{ width: '200px', height: 'auto' }}
+          />
+        </div>
+        {/* 左から右に流れる雲2 */}
+        <div className="absolute animate-cloud-right-start-2" style={{ top: '25%' }}>
+          <Image
+            src="/cloud.png"
+            alt=""
+            width={180}
+            height={90}
+            className="opacity-75"
+            style={{ width: '180px', height: 'auto' }}
+          />
+        </div>
+        {/* 右から左に流れる雲2 */}
+        <div className="absolute animate-cloud-left-start-3" style={{ top: '5%' }}>
+          <Image
+            src="/cloud.png"
+            alt=""
+            width={160}
+            height={80}
+            className="opacity-65"
+            style={{ width: '160px', height: 'auto' }}
+          />
+        </div>
+        {/* 左から右に流れる雲3 */}
+        <div className="absolute animate-cloud-right-start-1" style={{ top: '35%' }}>
+          <Image
+            src="/cloud.png"
+            alt=""
+            width={170}
+            height={85}
+            className="opacity-70"
+            style={{ width: '170px', height: 'auto' }}
+          />
+        </div>
+        {/* 右から左に流れる雲3 */}
+        <div className="absolute animate-cloud-left-start-2" style={{ top: '12%' }}>
+          <Image
+            src="/cloud.png"
+            alt=""
+            width={190}
+            height={95}
+            className="opacity-68"
+            style={{ width: '190px', height: 'auto' }}
+          />
+        </div>
+      </div>
+
+      {/* 雲のアニメーション - スマホ版 */}
+      <div className="md:hidden absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-[5]">
+        {/* 左から右に流れる雲1 */}
+        <div className="absolute animate-cloud-right-mobile-start-0" style={{ top: '10%' }}>
+          <Image
+            src="/cloud.png"
+            alt=""
+            width={150}
+            height={75}
+            className="opacity-80"
+            style={{ width: '150px', height: 'auto' }}
+          />
+        </div>
+        {/* 右から左に流れる雲1 */}
+        <div className="absolute animate-cloud-left-mobile-start-1" style={{ top: '18%' }}>
+          <Image
+            src="/cloud.png"
+            alt=""
+            width={150}
+            height={75}
+            className="opacity-70"
+            style={{ width: '150px', height: 'auto' }}
+          />
+        </div>
+        {/* 左から右に流れる雲2 */}
+        <div className="absolute animate-cloud-right-mobile-start-2" style={{ top: '28%' }}>
+          <Image
+            src="/cloud.png"
+            alt=""
+            width={130}
+            height={65}
+            className="opacity-75"
+            style={{ width: '130px', height: 'auto' }}
+          />
+        </div>
+        {/* 右から左に流れる雲2 */}
+        <div className="absolute animate-cloud-left-mobile-start-3" style={{ top: '6%' }}>
+          <Image
+            src="/cloud.png"
+            alt=""
+            width={120}
+            height={60}
+            className="opacity-65"
+            style={{ width: '120px', height: 'auto' }}
+          />
+        </div>
+      </div>
+
+      {/* 掲示板の背景画像 - 投稿カードの下に配置（雲の上、コンテンツの下） */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-[7]">
+        {/* スマホ版: 掲示板の背景画像 */}
+        <div className="md:hidden absolute" style={{ top: '60%', left: '50%', transform: 'translate(-50%, -50%)', width: '100%', maxWidth: '1200px' }}>
+          <Image
+            src="/bulletin-board-mobile.png"
+            alt=""
+            width={1200}
+            height={900}
+            className="w-full h-auto object-contain"
+            style={{ maxHeight: '850px', display: 'block' }}
+          />
+        </div>
+        {/* md以上: 掲示板の背景画像 */}
+        <div className="hidden md:block absolute" style={{ top: '59%', left: '50%', transform: 'translate(-50%, -50%)', width: '95%', maxWidth: '1600px' }}>
+          <Image
+            src="/bulletin-board.png"
+            alt=""
+            width={1600}
+            height={900}
+            className="w-full h-auto object-contain"
+            style={{ maxHeight: '700px', display: 'block' }}
+          />
+        </div>
+      </div>
+
       {/* コンテンツ - 背景画像の上に重ねる */}
       <div className="absolute inset-0 z-10">
         <div className="container mx-auto px-4 w-full h-full">

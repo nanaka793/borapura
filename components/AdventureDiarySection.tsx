@@ -377,7 +377,7 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
             </div>
 
             {/* 下部のテキストブロック（ゲーム風テロップ - 黒いボックスの上に配置） */}
-            <div className="absolute px-4" style={{ top: '83%', left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: '100%' }}>
+            <div className="absolute px-4" style={{ top: isMobile ? '83%' : '75%', left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: '100%' }}>
               <div className="bg-black rounded-lg border-2 border-gray-400 p-4 md:p-6 mx-auto" style={{ maxWidth: '600px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)' }}>
                 <div className="space-y-4 text-white font-mono text-lg md:text-2xl">
                   {/* 日誌一覧を読む */}
