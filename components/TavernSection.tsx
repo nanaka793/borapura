@@ -159,7 +159,7 @@ export default function TavernSection({ topics }: TavernSectionProps) {
 
       {/* 3. メニュー表 - スクロール到達時に右から左にスライドイン */}
       <div 
-        className="absolute z-20 transition-transform duration-1000 ease-out md:!top-[-8%] md:!right-[-10%] md:!w-[72%]"
+        className="absolute z-20 transition-transform duration-1000 ease-out md:!top-[-8%] md:!right-[-10%]"
         style={{
           top: '20%',
           right: '0%',
@@ -171,9 +171,15 @@ export default function TavernSection({ topics }: TavernSectionProps) {
           transformOrigin: 'top right'
         }}
       >
-        <div className="relative w-full flex flex-col md:scale-[1.3] md:translate-y-12 lg:scale-110 lg:translate-y-0">
+        <div 
+          className="relative w-full flex flex-col md:w-[85vw] lg:w-[80vw] xl:w-[75vw] 2xl:w-[70vw]"
+          style={{
+            maxWidth: '2200px',
+            minWidth: '600px'
+          }}
+        >
           {/* メニュー表の画像（スマホ版は新しい画像、PC版は従来の画像） */}
-          <div className="md:hidden">
+          <div className="md:hidden" style={{ transform: 'translateX(-15%)' }}>
             <Image
               src="/tavern-menu-card-mobile.png"
               alt=""

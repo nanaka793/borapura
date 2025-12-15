@@ -250,7 +250,7 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
             </div>
 
             {/* 投稿カードエリア（ノートの上に配置） */}
-            <div className="relative min-h-[300px]" style={{ top: '42%', transform: 'translateY(-50%)', position: 'absolute', width: '100%' }}>
+            <div className="relative min-h-[300px]" style={{ top: isMobile ? '45%' : '42%', transform: 'translateY(-50%)', position: 'absolute', width: '100%' }}>
               {/* 左矢印（PC版のみ） */}
               {!isMobile && latestPosts.length > 2 && (
                 <button
@@ -270,11 +270,11 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
               )}
 
               {/* 投稿カード（スマホ版: 2x2グリッド、PC版: 2列） */}
-              <div className={`grid gap-4 md:gap-8 lg:gap-16 mx-auto px-4 ${
+              <div className={`grid gap-2 md:gap-8 lg:gap-16 mx-auto px-4 ${
                 visiblePosts.length === 1 
                   ? 'grid-cols-1 max-w-md' 
                   : isMobile
-                  ? 'grid-cols-2 grid-rows-2'
+                  ? 'grid-cols-2 grid-rows-2 max-w-xs'
                   : 'grid-cols-1 md:grid-cols-2 max-w-lg md:max-w-lg lg:max-w-xl'
               }`}>
                 {visiblePosts.map((post, idx) => {
@@ -325,16 +325,16 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                       
                       {/* コンテンツエリア */}
-                      <div className="absolute inset-0 flex flex-col justify-between p-3 md:p-4 text-white">
+                      <div className="absolute inset-0 flex flex-col justify-between p-2 md:p-4 text-white">
                         {/* 投稿者情報（上部） */}
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5">
                           <Avatar
                             src={authorAvatar}
                             name={post.author}
                             size="sm"
                             className="ring-2 ring-white/40"
                           />
-                          <span className="text-xs md:text-sm font-medium">
+                          <span className="text-[10px] md:text-sm font-medium">
                             {post.author}
                           </span>
                         </div>
@@ -342,12 +342,12 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
                         {/* 下部コンテンツ */}
                         <div>
                           {/* タイトル（高さを固定） */}
-                          <h3 className="text-sm md:text-base font-bold line-clamp-2 mb-2 min-h-[3rem] flex items-end">
+                          <h3 className="text-xs md:text-base font-bold line-clamp-2 mb-1.5 md:mb-2 min-h-[2.5rem] md:min-h-[3rem] flex items-end">
                             {post.title}
                           </h3>
                           
                           {/* 詳細説明文（最大3行） */}
-                          <p className="text-xs md:text-sm line-clamp-3 opacity-90">
+                          <p className="text-[10px] md:text-sm line-clamp-2 md:line-clamp-3 opacity-90">
                             {post.content}
                           </p>
                         </div>

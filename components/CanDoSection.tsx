@@ -9,6 +9,7 @@ export default function CanDoSection() {
   const [opacity, setOpacity] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false)
   const imageRef = useRef<HTMLDivElement>(null)
   const sectionRef = useRef<HTMLElement>(null)
   const animationRef = useRef<number | null>(null)
@@ -210,7 +211,7 @@ export default function CanDoSection() {
             <div 
               ref={imageRef}
               className={`bg-white rounded-lg shadow-2xl p-4 md:p-8 lg:p-10 ${
-                isMobile ? 'w-full' : 'md:rotate-[-2deg] md:transition-transform md:duration-300 md:hover:rotate-[-1deg]'
+                isMobile ? 'w-full cursor-pointer' : 'md:rotate-[-2deg] md:transition-transform md:duration-300 md:hover:rotate-[-1deg]'
               }`}
               style={{
                 transform: isMobile 
@@ -221,19 +222,96 @@ export default function CanDoSection() {
                 willChange: isMobile ? 'transform, opacity' : 'auto',
                 transition: isMobile ? 'none' : undefined
               }}
+              onClick={() => {
+                if (isMobile) {
+                  setIsImageModalOpen(true)
+                }
+              }}
             >
               <Image
                 src="/closing-illustration.png"
-                alt=""
+                alt="このサイトでできること"
                 width={800}
                 height={600}
                 className={`w-full h-auto object-contain ${isMobile ? 'max-w-full' : 'max-w-4xl'}`}
                 priority
               />
+              {isMobile && (
+                <div className="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
+                  タップして拡大
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* 画像拡大モーダル（スマホ版のみ） */}
+      {isMobile && isImageModalOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+          onClick={() => setIsImageModalOpen(false)}
+        >
+          {/* 閉じるボタン */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              setIsImageModalOpen(false)
+            }}
+            className="absolute top-4 right-4 text-white bg-black/50 hover:bg-black/70 rounded-full p-2 transition-colors z-10"
+            aria-label="閉じる"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+
+          {/* 拡大画像 */}
+          <div
+            className="relative w-full h-full flex items-center justify-center overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                transform: `rotate(${rotation}deg)`,
+                transformOrigin: 'center center',
+                width: '100vh',
+                height: '100vw',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                maxWidth: '100vh',
+                maxHeight: '100vw'
+              }}
+            >
+              <Image
+                src="/closing-illustration.png"
+                alt="このサイトでできること（拡大表示）"
+                width={1200}
+                height={900}
+                className="w-full h-full object-contain"
+                style={{
+                  width: '100vh',
+                  height: '100vw',
+                  maxWidth: '100vh',
+                  maxHeight: '100vw'
+                }}
+                priority
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

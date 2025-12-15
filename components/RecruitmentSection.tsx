@@ -76,7 +76,18 @@ function TypewriterText({ text, delay = 100, startDelay = 0 }: { text: string; d
 export default function RecruitmentSection({ posts, users }: RecruitmentSectionProps) {
   const router = useRouter()
   const [isVisible, setIsVisible] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
+
+  // モバイル判定
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // スクロール検知でアニメーション開始
   useEffect(() => {
@@ -300,14 +311,14 @@ export default function RecruitmentSection({ posts, users }: RecruitmentSectionP
           />
         </div>
         {/* md以上: 掲示板の背景画像 */}
-        <div className="hidden md:block absolute" style={{ top: '59%', left: '50%', transform: 'translate(-50%, -50%)', width: '95%', maxWidth: '1600px' }}>
+        <div className="hidden md:block absolute" style={{ top: '59%', left: '50%', transform: 'translate(-50%, -50%)', width: '95%', maxWidth: '100%' }}>
           <Image
             src="/bulletin-board.png"
             alt=""
             width={1600}
             height={900}
             className="w-full h-auto object-contain"
-            style={{ maxHeight: '700px', display: 'block' }}
+            style={{ maxHeight: '80vh', display: 'block' }}
           />
         </div>
       </div>
@@ -338,16 +349,16 @@ export default function RecruitmentSection({ posts, users }: RecruitmentSectionP
             </div>
 
             {/* 投稿カードエリア（掲示板の上に配置） */}
-            <div className="relative flex items-center justify-center gap-3 md:gap-4 min-h-[300px]" style={{ top: '45%', transform: 'translateY(-50%)', position: 'absolute', width: '100%' }}>
+            <div className="relative flex items-center justify-center gap-2 md:gap-4 min-h-[300px]" style={{ top: isMobile ? '47%' : '45%', transform: 'translateY(-50%)', position: 'absolute', width: '100%' }}>
               {/* 投稿カード（スマホ版: 2列、md以上: 横一列） */}
-              <div className={`flex-1 grid gap-3 md:gap-6 mx-auto px-4 ${
+              <div className={`flex-1 grid gap-2 md:gap-6 mx-auto px-4 ${
                 latestRecruitmentPosts.length === 1 
                   ? 'grid-cols-1 max-w-md' 
                   : latestRecruitmentPosts.length === 2
                   ? 'grid-cols-1 md:grid-cols-2'
                   : latestRecruitmentPosts.length === 3
                   ? 'grid-cols-1 md:grid-cols-3'
-                  : 'grid-cols-2 md:grid-cols-4'
+                  : 'grid-cols-2 md:grid-cols-4 max-w-xs md:max-w-none'
               }`}>
                 {latestRecruitmentPosts.map((post) => {
                   const authorUser = userMap[post.authorId] || userNameMap[post.author.toLowerCase()]
@@ -382,11 +393,11 @@ export default function RecruitmentSection({ posts, users }: RecruitmentSectionP
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                       
                       {/* コンテンツエリア */}
-                      <div className="absolute inset-0 flex flex-col justify-between p-3 md:p-4 text-white">
+                      <div className="absolute inset-0 flex flex-col justify-between p-2 md:p-4 text-white">
                         {/* 投稿ジャンル（上部） */}
                         {post.category && (
                           <div className="flex items-start">
-                            <span className="inline-flex items-center rounded-full bg-white/20 px-2 py-1 text-[10px] md:text-xs font-semibold">
+                            <span className="inline-flex items-center rounded-full bg-white/20 px-1.5 py-0.5 md:px-2 md:py-1 text-[9px] md:text-xs font-semibold">
                               {post.category}
                             </span>
                           </div>
@@ -395,24 +406,24 @@ export default function RecruitmentSection({ posts, users }: RecruitmentSectionP
                         {/* 下部コンテンツ */}
                         <div className="flex flex-col">
                           {/* タイトル（高さを固定） */}
-                          <h3 className="text-sm md:text-base font-bold line-clamp-2 mb-2 min-h-[3rem] flex items-end">
+                          <h3 className="text-xs md:text-base font-bold line-clamp-2 mb-1.5 md:mb-2 min-h-[2.5rem] md:min-h-[3rem] flex items-end">
                             {post.title}
                           </h3>
                           
                           {/* 詳細説明文（最大3行） */}
-                          <p className="text-xs md:text-sm line-clamp-3 opacity-90 mb-2">
+                          <p className="text-[10px] md:text-sm line-clamp-2 md:line-clamp-3 opacity-90 mb-1.5 md:mb-2">
                             {post.content}
                           </p>
                           
                           {/* 投稿者情報（最下部、小さく） */}
-                          <div className="flex items-center gap-1.5 mt-auto">
+                          <div className="flex items-center gap-1 mt-auto">
                             <Avatar
                               src={authorAvatar}
                               name={post.author}
                               size="sm"
                               className="ring-1 ring-white/40"
                             />
-                            <span className="text-[10px] md:text-xs font-medium opacity-80">
+                            <span className="text-[9px] md:text-xs font-medium opacity-80">
                               {post.author}
                             </span>
                           </div>
