@@ -12,9 +12,11 @@ export default function ThoughtSection() {
   const lineIndexRef = useRef(0)
 
   const fullTitle = 'ボランティアは、世界を広げる "冒険" だ'
+  const titlePart1 = 'ボランティアは、'
+  const titlePart2 = '世界を広げる "冒険" だ'
   const fullBodyLines = [
     '誰かのためになりたいとか、もっと面白いことをしたいとか',
-    'そうやって自らの思いを胸に始めた冒険は',
+    'そうやって自らの想いを胸に始めた冒険は',
     'あなたを知らなかった世界へと出会わせてくれる',
     '新たな冒険と仲間との出会いをここで始めよう'
   ]
@@ -117,14 +119,55 @@ export default function ThoughtSection() {
         <div className="container mx-auto px-4 w-full">
           <div className="max-w-4xl mx-auto">
             {/* タイトル - 常にスペースを確保 */}
-            <h2 className="text-3xl md:text-4xl font-bold text-textmain mb-6 text-center min-h-[3rem] md:min-h-[4rem] flex items-center justify-center">
-              {titleText}
-              {!isTitleComplete && <span className="animate-pulse">|</span>}
+            <h2 className="text-xl md:text-2xl font-bold text-textmain mb-8 md:mb-10 text-center min-h-[3rem] md:min-h-[4rem] flex items-center justify-center leading-relaxed tracking-wide">
+              {/* スマホ版: 2行に分けて表示 */}
+              <span className="md:hidden block">
+                {titleText.length <= titlePart1.length ? (
+                  <>
+                    <span>{titleText}</span>
+                    {!isTitleComplete && <span className="animate-pulse">|</span>}
+                  </>
+                ) : (
+                  <>
+                    <span>{titlePart1}</span>
+                    <br />
+                    <span>{titleText.substring(titlePart1.length)}</span>
+                    {!isTitleComplete && <span className="animate-pulse">|</span>}
+                  </>
+                )}
+              </span>
+              {/* md以上: 1行で表示 */}
+              <span className="hidden md:block">
+                {titleText}
+                {!isTitleComplete && <span className="animate-pulse">|</span>}
+              </span>
             </h2>
             {/* テキスト - 一行ずつふわっと表示 */}
-            <div className="text-lg md:text-xl text-gray-700 text-center" style={{ lineHeight: '2.5' }}>
+            <div className="text-base md:text-lg text-gray-700 text-center" style={{ lineHeight: '2.5' }}>
               {fullBodyLines.map((fullLine, index) => {
                 const isVisible = visibleLines.includes(index)
+                
+                // 1行目をスマホ版で2行に分ける
+                if (index === 0) {
+                  return (
+                    <div 
+                      key={index} 
+                      className={`relative h-[2.5em] flex items-center justify-center transition-all duration-700 ${
+                        isVisible 
+                          ? 'opacity-100 translate-y-0' 
+                          : 'opacity-0 translate-y-4'
+                      } ${index < fullBodyLines.length - 1 ? 'mb-[1em] md:mb-0' : ''}`}
+                    >
+                      {/* スマホ版: 2行に分けて表示 */}
+                      <span className="md:hidden block">
+                        誰かのためになりたいとか、<br />
+                        もっと面白いことをしたいとか
+                      </span>
+                      {/* md以上: 1行で表示 */}
+                      <span className="hidden md:block">{fullLine}</span>
+                    </div>
+                  )
+                }
                 
                 return (
                   <div 
@@ -133,7 +176,7 @@ export default function ThoughtSection() {
                       isVisible 
                         ? 'opacity-100 translate-y-0' 
                         : 'opacity-0 translate-y-4'
-                    }`}
+                    } ${index < fullBodyLines.length - 1 ? 'mb-[0.1em] md:mb-0' : ''}`}
                   >
                     <span>{fullLine}</span>
                   </div>

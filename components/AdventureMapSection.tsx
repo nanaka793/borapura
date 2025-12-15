@@ -38,7 +38,7 @@ export default function AdventureMapSection({ children }: AdventureMapSectionPro
   }, [])
 
   return (
-    <section ref={sectionRef} className="adventure-map-section" style={{ backgroundColor: '#DDD6C7' }}>
+    <section ref={sectionRef} className="adventure-map-section md:pb-36" style={{ backgroundColor: '#EAE4D8' }}>
       {children}
     </section>
   )

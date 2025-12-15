@@ -140,12 +140,12 @@ export default function TavernSection({ topics }: TavernSectionProps) {
 
       {/* 2. お酒の透過素材 - 左下から斜め左上にスライド移動するループアニメーション */}
       <div 
-        className="absolute z-10"
+        className="absolute z-10 md:!bottom-0 md:!w-full md:!h-full"
         style={{
           left: '0%',
-          bottom: '0%',
-          width: '100%',
-          height: '100%'
+          bottom: '10%',
+          width: '150%',
+          height: '150%'
         }}
       >
         <Image
@@ -159,11 +159,11 @@ export default function TavernSection({ topics }: TavernSectionProps) {
 
       {/* 3. メニュー表 - スクロール到達時に右から左にスライドイン */}
       <div 
-        className="absolute z-20 transition-transform duration-1000 ease-out"
+        className="absolute z-20 transition-transform duration-1000 ease-out md:!top-[-8%] md:!right-[-10%] md:!w-[72%]"
         style={{
-          top: '-8%',
-          right: '-10%',
-          width: '72%',
+          top: '20%',
+          right: '0%',
+          width: '80%',
           maxWidth: 'none',
           transform: isVisible 
             ? 'translateX(0) scale(1.1)' 
@@ -172,27 +172,41 @@ export default function TavernSection({ topics }: TavernSectionProps) {
         }}
       >
         <div className="relative w-full flex flex-col md:scale-[1.3] md:translate-y-12 lg:scale-110 lg:translate-y-0">
-          {/* メニュー表の画像 */}
-          <Image
-            src="/tavern-menu-card.png"
-            alt=""
-            width={1200}
-            height={1600}
-            className="w-full h-auto"
-            style={{
-              aspectRatio: 'auto'
-            }}
-          />
+          {/* メニュー表の画像（スマホ版は新しい画像、PC版は従来の画像） */}
+          <div className="md:hidden">
+            <Image
+              src="/tavern-menu-card-mobile.png"
+              alt=""
+              width={1200}
+              height={1600}
+              className="w-full h-auto"
+              style={{
+                aspectRatio: 'auto'
+              }}
+            />
+          </div>
+          <div className="hidden md:block">
+            <Image
+              src="/tavern-menu-card.png"
+              alt=""
+              width={1200}
+              height={1600}
+              className="w-full h-auto"
+              style={{
+                aspectRatio: 'auto'
+              }}
+            />
+          </div>
           
           {/* メニュー表の上にコンテンツを配置 */}
-          <div className="absolute inset-0 pt-48 pl-56 pb-8 pr-20 md:pt-24 md:pl-40 lg:pt-48 lg:pl-56">
+          <div className="absolute inset-0 pt-8 pl-6 pb-8 pr-6 md:pt-24 md:pl-40 lg:pt-48 lg:pl-56 md:pr-20">
             <div className="h-full flex flex-col md:scale-[0.769] lg:scale-100">
               {/* MENUタイトル */}
               <div className="mb-4 md:mb-6 flex-shrink-0">
-                <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-1" style={{ letterSpacing: '0.1em' }}>
+                <h3 className="text-lg md:text-2xl font-bold text-gray-800 mb-1" style={{ letterSpacing: '0.1em' }}>
                   MENU
                 </h3>
-                <div className="h-0.5 w-16 bg-gray-700"></div>
+                <div className="h-0.5 w-12 md:w-16 bg-gray-700"></div>
               </div>
 
               {/* トピックリスト - 飲食店のメニュー表風 */}
@@ -259,14 +273,14 @@ export default function TavernSection({ topics }: TavernSectionProps) {
       {/* 4. テキストボックス - 最上レイヤー */}
       <div 
         onClick={handleMoreClick}
-        className={`absolute z-30 transition-all duration-300 ease-in-out cursor-pointer hover:opacity-90 ${
+        className={`absolute z-30 transition-all duration-300 ease-in-out cursor-pointer hover:opacity-90 md:!top-[12%] md:!max-w-[22%] md:!scale-[1.4] ${
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
         style={{
           left: '4%',
-          top: '12%',
-          maxWidth: '22%',
-          transform: 'scale(1.4)',
+          top: '5%',
+          maxWidth: '90%',
+          transform: 'scale(1)',
           transformOrigin: 'top left'
         }}
       >

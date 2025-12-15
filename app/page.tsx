@@ -3,6 +3,7 @@ import { getPosts, getUsers, getRecruitmentPosts, getTopics } from '@/lib/data'
 import { getCurrentUser } from '@/lib/auth'
 import HeroSection from '@/components/HeroSection'
 import ThoughtSection from '@/components/ThoughtSection'
+import CanDoSection from '@/components/CanDoSection'
 import AdventureDiarySection from '@/components/AdventureDiarySection'
 import RecruitmentSection from '@/components/RecruitmentSection'
 import TavernSection from '@/components/TavernSection'
@@ -33,57 +34,11 @@ export default async function Home() {
       <ThoughtSection />
 
       {/* このサイトでできることセクション */}
-      <section id="can-do" className="relative w-full overflow-hidden" style={{ minHeight: '100vh' }}>
-        {/* 背景画像 - 縦を画面いっぱいに広げ、はみ出た横をカット */}
-        <div className="absolute inset-0 w-full h-full">
-          <Image
-            src="/beach-elements-bg.png"
-            alt=""
-            width={1920}
-            height={1080}
-            className="w-full h-full object-cover"
-            priority
-            style={{ objectPosition: 'center' }}
-          />
-        </div>
-
-        {/* コンテンツ - 背景画像の上に重ねる */}
-        <div className="absolute inset-0 z-10 flex items-start justify-center pt-16 md:pt-24">
-          <div className="container mx-auto px-4 w-full">
-            <div className="max-w-4xl mx-auto flex flex-col items-center justify-center gap-8">
-              {/* 手紙のような白い背景（画像のみ） */}
-              <div className="bg-white rounded-lg shadow-2xl p-12 md:p-16 lg:p-20 transform rotate-[-2deg] hover:rotate-[-1deg] transition-transform duration-300">
-                <div className="transform scale-[1.3]">
-                  <Image
-                    src="/closing-illustration.png"
-                    alt=""
-                    width={800}
-                    height={600}
-                    className="w-full h-auto max-w-2xl object-contain"
-                    priority
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <CanDoSection />
 
       {/* 冒険マップセクション */}
       <AdventureMapSection>
-      <div id="adventure-map" className="relative w-full overflow-hidden" style={{ minHeight: '100vh', backgroundColor: '#EAE4D8' }}>
-        {/* 背景画像 - 横を画面いっぱいに広げ、横が切れないように表示、中央に配置 */}
-        <div className="absolute inset-0 w-full z-0 flex items-center justify-center" style={{ backgroundColor: '#EAE4D8' }}>
-          <Image
-            src="/map-bg.png"
-            alt=""
-            width={1920}
-            height={1080}
-            className="w-full h-full object-contain"
-            priority
-            style={{ objectPosition: 'center center' }}
-          />
-        </div>
+      <div id="adventure-map" className="relative w-full overflow-hidden py-12 md:py-0 md:pb-96" style={{ minHeight: '70vh', backgroundColor: '#EAE4D8' }}>
 
         {/* コンテンツ - 背景画像の上に重ねる */}
         <div className="absolute inset-0 z-20 flex items-center justify-center">
@@ -96,9 +51,9 @@ export default async function Home() {
                 冒険者が活躍するさまざまなボランティア。<br />
                 活動の報告数に応じて獲得できるバッジを確認！
               </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-0.5 md:gap-0">
+              <div className="grid grid-cols-3 md:grid-cols-4 gap-2 md:gap-0">
                 {/* 教育 */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[85%] h-[85%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[90%] h-[90%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -108,8 +63,8 @@ export default async function Home() {
                     </div>
                     {/* 裏面（グレー） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden rotate-y-180 flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(45, 45, 45, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
-                      <div className="text-xl md:text-2xl mb-1 text-center">📖</div>
-                      <p className="text-xs md:text-sm text-white text-center font-medium">
+                      <div className="text-lg md:text-xl mb-1 text-center">📖</div>
+                      <p className="text-[7px] md:text-xs text-white text-center font-medium">
                         学びの賢者
                       </p>
                     </div>
@@ -117,7 +72,7 @@ export default async function Home() {
                 </div>
 
                 {/* 子ども */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[90%] h-[90%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -127,8 +82,8 @@ export default async function Home() {
                     </div>
                     {/* 裏面（グレー） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden rotate-y-180 flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(45, 45, 45, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
-                      <div className="text-xl md:text-2xl mb-1 text-center">🛡️</div>
-                      <p className="text-xs md:text-sm text-white text-center font-medium">
+                      <div className="text-lg md:text-xl mb-1 text-center">🛡️</div>
+                      <p className="text-[7px] md:text-xs text-white text-center font-medium">
                         未来の勇者の守り手
                       </p>
                     </div>
@@ -136,7 +91,7 @@ export default async function Home() {
                 </div>
 
                 {/* 国際協力 */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[90%] h-[90%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -146,8 +101,8 @@ export default async function Home() {
                     </div>
                     {/* 裏面（グレー） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden rotate-y-180 flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(45, 45, 45, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
-                      <div className="text-xl md:text-2xl mb-1 text-center">🌏</div>
-                      <p className="text-xs md:text-sm text-white text-center font-medium">
+                      <div className="text-lg md:text-xl mb-1 text-center">🌏</div>
+                      <p className="text-[7px] md:text-xs text-white text-center font-medium">
                         世界橋渡しの旅人
                       </p>
                     </div>
@@ -155,7 +110,7 @@ export default async function Home() {
                 </div>
 
                 {/* 環境保護 */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[90%] h-[90%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -165,8 +120,8 @@ export default async function Home() {
                     </div>
                     {/* 裏面（グレー） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden rotate-y-180 flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(45, 45, 45, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
-                      <div className="text-xl md:text-2xl mb-1 text-center">🌳</div>
-                      <p className="text-xs md:text-sm text-white text-center font-medium">
+                      <div className="text-lg md:text-xl mb-1 text-center">🌳</div>
+                      <p className="text-[7px] md:text-xs text-white text-center font-medium">
                         エコレンジャー
                       </p>
                     </div>
@@ -174,7 +129,7 @@ export default async function Home() {
                 </div>
 
                 {/* 福祉 */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[90%] h-[90%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -184,8 +139,8 @@ export default async function Home() {
                     </div>
                     {/* 裏面（グレー） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden rotate-y-180 flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(45, 45, 45, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
-                      <div className="text-xl md:text-2xl mb-1 text-center">💝</div>
-                      <p className="text-xs md:text-sm text-white text-center font-medium">
+                      <div className="text-lg md:text-xl mb-1 text-center">💝</div>
+                      <p className="text-[7px] md:text-xs text-white text-center font-medium">
                         やさしさの司祭
                       </p>
                     </div>
@@ -193,7 +148,7 @@ export default async function Home() {
                 </div>
 
                 {/* 災害支援 */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[90%] h-[90%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -203,8 +158,8 @@ export default async function Home() {
                     </div>
                     {/* 裏面（グレー） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden rotate-y-180 flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(45, 45, 45, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
-                      <div className="text-xl md:text-2xl mb-1 text-center">🚒</div>
-                      <p className="text-xs md:text-sm text-white text-center font-medium">
+                      <div className="text-lg md:text-xl mb-1 text-center">🚒</div>
+                      <p className="text-[7px] md:text-xs text-white text-center font-medium">
                         救援レスキュー
                       </p>
                     </div>
@@ -212,7 +167,7 @@ export default async function Home() {
                 </div>
 
                 {/* 地域活動 */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[90%] h-[90%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -222,8 +177,8 @@ export default async function Home() {
                     </div>
                     {/* 裏面（グレー） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden rotate-y-180 flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(45, 45, 45, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
-                      <div className="text-xl md:text-2xl mb-1 text-center">🏘️</div>
-                      <p className="text-xs md:text-sm text-white text-center font-medium">
+                      <div className="text-lg md:text-xl mb-1 text-center">🏘️</div>
+                      <p className="text-[7px] md:text-xs text-white text-center font-medium">
                         ローカルガーディアン
                       </p>
                     </div>
@@ -231,7 +186,7 @@ export default async function Home() {
                 </div>
 
                 {/* 医療・健康 */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[90%] h-[90%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -241,8 +196,8 @@ export default async function Home() {
                     </div>
                     {/* 裏面（グレー） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden rotate-y-180 flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(45, 45, 45, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
-                      <div className="text-xl md:text-2xl mb-1 text-center">🌱</div>
-                      <p className="text-xs md:text-sm text-white text-center font-medium">
+                      <div className="text-lg md:text-xl mb-1 text-center">🌱</div>
+                      <p className="text-[7px] md:text-xs text-white text-center font-medium">
                         癒しの治癒師
                       </p>
                     </div>
@@ -250,7 +205,7 @@ export default async function Home() {
                 </div>
 
                 {/* スポーツ */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[90%] h-[90%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -260,8 +215,8 @@ export default async function Home() {
                     </div>
                     {/* 裏面（グレー） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden rotate-y-180 flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(45, 45, 45, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
-                      <div className="text-xl md:text-2xl mb-1 text-center">👟</div>
-                      <p className="text-xs md:text-sm text-white text-center font-medium">
+                      <div className="text-lg md:text-xl mb-1 text-center">👟</div>
+                      <p className="text-[7px] md:text-xs text-white text-center font-medium">
                         アクションランナー
                       </p>
                     </div>
@@ -269,7 +224,7 @@ export default async function Home() {
                 </div>
 
                 {/* 文化 */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[90%] h-[90%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -279,8 +234,8 @@ export default async function Home() {
                     </div>
                     {/* 裏面（グレー） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden rotate-y-180 flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(45, 45, 45, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
-                      <div className="text-xl md:text-2xl mb-1 text-center">✏️</div>
-                      <p className="text-xs md:text-sm text-white text-center font-medium">
+                      <div className="text-lg md:text-xl mb-1 text-center">✏️</div>
+                      <p className="text-[7px] md:text-xs text-white text-center font-medium">
                         文化の旅人
                       </p>
                     </div>
@@ -288,7 +243,7 @@ export default async function Home() {
                 </div>
 
                 {/* イベント */}
-                <div className="perspective-[1000px] aspect-[10/6] w-[80%] h-[80%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
+                <div className="perspective-[1000px] aspect-[10/6] w-[90%] h-[90%] md:w-[75%] md:h-[75%] lg:w-[70%] lg:h-[70%] mx-auto group card-drop">
                   <div className="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]">
                     {/* 表面（白） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
@@ -298,8 +253,8 @@ export default async function Home() {
                     </div>
                     {/* 裏面（グレー） */}
                     <div className="absolute inset-0 rounded-lg p-2 md:p-3 backface-hidden rotate-y-180 flex flex-col items-center justify-center" style={{ backgroundColor: 'rgba(45, 45, 45, 0.95)', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' }}>
-                      <div className="text-xl md:text-2xl mb-1 text-center">🌝</div>
-                      <p className="text-xs md:text-sm text-white text-center font-medium">
+                      <div className="text-lg md:text-xl mb-1 text-center">🌝</div>
+                      <p className="text-[7px] md:text-xs text-white text-center font-medium">
                         イベントマエストロ
                       </p>
                     </div>

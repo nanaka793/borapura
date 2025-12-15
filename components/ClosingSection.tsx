@@ -47,7 +47,7 @@ export default function ClosingSection() {
       <div className="container mx-auto px-4 w-full">
         <div className="max-w-4xl mx-auto flex items-center justify-center min-h-[200px]">
           <div 
-            className={`text-2xl md:text-3xl text-black text-center font-bold transition-all duration-2000 ease-out ${
+            className={`text-base md:text-3xl text-black text-center font-bold transition-all duration-2000 ease-out ${
               isVisible 
                 ? 'opacity-100 translate-y-0' 
                 : 'opacity-0 translate-y-8'

@@ -140,17 +140,32 @@ export default function RecruitmentSection({ posts, users }: RecruitmentSectionP
       className={`relative w-full overflow-hidden scroll-snap-section section-slide-in ${isVisible ? 'visible' : ''}`}
       style={{ minHeight: '100vh' }}
     >
-      {/* 背景画像 - 縦を画面いっぱいに広げ、はみ出た横をカット */}
+      {/* 背景画像 - スマホ版とPC版で異なる画像を使用 */}
       <div className="absolute inset-0 w-full h-full">
-        <Image
-          src="/board-bg.png"
-          alt=""
-          width={1920}
-          height={1080}
-          className="w-full h-full object-cover"
-          priority
-          style={{ objectPosition: 'center' }}
-        />
+        {/* スマホ版: 新しい背景画像 */}
+        <div className="md:hidden absolute inset-0 w-full h-full">
+          <Image
+            src="/board-bg-mobile.png"
+            alt=""
+            width={1920}
+            height={1080}
+            className="w-full h-full object-cover"
+            priority
+            style={{ objectPosition: 'center' }}
+          />
+        </div>
+        {/* md以上: 従来の背景画像 */}
+        <div className="hidden md:block absolute inset-0 w-full h-full">
+          <Image
+            src="/board-bg.png"
+            alt=""
+            width={1920}
+            height={1080}
+            className="w-full h-full object-cover"
+            priority
+            style={{ objectPosition: 'center' }}
+          />
+        </div>
       </div>
 
       {/* コンテンツ - 背景画像の上に重ねる */}
@@ -171,7 +186,7 @@ export default function RecruitmentSection({ posts, users }: RecruitmentSectionP
                     boxShadow: '-4px 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4)',
                   }}
                 >
-                  <h2 className="text-2xl md:text-3xl font-semibold text-gray-800">
+                  <h2 className="text-xl md:text-3xl font-semibold text-gray-800">
                     【新着】ボランティア募集
                   </h2>
                 </div>
@@ -179,9 +194,9 @@ export default function RecruitmentSection({ posts, users }: RecruitmentSectionP
             </div>
 
             {/* 投稿カードエリア（掲示板の上に配置） */}
-            <div className="relative flex items-center justify-center gap-3 md:gap-4 min-h-[300px]" style={{ top: '42%', transform: 'translateY(-50%)', position: 'absolute', width: '100%' }}>
-              {/* 投稿カード（4つ表示） */}
-              <div className={`flex-1 grid gap-3 md:gap-6 mx-auto max-w-5xl ${
+            <div className="relative flex items-center justify-center gap-3 md:gap-4 min-h-[300px]" style={{ top: '45%', transform: 'translateY(-50%)', position: 'absolute', width: '100%' }}>
+              {/* 投稿カード（スマホ版: 2列、md以上: 横一列） */}
+              <div className={`flex-1 grid gap-3 md:gap-6 mx-auto px-4 ${
                 latestRecruitmentPosts.length === 1 
                   ? 'grid-cols-1 max-w-md' 
                   : latestRecruitmentPosts.length === 2
@@ -266,25 +281,25 @@ export default function RecruitmentSection({ posts, users }: RecruitmentSectionP
             </div>
 
             {/* 下部のテキストブロック（ゲーム風テロップ - 黒いボックスの上に配置） */}
-            <div className="absolute" style={{ top: '79%', left: '25%', transform: 'translateX(-50%)', width: '100%' }}>
-              <div className="space-y-4 text-white font-mono" style={{ fontSize: '1.5em' }}>
-                {/* 募集記事をもっと見る */}
-                <button
-                  onClick={handleListClick}
-                  className="block hover:opacity-80 transition-all group"
-                  style={{ textAlign: 'left', marginLeft: '50%' }}
-                >
-                  <TypewriterText text="▶︎ 募集記事をもっと見る" delay={100} startDelay={0} />
-                </button>
-                
-                {/* 募集記事を掲載する */}
-                <button
-                  onClick={handleCreateClick}
-                  className="block hover:opacity-80 transition-all group"
-                  style={{ textAlign: 'left', marginLeft: '50%' }}
-                >
-                  <TypewriterText text="▶︎ 募集記事を掲載する" delay={100} startDelay={500} />
-                </button>
+            <div className="absolute px-4" style={{ top: '79%', left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: '100%' }}>
+              <div className="bg-black rounded-lg border-2 border-gray-400 p-4 md:p-6 mx-auto" style={{ maxWidth: '600px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)' }}>
+                <div className="space-y-4 text-white font-mono text-lg md:text-2xl">
+                  {/* 募集記事をもっと見る */}
+                  <button
+                    onClick={handleListClick}
+                    className="block hover:opacity-80 transition-all group w-full text-left"
+                  >
+                    <TypewriterText text="▶︎ 募集記事をもっと見る" delay={100} startDelay={0} />
+                  </button>
+                  
+                  {/* 募集記事を掲載する */}
+                  <button
+                    onClick={handleCreateClick}
+                    className="block hover:opacity-80 transition-all group w-full text-left"
+                  >
+                    <TypewriterText text="▶︎ 募集記事を掲載する" delay={100} startDelay={500} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>

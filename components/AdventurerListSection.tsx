@@ -71,25 +71,41 @@ const GENRE_BADGES = [
 export default function AdventurerListSection({ users, currentUserPostCount }: AdventurerListSectionProps) {
   const router = useRouter()
   const [isVisible, setIsVisible] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
   const leftBlockRef = useRef<HTMLDivElement>(null)
   const rightBlockRef = useRef<HTMLDivElement>(null)
   const [randomUsers, setRandomUsers] = useState<User[]>([])
 
-  // ランダムに4人のユーザーを選択
+  // モバイル判定
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  // ランダムにユーザーを選択（スマホ版: 3名、PC版: 4名）
   useEffect(() => {
     if (users.length > 0) {
       const shuffled = [...users].sort(() => Math.random() - 0.5)
-      setRandomUsers(shuffled.slice(0, 4))
+      setRandomUsers(shuffled.slice(0, isMobile ? 3 : 4))
     }
-  }, [users])
+  }, [users, isMobile])
 
-  // 左側のブロックの高さに合わせて右側のブロックの高さを調整
+  // 左側のブロックの高さに合わせて右側のブロックの高さを調整（PC版のみ）
   useEffect(() => {
     if (isVisible && leftBlockRef.current && rightBlockRef.current) {
       const updateHeight = () => {
         if (leftBlockRef.current && rightBlockRef.current) {
-          rightBlockRef.current.style.height = `${leftBlockRef.current.offsetHeight}px`
+          if (!isMobile) {
+            rightBlockRef.current.style.height = `${leftBlockRef.current.offsetHeight}px`
+          } else {
+            // スマホ版では固定高さを維持
+            rightBlockRef.current.style.height = 'calc(200px + 5rem)'
+          }
         }
       }
       updateHeight()
@@ -97,7 +113,7 @@ export default function AdventurerListSection({ users, currentUserPostCount }: A
       window.addEventListener('resize', updateHeight)
       return () => window.removeEventListener('resize', updateHeight)
     }
-  }, [isVisible, randomUsers])
+  }, [isVisible, randomUsers, isMobile])
 
   // スクロール検知でアニメーション開始
   useEffect(() => {
@@ -236,16 +252,16 @@ export default function AdventurerListSection({ users, currentUserPostCount }: A
               }`}
               style={{ paddingRight: '1rem' }}
             >
-              <p className="text-base md:text-lg leading-relaxed mb-4">
+              <p className="text-sm md:text-lg leading-relaxed mb-4">
                 ボランティア活動を通して人と人のつながりを創り出す勇者...
               </p>
-              <p className="text-base md:text-lg leading-relaxed mb-4">
+              <p className="text-sm md:text-lg leading-relaxed mb-4">
                 それがこのぼらぷらの&ldquo;冒険者&rdquo;
               </p>
-              <p className="text-base md:text-lg leading-relaxed mb-6">
+              <p className="text-sm md:text-lg leading-relaxed mb-6">
                 冒険者レベルを上げながらさまざまなバッジを獲得し、
               </p>
-              <p className="text-base md:text-lg leading-relaxed mb-6">
+              <p className="text-sm md:text-lg leading-relaxed mb-6">
                 新たなつながりの創出者になれ。
               </p>
               <div className="border-t border-dashed border-gray-500 my-6"></div>
@@ -266,15 +282,16 @@ export default function AdventurerListSection({ users, currentUserPostCount }: A
             {/* 1番下のブロック：バッジ一覧 */}
             <div 
               ref={rightBlockRef}
-              className={`bg-black rounded-lg border-2 border-gray-400 p-6 md:p-8 transition-all duration-1000 delay-400 ${
+              className={`bg-black rounded-lg border-2 border-gray-400 p-6 md:p-8 transition-all duration-1000 delay-400 md:!h-auto ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
               }`}
               style={{
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)'
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
+                height: 'calc(200px + 5rem)'
               }}
             >
               <h3 className="text-xl md:text-2xl font-bold text-white mb-6">獲得できるバッジ</h3>
-              <div className="space-y-6 overflow-y-auto" style={{ maxHeight: 'calc(100% - 60px)' }}>
+              <div className="space-y-6 overflow-y-auto" style={{ maxHeight: isMobile ? '200px' : '400px' }}>
                 {/* 活動投稿バッジ（冒険日誌投稿バッジ） */}
                 <div>
                   <h4 className="text-white font-semibold mb-3 text-lg">冒険日誌投稿バッジ</h4>
