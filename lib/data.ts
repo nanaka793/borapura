@@ -297,7 +297,21 @@ function mapPost(record: { id: string; fields: PostFields; createdTime: string }
     reactions,
     comments: parseComments(fields.Comments),
     organization: fields.Organization,
-    images: fields.Image?.map((image) => image.url).filter(Boolean) ?? [],
+    // 画像URL
+    // Airtableの添付ファイルフィールドは、HEICなどブラウザで直接表示しづらい形式の場合でも
+    // `thumbnails` に JPEG/PNG などの変換済みURLを返してくれることが多い。
+    // そのため、まずサムネイルURLを優先し、なければ元のURLを使う。
+    images:
+      fields.Image?.map((image: any) => {
+        if (!image) return null
+        const thumbnails = image.thumbnails
+        const thumbUrl =
+          thumbnails?.large?.url ||
+          thumbnails?.full?.url ||
+          thumbnails?.small?.url
+
+        return (thumbUrl || image.url) as string | null
+      }).filter(Boolean) ?? [],
   }
 }
 
