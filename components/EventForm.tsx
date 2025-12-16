@@ -81,9 +81,24 @@ export default function EventForm() {
       // heic2anyは配列を返す可能性がある
       const blob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob
       
-      // BlobをFileに変換
+      // Blobが有効か確認
+      if (!blob || blob.size === 0) {
+        throw new Error('変換後の画像データが無効です')
+      }
+      
+      // BlobをFileに変換（lastModifiedを明示的に設定）
       const fileName = file.name.replace(/\.(heic|heif)$/i, '.jpg')
-      return new File([blob], fileName, { type: 'image/jpeg' })
+      const convertedFile = new File([blob], fileName, { 
+        type: 'image/jpeg',
+        lastModified: Date.now()
+      })
+      
+      // 変換後のファイルサイズを確認
+      if (convertedFile.size === 0) {
+        throw new Error('変換後の画像ファイルサイズが0です')
+      }
+      
+      return convertedFile
     } catch (error) {
       console.error('HEIC conversion error:', error)
       throw new Error('HEIC形式の画像の変換に失敗しました。JPEGまたはPNG形式の画像を使用してください。')
@@ -135,6 +150,10 @@ export default function EventForm() {
           let processedFile = file
           if (isHeicFile(file)) {
             processedFile = await convertHeicToJpeg(file)
+            // 変換後のファイルを検証
+            if (!processedFile || processedFile.size === 0) {
+              throw new Error('変換後の画像ファイルが無効です')
+            }
           }
 
           // サポートされている形式かチェック
@@ -144,11 +163,18 @@ export default function EventForm() {
             continue
           }
 
+          // ファイルサイズを確認（0バイトのファイルは除外）
+          if (processedFile.size === 0) {
+            newErrors.set(currentIndex, '画像ファイルが空です。別の画像を選択してください。')
+            continue
+          }
+
           processedFiles.push(processedFile)
           processedPreviews.push(URL.createObjectURL(processedFile))
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : '画像の処理に失敗しました。'
           newErrors.set(currentIndex, errorMessage)
+          console.error('Image processing error:', error, { fileName: file.name, fileSize: file.size })
         }
       }
 
@@ -288,8 +314,14 @@ export default function EventForm() {
       if (formData.styles.length > 0) {
         formPayload.set('styles', JSON.stringify(formData.styles))
       }
-      images.forEach((file) => {
-        formPayload.append('images', file)
+      // 画像ファイルを検証してから追加
+      images.forEach((file, index) => {
+        if (!file || file.size === 0) {
+          console.error(`Invalid file at index ${index}:`, { name: file?.name, size: file?.size, type: file?.type })
+          setError(`画像ファイル（${file?.name || '不明'}）が無効です。`)
+          return
+        }
+        formPayload.append('images', file, file.name)
       })
 
       const response = await fetch('/api/posts', {

@@ -231,7 +231,7 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
             {/* タイトル */}
             <div className="text-center mb-8 md:mb-12" style={{ top: '10%', transform: 'translateY(-50%)', position: 'absolute', width: '100%' }}>
               <p className="text-sm md:text-base font-semibold text-gray-700 mb-2">
-                先人のボランティア活動記録
+                先人冒険者の活動記録
               </p>
               {/* 角丸バナー風タイトル */}
               <div className="inline-block relative">
