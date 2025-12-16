@@ -302,16 +302,20 @@ function mapPost(record: { id: string; fields: PostFields; createdTime: string }
     // `thumbnails` に JPEG/PNG などの変換済みURLを返してくれることが多い。
     // そのため、まずサムネイルURLを優先し、なければ元のURLを使う。
     images:
-      fields.Image?.map((image: any) => {
-        if (!image) return null
-        const thumbnails = image.thumbnails
-        const thumbUrl =
-          thumbnails?.large?.url ||
-          thumbnails?.full?.url ||
-          thumbnails?.small?.url
+      (fields.Image
+        ?.map((image: any) => {
+          if (!image) return null
+          const thumbnails = image.thumbnails
+          const thumbUrl =
+            thumbnails?.large?.url ||
+            thumbnails?.full?.url ||
+            thumbnails?.small?.url
 
-        return (thumbUrl || image.url) as string | null
-      }).filter(Boolean) ?? [],
+          const url = (thumbUrl || image.url) as string | null
+          return url && typeof url === 'string' ? url : null
+        })
+        // null を除外して string[] にする型ガード
+        .filter((url: string | null): url is string => typeof url === 'string' && url.length > 0)) ?? [],
   }
 }
 
