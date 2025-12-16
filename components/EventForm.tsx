@@ -50,10 +50,10 @@ export default function EventForm() {
     }
   }, [previews])
 
-  // サポートされている画像形式かチェック
+  // サポートされている画像形式かチェック（HEICも含む）
   const isSupportedImageType = (file: File): boolean => {
-    const supportedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
-    const supportedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif']
+    const supportedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif', 'image/heic', 'image/heif']
+    const supportedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.heic', '.heif']
     const fileName = file.name.toLowerCase()
     
     return supportedTypes.includes(file.type) || 
@@ -146,31 +146,21 @@ export default function EventForm() {
         const currentIndex = images.length + processedFiles.length
 
         try {
-          // HEIC形式の場合は変換
-          let processedFile = file
-          if (isHeicFile(file)) {
-            processedFile = await convertHeicToJpeg(file)
-            // 変換後のファイルを検証
-            if (!processedFile || processedFile.size === 0) {
-              throw new Error('変換後の画像ファイルが無効です')
-            }
-          }
-
           // サポートされている形式かチェック
-          if (!isSupportedImageType(processedFile)) {
+          if (!isSupportedImageType(file)) {
             const fileExtension = file.name.split('.').pop()?.toUpperCase() || '不明'
-            newErrors.set(currentIndex, `画像の形式（${fileExtension}）はサポートされていません。JPEG、PNG、WebP、GIF形式の画像を使用してください。`)
+            newErrors.set(currentIndex, `画像の形式（${fileExtension}）はサポートされていません。JPEG、PNG、WebP、GIF、HEIC形式の画像を使用してください。`)
             continue
           }
 
           // ファイルサイズを確認（0バイトのファイルは除外）
-          if (processedFile.size === 0) {
+          if (file.size === 0) {
             newErrors.set(currentIndex, '画像ファイルが空です。別の画像を選択してください。')
             continue
           }
 
-          processedFiles.push(processedFile)
-          processedPreviews.push(URL.createObjectURL(processedFile))
+          processedFiles.push(file)
+          processedPreviews.push(URL.createObjectURL(file))
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : '画像の処理に失敗しました。'
           newErrors.set(currentIndex, errorMessage)
