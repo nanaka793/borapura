@@ -33,6 +33,13 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
     : null
 }
 
+// HEIC形式の画像を検出する関数
+function isHeicImage(url: string): boolean {
+  if (!url) return false
+  const lowerUrl = url.toLowerCase()
+  return lowerUrl.includes('.heic') || lowerUrl.includes('image/heic') || lowerUrl.includes('heic')
+}
+
 interface PostGalleryCardProps {
   post: Post
   authorAvatar?: string
@@ -117,6 +124,7 @@ export default function PostGalleryCard({
             sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 400px"
             className="object-cover"
             priority={false}
+            unoptimized={isHeicImage(previewImage)}
           />
           <div className={`absolute inset-0 bg-gradient-to-t ${typeInfo.bgOverlay}`} />
         </>

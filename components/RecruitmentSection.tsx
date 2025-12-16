@@ -6,6 +6,13 @@ import { useRouter } from 'next/navigation'
 import type { Post, User } from '@/lib/types'
 import Avatar from './Avatar'
 
+// HEIC形式の画像を検出する関数
+function isHeicImage(url: string): boolean {
+  if (!url) return false
+  const lowerUrl = url.toLowerCase()
+  return lowerUrl.includes('.heic') || lowerUrl.includes('image/heic') || lowerUrl.includes('heic')
+}
+
 interface RecruitmentSectionProps {
   posts: Post[]
   users: User[]
@@ -384,6 +391,7 @@ export default function RecruitmentSection({ posts, users }: RecruitmentSectionP
                           fill
                           sizes="(max-width: 768px) 50vw, 20vw"
                           className="object-cover"
+                          unoptimized={isHeicImage(post.images[0])}
                         />
                       ) : (
                         <div className="absolute inset-0 bg-gradient-to-br from-yellow-200 to-yellow-400" />

@@ -30,6 +30,13 @@ function removeUrlsFromText(text: string): string {
   return cleaned
 }
 
+// HEIC形式の画像を検出する関数
+function isHeicImage(url: string): boolean {
+  if (!url) return false
+  const lowerUrl = url.toLowerCase()
+  return lowerUrl.includes('.heic') || lowerUrl.includes('image/heic') || lowerUrl.includes('heic')
+}
+
 export default function PostDetail({
   post,
   authorAvatar,
@@ -246,6 +253,7 @@ export default function PostDetail({
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, (max-width: 1280px) 80vw, 1200px"
               className="object-contain transition-opacity duration-300"
               priority
+              unoptimized={isHeicImage(post.images[selectedImageIndex])}
             />
           </div>
           
@@ -269,6 +277,7 @@ export default function PostDetail({
                     fill
                     sizes="(max-width: 640px) 64px, (max-width: 1024px) 80px, 96px"
                     className="object-cover"
+                    unoptimized={isHeicImage(image)}
                   />
                 </button>
               ))}

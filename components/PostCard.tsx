@@ -16,6 +16,13 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
     : null
 }
 
+// HEIC形式の画像を検出する関数
+function isHeicImage(url: string): boolean {
+  if (!url) return false
+  const lowerUrl = url.toLowerCase()
+  return lowerUrl.includes('.heic') || lowerUrl.includes('image/heic') || lowerUrl.includes('heic')
+}
+
 interface PostCardProps {
   post: Post
   chapterNumber?: number
@@ -83,6 +90,7 @@ export default function PostCard({ post, chapterNumber, themeColor }: PostCardPr
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               className="object-cover"
+              unoptimized={isHeicImage(post.images[0])}
             />
           ) : (
             <div className="h-full w-full" style={{ background: getGradientStyle() }} />

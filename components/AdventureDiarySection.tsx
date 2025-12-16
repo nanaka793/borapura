@@ -6,6 +6,13 @@ import { useRouter } from 'next/navigation'
 import type { Post, User } from '@/lib/types'
 import Avatar from './Avatar'
 
+// HEIC形式の画像を検出する関数
+function isHeicImage(url: string): boolean {
+  if (!url) return false
+  const lowerUrl = url.toLowerCase()
+  return lowerUrl.includes('.heic') || lowerUrl.includes('image/heic') || lowerUrl.includes('heic')
+}
+
 interface AdventureDiarySectionProps {
   posts: Post[]
   users: User[]
@@ -311,6 +318,7 @@ export default function AdventureDiarySection({ posts, users }: AdventureDiarySe
                           fill
                           sizes="(max-width: 768px) 100vw, 50vw"
                           className="object-cover"
+                          unoptimized={isHeicImage(post.images[0])}
                         />
                       ) : (
                         <div 
