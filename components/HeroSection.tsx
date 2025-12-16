@@ -84,7 +84,7 @@ export default function HeroSection() {
             alt="ぼらぷら"
             width={390}
             height={130}
-            className="h-auto w-[12rem] sm:w-[15.6rem] md:w-[18rem] lg:w-[20.8rem] xl:w-[24rem]"
+            className="h-auto w-[12rem] sm:w-[15.6rem] md:w-[18rem] lg:w-[22rem] xl:w-[26rem] 2xl:w-[30rem]"
           />
         </div>
 
@@ -99,7 +99,7 @@ export default function HeroSection() {
             transitionDelay: '600ms'
           }}
         >
-          <p className="text-gray-700 text-xs sm:text-sm md:text-base lg:text-lg font-semibold tracking-wide">
+          <p className="text-gray-700 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl 2xl:text-2xl font-semibold tracking-wide">
             Volunteer Platform
           </p>
         </div>
@@ -118,7 +118,7 @@ export default function HeroSection() {
             alt="ヤシの木"
             width={390}
             height={585}
-            className="h-auto w-[10rem] sm:w-[12rem] md:w-[18rem] lg:w-[24rem] xl:w-[27rem]"
+            className="h-auto w-[10rem] sm:w-[12rem] md:w-[18rem] lg:w-[24rem] xl:w-[27rem] 2xl:w-[32rem]"
           />
         </div>
 
@@ -136,7 +136,7 @@ export default function HeroSection() {
             alt="黄色のヨット"
             width={292}
             height={292}
-            className="h-auto w-[8rem] sm:w-[10rem] md:w-[13rem] lg:w-[15.6rem] xl:w-[18rem]"
+            className="h-auto w-[8rem] sm:w-[10rem] md:w-[13rem] lg:w-[15.6rem] xl:w-[18rem] 2xl:w-[22rem]"
           />
         </div>
 
@@ -154,7 +154,7 @@ export default function HeroSection() {
             alt="白色のヨット"
             width={292}
             height={292}
-            className="h-auto w-[8rem] sm:w-[10rem] md:w-[15rem] lg:w-[20rem] xl:w-[22.5rem]"
+            className="h-auto w-[8rem] sm:w-[10rem] md:w-[15rem] lg:w-[20rem] xl:w-[22.5rem] 2xl:w-[26rem]"
           />
         </div>
       </div>

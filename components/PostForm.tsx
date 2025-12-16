@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import AdventureSlider from './AdventureSlider'
+import heic2any from 'heic2any'
 
 interface PostFormProps {
   currentUser: {
@@ -21,6 +22,7 @@ export default function PostForm({ currentUser }: PostFormProps) {
     content: '',
     category: '',
     location: '',
+    organization: '',
     questStyle: 3, // デフォルトは中央（3 = ふつう）
     emotionMeter: 3, // デフォルトは中央（3 = ふつう）
     growthDiscovery: '', // 自分の成長発見
@@ -28,6 +30,8 @@ export default function PostForm({ currentUser }: PostFormProps) {
   })
   const [images, setImages] = useState<File[]>([])
   const [imagePreviews, setImagePreviews] = useState<string[]>([])
+  const [imageErrors, setImageErrors] = useState<Map<number, string>>(new Map())
+  const [isConverting, setIsConverting] = useState(false)
 
   useEffect(() => {
     return () => {
@@ -35,8 +39,55 @@ export default function PostForm({ currentUser }: PostFormProps) {
     }
   }, [imagePreviews])
 
+  // サポートされている画像形式かチェック
+  const isSupportedImageType = (file: File): boolean => {
+    const supportedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
+    const supportedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif']
+    const fileName = file.name.toLowerCase()
+    
+    return supportedTypes.includes(file.type) || 
+           supportedExtensions.some(ext => fileName.endsWith(ext))
+  }
+
+  // HEIC形式かチェック
+  const isHeicFile = (file: File): boolean => {
+    const heicTypes = ['image/heic', 'image/heif']
+    const fileName = file.name.toLowerCase()
+    return heicTypes.includes(file.type) || 
+           fileName.endsWith('.heic') || 
+           fileName.endsWith('.heif')
+  }
+
+  // HEICをJPEGに変換
+  const convertHeicToJpeg = async (file: File): Promise<File> => {
+    try {
+      const convertedBlob = await heic2any({
+        blob: file,
+        toType: 'image/jpeg',
+        quality: 0.92,
+      })
+      
+      // heic2anyは配列を返す可能性がある
+      const blob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob
+      
+      // BlobをFileに変換
+      const fileName = file.name.replace(/\.(heic|heif)$/i, '.jpg')
+      return new File([blob], fileName, { type: 'image/jpeg' })
+    } catch (error) {
+      console.error('HEIC conversion error:', error)
+      throw new Error('HEIC形式の画像の変換に失敗しました。JPEGまたはPNG形式の画像を使用してください。')
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // 画像エラーがある場合は投稿をブロック
+    if (imageErrors.size > 0) {
+      setError('画像にエラーがあります。エラーのある画像を削除してから再度お試しください。')
+      return
+    }
+
     setLoading(true)
     setError(null)
 
@@ -46,6 +97,7 @@ export default function PostForm({ currentUser }: PostFormProps) {
       formPayload.set('content', formData.content)
       formPayload.set('category', formData.category)
       formPayload.set('location', formData.location)
+      formPayload.set('organization', formData.organization)
       formPayload.set('questStyle', formData.questStyle.toString())
       formPayload.set('emotionMeter', formData.emotionMeter.toString())
       formPayload.set('growthDiscovery', formData.growthDiscovery)
@@ -60,7 +112,7 @@ export default function PostForm({ currentUser }: PostFormProps) {
       })
 
       if (response.ok) {
-        router.push('/')
+        router.push('/posts')
         router.refresh()
       } else {
         const data = await response.json().catch(() => ({ error: '投稿に失敗しました' }))
@@ -77,7 +129,7 @@ export default function PostForm({ currentUser }: PostFormProps) {
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-8">
+      <form onSubmit={handleSubmit} className="bg-transparent rounded-lg p-0">
         <div className="mb-6 rounded-2xl bg-primary-50 px-4 py-3 text-primary-700">
           {currentUser.name} として投稿します
         </div>
@@ -140,6 +192,20 @@ export default function PostForm({ currentUser }: PostFormProps) {
           onChange={(e) => setFormData({ ...formData, location: e.target.value })}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           placeholder="例: 東京都渋谷区"
+        />
+      </div>
+
+      <div className="mb-6">
+        <label htmlFor="organization" className="block text-sm font-semibold text-gray-700 mb-2">
+          主催団体名
+        </label>
+        <input
+          type="text"
+          id="organization"
+          value={formData.organization}
+          onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          placeholder="例: NPO ○○ / サークル名 など"
         />
       </div>
 
@@ -216,7 +282,8 @@ export default function PostForm({ currentUser }: PostFormProps) {
           type="file"
           accept="image/*"
           multiple
-          onChange={(e) => {
+          disabled={isConverting}
+          onChange={async (e) => {
             const selectedFiles = Array.from(e.target.files || [])
             if (selectedFiles.length === 0) return
 
@@ -227,52 +294,130 @@ export default function PostForm({ currentUser }: PostFormProps) {
               return
             }
 
-            const usableFiles = selectedFiles.slice(0, availableSlots)
-            const newPreviews = usableFiles.map((file) => URL.createObjectURL(file))
+            setIsConverting(true)
+            setError(null)
 
-            setImages((prev) => [...prev, ...usableFiles])
-            setImagePreviews((prev) => [...prev, ...newPreviews])
+            try {
+              const processedFiles: File[] = []
+              const processedPreviews: string[] = []
+              const newErrors = new Map<number, string>()
 
-            if (selectedFiles.length > usableFiles.length) {
-              setError('画像は最大10枚までアップロードできます。')
-            } else {
-              setError(null)
+              for (let i = 0; i < Math.min(selectedFiles.length, availableSlots); i++) {
+                const file = selectedFiles[i]
+                const currentIndex = images.length + processedFiles.length
+
+                try {
+                  // HEIC形式の場合は変換
+                  let processedFile = file
+                  if (isHeicFile(file)) {
+                    processedFile = await convertHeicToJpeg(file)
+                  }
+
+                  // サポートされている形式かチェック
+                  if (!isSupportedImageType(processedFile)) {
+                    const fileExtension = file.name.split('.').pop()?.toUpperCase() || '不明'
+                    newErrors.set(currentIndex, `画像の形式（${fileExtension}）はサポートされていません。JPEG、PNG、WebP、GIF形式の画像を使用してください。`)
+                    continue
+                  }
+
+                  processedFiles.push(processedFile)
+                  processedPreviews.push(URL.createObjectURL(processedFile))
+                } catch (error) {
+                  const errorMessage = error instanceof Error ? error.message : '画像の処理に失敗しました。'
+                  newErrors.set(currentIndex, errorMessage)
+                }
+              }
+
+              // エラーがある場合は表示
+              if (newErrors.size > 0) {
+                const errorMessages = Array.from(newErrors.values())
+                setError(errorMessages[0]) // 最初のエラーメッセージを表示
+              }
+
+              // 成功したファイルのみ追加
+              if (processedFiles.length > 0) {
+                setImages((prev) => [...prev, ...processedFiles])
+                setImagePreviews((prev) => [...prev, ...processedPreviews])
+                setImageErrors((prev) => {
+                  const updated = new Map(prev)
+                  newErrors.forEach((value, key) => updated.set(key, value))
+                  return updated
+                })
+              }
+
+              if (selectedFiles.length > availableSlots) {
+                setError('画像は最大10枚までアップロードできます。')
+              }
+            } catch (error) {
+              console.error('File processing error:', error)
+              setError('画像の処理中にエラーが発生しました。')
+            } finally {
+              setIsConverting(false)
+              e.target.value = ''
             }
-
-            e.target.value = ''
           }}
-          className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+          className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 disabled:opacity-50 disabled:cursor-not-allowed"
         />
+        {isConverting && (
+          <p className="mt-2 text-sm text-gray-600">画像を変換中...</p>
+        )}
         {images.length > 0 && (
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            {images.map((file, index) => (
-              <div key={index} className="relative rounded-lg border border-gray-200 p-3">
-                <div className="text-xs text-gray-500 break-all mb-2">{file.name}</div>
-                {imagePreviews[index] && (
-                  <div className="overflow-hidden rounded-md">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={imagePreviews[index]}
-                      alt={`${file.name} preview`}
-                      className="h-32 w-full object-cover"
-                    />
-                  </div>
-                )}
-                <button
-                  type="button"
-                  onClick={() => {
-                    const nextImages = images.filter((_, idx) => idx !== index)
-                    const nextPreviews = imagePreviews.filter((_, idx) => idx !== index)
-                    URL.revokeObjectURL(imagePreviews[index])
-                    setImages(nextImages)
-                    setImagePreviews(nextPreviews)
-                  }}
-                  className="mt-2 text-xs font-semibold text-red-500 hover:underline"
+            {images.map((file, index) => {
+              const hasError = imageErrors.has(index)
+              return (
+                <div 
+                  key={index} 
+                  className={`relative rounded-lg border p-3 ${
+                    hasError ? 'border-red-300 bg-red-50' : 'border-gray-200'
+                  }`}
                 >
-                  削除
-                </button>
-              </div>
-            ))}
+                  <div className={`text-xs break-all mb-2 ${hasError ? 'text-red-600' : 'text-gray-500'}`}>
+                    {file.name}
+                  </div>
+                  {hasError && (
+                    <div className="mb-2 text-xs text-red-600 bg-red-100 p-2 rounded">
+                      {imageErrors.get(index)}
+                    </div>
+                  )}
+                  {imagePreviews[index] && (
+                    <div className="overflow-hidden rounded-md">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={imagePreviews[index]}
+                        alt={`${file.name} preview`}
+                        className="h-32 w-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const nextImages = images.filter((_, idx) => idx !== index)
+                      const nextPreviews = imagePreviews.filter((_, idx) => idx !== index)
+                      const nextErrors = new Map(imageErrors)
+                      nextErrors.delete(index)
+                      // インデックスを再調整
+                      const reindexedErrors = new Map<number, string>()
+                      nextErrors.forEach((value, key) => {
+                        if (key > index) {
+                          reindexedErrors.set(key - 1, value)
+                        } else {
+                          reindexedErrors.set(key, value)
+                        }
+                      })
+                      URL.revokeObjectURL(imagePreviews[index])
+                      setImages(nextImages)
+                      setImagePreviews(nextPreviews)
+                      setImageErrors(reindexedErrors)
+                    }}
+                    className="mt-2 text-xs font-semibold text-red-500 hover:underline"
+                  >
+                    削除
+                  </button>
+                </div>
+              )
+            })}
           </div>
         )}
       </div>

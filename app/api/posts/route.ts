@@ -184,15 +184,24 @@ export async function POST(request: NextRequest) {
 
     const { post: savedPost, recordId } = await savePost(newPost)
 
+    // 画像アップロードを試行（失敗しても投稿は成功させる）
     if (imageFiles.length > 0) {
-      for (const file of imageFiles) {
-        await uploadAttachment(file, {
-          recordId,
-          fieldKey: 'PostsImage',
-        })
-      }
+      const uploadPromises = imageFiles.map(async (file) => {
+        try {
+          await uploadAttachment(file, {
+            recordId,
+            fieldKey: 'PostsImage',
+            tableName: 'Posts',
+          })
+        } catch (error) {
+          console.error('Failed to upload image:', file.name, error)
+          // 画像アップロードに失敗しても投稿は成功させる
+        }
+      })
+      await Promise.allSettled(uploadPromises)
     }
 
+    // 画像をアップロードした場合は、最新の投稿データを取得
     const finalPost = imageFiles.length > 0 ? await getPost(recordId) : savedPost
 
     // バッジを更新（非同期で実行、エラーが発生しても投稿は成功させる）

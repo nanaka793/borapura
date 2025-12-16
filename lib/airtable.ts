@@ -110,9 +110,11 @@ export async function uploadAttachment(
   {
     recordId,
     fieldKey,
+    tableName,
   }: {
     recordId: string
     fieldKey: 'UsersAvatar' | 'PostsImage'
+    tableName?: string
   }
 ) {
   const formData = new FormData()

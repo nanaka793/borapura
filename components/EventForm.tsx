@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import heic2any from 'heic2any'
 
 const CATEGORY_OPTIONS = [
   '教育',
@@ -40,12 +41,54 @@ export default function EventForm() {
   })
   const [images, setImages] = useState<File[]>([])
   const [previews, setPreviews] = useState<string[]>([])
+  const [imageErrors, setImageErrors] = useState<Map<number, string>>(new Map())
+  const [isConverting, setIsConverting] = useState(false)
 
   useEffect(() => {
     return () => {
       previews.forEach((url) => URL.revokeObjectURL(url))
     }
   }, [previews])
+
+  // サポートされている画像形式かチェック
+  const isSupportedImageType = (file: File): boolean => {
+    const supportedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
+    const supportedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif']
+    const fileName = file.name.toLowerCase()
+    
+    return supportedTypes.includes(file.type) || 
+           supportedExtensions.some(ext => fileName.endsWith(ext))
+  }
+
+  // HEIC形式かチェック
+  const isHeicFile = (file: File): boolean => {
+    const heicTypes = ['image/heic', 'image/heif']
+    const fileName = file.name.toLowerCase()
+    return heicTypes.includes(file.type) || 
+           fileName.endsWith('.heic') || 
+           fileName.endsWith('.heif')
+  }
+
+  // HEICをJPEGに変換
+  const convertHeicToJpeg = async (file: File): Promise<File> => {
+    try {
+      const convertedBlob = await heic2any({
+        blob: file,
+        toType: 'image/jpeg',
+        quality: 0.92,
+      })
+      
+      // heic2anyは配列を返す可能性がある
+      const blob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob
+      
+      // BlobをFileに変換
+      const fileName = file.name.replace(/\.(heic|heif)$/i, '.jpg')
+      return new File([blob], fileName, { type: 'image/jpeg' })
+    } catch (error) {
+      console.error('HEIC conversion error:', error)
+      throw new Error('HEIC形式の画像の変換に失敗しました。JPEGまたはPNG形式の画像を使用してください。')
+    }
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -64,7 +107,7 @@ export default function EventForm() {
     })
   }
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
     if (files.length === 0) return
 
@@ -75,25 +118,85 @@ export default function EventForm() {
       return
     }
 
-    const usableFiles = files.slice(0, availableSlots)
-    const newPreviews = usableFiles.map((file) => URL.createObjectURL(file))
+    setIsConverting(true)
+    setError(null)
 
-    setImages((prev) => [...prev, ...usableFiles])
-    setPreviews((prev) => [...prev, ...newPreviews])
+    try {
+      const processedFiles: File[] = []
+      const processedPreviews: string[] = []
+      const newErrors = new Map<number, string>()
 
-    if (files.length > usableFiles.length) {
-      setError('画像は最大10枚までアップロードできます。')
-    } else {
-      setError(null)
+      for (let i = 0; i < Math.min(files.length, availableSlots); i++) {
+        const file = files[i]
+        const currentIndex = images.length + processedFiles.length
+
+        try {
+          // HEIC形式の場合は変換
+          let processedFile = file
+          if (isHeicFile(file)) {
+            processedFile = await convertHeicToJpeg(file)
+          }
+
+          // サポートされている形式かチェック
+          if (!isSupportedImageType(processedFile)) {
+            const fileExtension = file.name.split('.').pop()?.toUpperCase() || '不明'
+            newErrors.set(currentIndex, `画像の形式（${fileExtension}）はサポートされていません。JPEG、PNG、WebP、GIF形式の画像を使用してください。`)
+            continue
+          }
+
+          processedFiles.push(processedFile)
+          processedPreviews.push(URL.createObjectURL(processedFile))
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : '画像の処理に失敗しました。'
+          newErrors.set(currentIndex, errorMessage)
+        }
+      }
+
+      // エラーがある場合は表示
+      if (newErrors.size > 0) {
+        const errorMessages = Array.from(newErrors.values())
+        setError(errorMessages[0]) // 最初のエラーメッセージを表示
+      }
+
+      // 成功したファイルのみ追加
+      if (processedFiles.length > 0) {
+        setImages((prev) => [...prev, ...processedFiles])
+        setPreviews((prev) => [...prev, ...processedPreviews])
+        setImageErrors((prev) => {
+          const updated = new Map(prev)
+          newErrors.forEach((value, key) => updated.set(key, value))
+          return updated
+        })
+      }
+
+      if (files.length > availableSlots) {
+        setError('画像は最大10枚までアップロードできます。')
+      }
+    } catch (error) {
+      console.error('File processing error:', error)
+      setError('画像の処理中にエラーが発生しました。')
+    } finally {
+      setIsConverting(false)
+      e.target.value = ''
     }
-
-    e.target.value = ''
   }
 
   const removeImage = (index: number) => {
     setImages((prev) => prev.filter((_, idx) => idx !== index))
     URL.revokeObjectURL(previews[index])
     setPreviews((prev) => prev.filter((_, idx) => idx !== index))
+    const nextErrors = new Map(imageErrors)
+    nextErrors.delete(index)
+    // インデックスを再調整
+    const reindexedErrors = new Map<number, string>()
+    nextErrors.forEach((value, key) => {
+      if (key > index) {
+        reindexedErrors.set(key - 1, value)
+      } else {
+        reindexedErrors.set(key, value)
+      }
+    })
+    setImageErrors(reindexedErrors)
   }
 
   const toggleStyle = (value: string) => {
@@ -150,6 +253,13 @@ export default function EventForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // 画像エラーがある場合は投稿をブロック
+    if (imageErrors.size > 0) {
+      setError('画像にエラーがあります。エラーのある画像を削除してから再度お試しください。')
+      return
+    }
+
     setLoading(true)
     setError(null)
 
@@ -373,39 +483,58 @@ export default function EventForm() {
 
       <div>
         <label className="mb-2 block text-sm font-semibold text-gray-700">
-          写真（JPG/PNG, 最大10枚）
+          写真（最大10枚）
         </label>
+        {isConverting && (
+          <p className="mb-2 text-sm text-gray-600">画像を変換中...</p>
+        )}
         <input
           type="file"
-          accept="image/png,image/jpeg"
+          accept="image/*"
           multiple
+          disabled={isConverting}
           onChange={handleImageChange}
-          className="w-full rounded-2xl border border-gray-300 px-4 py-3 focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+          className="w-full rounded-2xl border border-gray-300 px-4 py-3 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 disabled:opacity-50 disabled:cursor-not-allowed"
         />
         {images.length > 0 && (
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            {images.map((file, index) => (
-              <div key={file.name + index} className="rounded-xl border border-gray-200 p-3">
-                <p className="truncate text-xs text-gray-500">{file.name}</p>
-                {previews[index] && (
-                  <div className="mt-2 overflow-hidden rounded-lg">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={previews[index]}
-                      alt={`${file.name} preview`}
-                      className="h-32 w-full object-cover"
-                    />
-                  </div>
-                )}
-                <button
-                  type="button"
-                  onClick={() => removeImage(index)}
-                  className="mt-2 text-xs font-semibold text-red-500 hover:underline"
+            {images.map((file, index) => {
+              const hasError = imageErrors.has(index)
+              return (
+                <div 
+                  key={file.name + index} 
+                  className={`rounded-xl border p-3 ${
+                    hasError ? 'border-red-300 bg-red-50' : 'border-gray-200'
+                  }`}
                 >
-                  削除
-                </button>
-              </div>
-            ))}
+                  <p className={`truncate text-xs ${hasError ? 'text-red-600' : 'text-gray-500'}`}>
+                    {file.name}
+                  </p>
+                  {hasError && (
+                    <div className="mt-2 text-xs text-red-600 bg-red-100 p-2 rounded">
+                      {imageErrors.get(index)}
+                    </div>
+                  )}
+                  {previews[index] && (
+                    <div className="mt-2 overflow-hidden rounded-lg">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={previews[index]}
+                        alt={`${file.name} preview`}
+                        className="h-32 w-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    className="mt-2 text-xs font-semibold text-red-500 hover:underline"
+                  >
+                    削除
+                  </button>
+                </div>
+              )
+            })}
           </div>
         )}
       </div>
