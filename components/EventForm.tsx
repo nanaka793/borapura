@@ -539,12 +539,18 @@ export default function EventForm() {
                   )}
                   {previews[index] && (
                     <div className="mt-2 overflow-hidden rounded-lg">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={previews[index]}
-                        alt={`${file.name} preview`}
-                        className="h-32 w-full object-cover"
-                      />
+                      {isHeicFile(file) ? (
+                        <div className="flex h-32 w-full items-center justify-center bg-gray-100 px-3 text-center text-xs text-gray-500">
+                          この画像はHEIC形式のため、この画面ではプレビュー表示できませんが、そのまま投稿されます。
+                        </div>
+                      ) : (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={previews[index]}
+                          alt={`${file.name} preview`}
+                          className="h-32 w-full object-cover"
+                        />
+                      )}
                     </div>
                   )}
                   <button

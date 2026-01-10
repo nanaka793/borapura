@@ -81,10 +81,21 @@ export default function TavernSection({ topics }: TavernSectionProps) {
   const router = useRouter()
   const [isVisible, setIsVisible] = useState(false)
   const [isTitleComplete, setIsTitleComplete] = useState(false)
+  const [isMobile, setIsMobile] = useState(true)
   const sectionRef = useRef<HTMLElement>(null)
   
   // 最新の4つのトピックを取得
   const latestTopics = topics.slice(0, 4)
+
+  // ウィンドウサイズを監視
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // スクロール検知でアニメーション開始
   useEffect(() => {
@@ -159,27 +170,34 @@ export default function TavernSection({ topics }: TavernSectionProps) {
 
       {/* 3. メニュー表 - スクロール到達時に右から左にスライドイン */}
       <div 
-        className="absolute z-20 transition-transform duration-1000 ease-out md:!top-[-8%] md:!right-[-10%]"
+        className="absolute z-20 transition-transform duration-1000 ease-out md:!top-[-8%] md:!right-[-10%] overflow-hidden md:overflow-visible"
         style={{
           top: '20%',
-          right: '0%',
-          width: '80%',
+          ...(isMobile ? {
+            left: '4%',
+            right: 'auto',
+            width: 'calc(100% - 8%)',
+            transformOrigin: 'top left'
+          } : {
+            right: '-10%',
+            width: '80%',
+            transformOrigin: 'top right'
+          }),
           maxWidth: 'none',
           transform: isVisible 
             ? 'translateX(0) scale(1.1)' 
-            : 'translateX(100%) scale(1.1)',
-          transformOrigin: 'top right'
+            : 'translateX(100%) scale(1.1)'
         }}
       >
         <div 
           className="relative w-full flex flex-col md:w-[85vw] lg:w-[80vw] xl:w-[75vw] 2xl:w-[70vw]"
           style={{
             maxWidth: '2200px',
-            minWidth: '600px'
+            ...(isMobile ? {} : { minWidth: '600px' })
           }}
         >
           {/* メニュー表の画像（スマホ版は新しい画像、PC版は従来の画像） */}
-          <div className="md:hidden" style={{ transform: 'translateX(-15%)' }}>
+          <div className="md:hidden">
             <Image
               src="/tavern-menu-card-mobile.png"
               alt=""
@@ -205,7 +223,7 @@ export default function TavernSection({ topics }: TavernSectionProps) {
           </div>
           
           {/* メニュー表の上にコンテンツを配置 */}
-          <div className="absolute inset-0 pt-8 pl-6 pb-8 pr-6 md:pt-24 md:pl-40 lg:pt-48 lg:pl-56 md:pr-20">
+          <div className={`absolute inset-0 pt-8 pb-8 md:pt-24 md:pl-40 lg:pt-48 lg:pl-56 md:pr-20 ${isMobile ? 'pl-0 pr-[4%]' : ''}`}>
             <div className="h-full flex flex-col md:scale-[0.769] lg:scale-100">
               {/* MENUタイトル */}
               <div className="mb-4 md:mb-6 flex-shrink-0">
@@ -216,7 +234,7 @@ export default function TavernSection({ topics }: TavernSectionProps) {
               </div>
 
               {/* トピックリスト - 飲食店のメニュー表風 */}
-              <div className="space-y-3 md:space-y-4">
+              <div className="space-y-3 md:space-y-4 overflow-hidden md:overflow-visible">
                 {latestTopics.length === 0 ? (
                   <p className="text-gray-600 text-sm md:text-base">
                     現在、トピックはありません。
@@ -226,19 +244,19 @@ export default function TavernSection({ topics }: TavernSectionProps) {
                     <div
                       key={topic.id}
                       onClick={() => handleTopicClick(topic.id)}
-                      className="cursor-pointer transition-all duration-300 ease-in-out hover:scale-105 hover:bg-white hover:shadow-lg rounded-lg p-3 md:p-4"
+                      className="cursor-pointer transition-all duration-300 ease-in-out hover:scale-105 hover:bg-white hover:shadow-lg rounded-lg p-3 md:p-4 overflow-hidden md:overflow-visible"
                       style={{
                         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                         backgroundColor: 'rgba(255, 255, 255, 0.8)'
                       }}
                     >
-                      <div className="flex items-start gap-2">
+                      <div className="flex items-start gap-2 w-full">
                         <span className="text-gray-700 font-bold text-base md:text-lg flex-shrink-0" style={{ minWidth: '1.5rem' }}>
                           {index + 1}.
                         </span>
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0 overflow-hidden md:overflow-visible">
                           <h4 
-                            className="text-sm md:text-base font-semibold mb-1 leading-tight"
+                            className="text-sm md:text-base font-semibold mb-1 leading-tight md:leading-normal truncate md:truncate-none"
                             style={{ color: '#000000' }}
                           >
                             {topic.title}
@@ -259,10 +277,10 @@ export default function TavernSection({ topics }: TavernSectionProps) {
               </div>
 
               {/* 酒場へ行ってもっと見に行くボタン */}
-              <div className="mt-10">
+              <div className="mt-6 md:mt-10 flex justify-center md:justify-start">
                 <button
                   onClick={handleMoreClick}
-                  className="w-auto py-3 px-4 rounded text-sm font-semibold text-white transition-all hover:opacity-90"
+                  className="w-auto py-3 px-4 rounded text-sm font-semibold text-white transition-all hover:opacity-90 md:w-auto"
                   style={{
                     background: 'linear-gradient(135deg, #87354F 0%, #7C3AED 100%)',
                     boxShadow: '0 2px 8px rgba(139, 92, 246, 0.3)'
